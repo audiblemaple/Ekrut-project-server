@@ -1,11 +1,11 @@
-package server;
+package Application.server;
 // This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
 
 /**
  * This class overrides some of the methods in the abstract 
- * superclass in order to give more functionality to the server.
+ * superclass in order to give more functionality to the Application.server.
  *
  * @author Dr Timothy C. Lethbridge
  * @author Dr Robert Lagani&egrave;re
@@ -20,11 +20,12 @@ public class ServerController extends AbstractServer {
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
+  private mysqlController sqlcontroller;
   
   //Constructors ****************************************************
   
   /**
-   * Constructs an instance of the echo server.
+   * Constructs an instance of the echo Application.server.
    *
    * @param port The port number to connect on.
    */
@@ -49,16 +50,16 @@ public class ServerController extends AbstractServer {
     
   /**
    * This method overrides the one in the superclass.  Called
-   * when the server starts listening for connections.
+   * when the Application.server starts listening for connections.
    */
   protected void serverStarted() {
-    System.out.println
-      ("Server listening for connections on port " + getPort());
+    System.out.println("Server listening for connections on port " + getPort());
+    sqlcontroller = new mysqlController();
   }
   
   /**
    * This method overrides the one in the superclass.  Called
-   * when the server stops listening for connections.
+   * when the Application.server stops listening for connections.
    */
   protected void serverStopped() {
     System.out.println("Server has stopped listening for connections.");
@@ -68,7 +69,7 @@ public class ServerController extends AbstractServer {
   
   /**
    * This method is responsible for the creation of 
-   * the server instance (there is no UI in this phase).
+   * the Application.server instance (there is no UI in this phase).
    *
    //* @param args[0] The port number to listen on.  Defaults to 5555
    *          if no argument is entered.
