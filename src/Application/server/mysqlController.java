@@ -51,13 +51,9 @@ public class mysqlController {
 		if(checkUserExists(ID)){
 			System.out.printf("user added successfully");
 		}
-
 	}
-	private boolean checkUserExists(String ID){
+	public boolean checkUserExists(String ID){
 
-		// SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'username')
-		// SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = ?)
-		// String query = "SELECT * FROM userdata.users WHERE ID=?";
 
 		Statement stmt;
 		ResultSet res;
@@ -76,7 +72,11 @@ public class mysqlController {
 	}
 
 }
-//	SCRATCH  PARTS:
+//	SPARE  PARTS:
+
+// SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'username')
+// SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = ?)
+// String query = "SELECT * FROM userdata.users WHERE ID=?";
 
 //	public static void printCourses(Connection con) {
 //		Statement stmt;

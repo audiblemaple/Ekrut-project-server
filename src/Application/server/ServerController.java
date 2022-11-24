@@ -63,32 +63,6 @@ public class ServerController extends AbstractServer {
     }
   }
 
-    private void func() {
-        ///// String ID,  String username, String password, String name, String lastname, String phonenumber, String email
-        String message = "newUser 316109115 audiblemaple 199654123kK lior jigalo 0528081434 audiblemaple@gmail.com";
-        String[] queryArgs = message.split(" ");
-
-        if(queryArgs[0].equals("newUser"))
-            sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7]);
-    }
-
-    /**
-   * This method handles any messages received from the client.
-   *
-   * @param msg The message received from the client.
-   * @param client The connection from which the message originated.
-   */
-  public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-      System.out.println("Message received: " + msg + " from " + client);
-//      String message = "newUser 316109115 audiblemaple 199654123kK lior jigalo 0528081434 audiblemaple@gmail.com";
-      String message = (String)msg;
-      String[] queryArgs = message.split(" ");
-
-      if(queryArgs[0].equals("newUser"))
-          sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7]);
-
-      this.sendToAllClients(msg);
-  }
   
   /**
    * This method overrides the one in the superclass.  Called
@@ -108,5 +82,32 @@ public class ServerController extends AbstractServer {
   protected void serverStopped() {
     System.out.println("Server has stopped listening for connections.");
   }
+
+    /**
+     * This method handles any messages received from the client.
+     *
+     * @param msg The message received from the client.
+     * @param client The connection from which the message originated.
+     */
+    //TODO: add check if arguments are null or the index doesnt exist
+
+    public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+        System.out.println("Message received: " + msg + " from " + client);
+
+        String message = (String)msg;
+        String[] queryArgs = message.split(" ");
+
+        switch (queryArgs[0]){
+            case "newUser":
+                sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7]);
+                break;
+
+            case "checkExists":
+                sqlcontroller.checkUserExists(queryArgs[1]);
+        }
+
+        //this.sendToAllClients(msg);
+    }
+
 }
 //End of EchoServer class
