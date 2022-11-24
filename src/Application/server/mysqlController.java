@@ -59,9 +59,11 @@ public class mysqlController {
 		ResultSet res;
 		String actualuname;
 		String actualpswd;
-		String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
+		String query = "SELECT * FROM userdata.users WHERE username = ? and password = ?";
 		try{
 			stmt = connection.prepareStatement(query);
+			stmt.setString(1,username);
+			stmt.setString(2,password);
 			res = stmt.executeQuery();
 			if (res.next()){
 				if (res.getString("username").equals(username) && res.getString("password").equals(password)){
@@ -77,6 +79,7 @@ public class mysqlController {
 		return false;
 	}
 
+	// TODO: write functionality of update user
 	public void updateUser(){
 		PreparedStatement stmt;
 		String query = "UPDATE mysql.user";
@@ -93,7 +96,7 @@ public class mysqlController {
 
 }
 //	SPARE  PARTS:
-
+//String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
 // SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'username')
 // SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = ?)
 // String query = "SELECT * FROM userdata.users WHERE ID=?";
