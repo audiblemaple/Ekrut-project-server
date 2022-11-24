@@ -89,7 +89,8 @@ public class ServerController extends AbstractServer {
      * @param msg The message received from the client.
      * @param client The connection from which the message originated.
      */
-    //TODO: add check if arguments are null or the index doesnt exist
+    // TODO: add check if arguments are null or the index doesnt exist
+    // TODO: add client array or map so the server could communicate back with the correct client
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         System.out.println("Message received: " + msg + " from " + client);
@@ -103,7 +104,10 @@ public class ServerController extends AbstractServer {
                 break;
 
             case "checkExists":
-                sqlcontroller.checkUserExists(queryArgs[1]);
+                sqlcontroller.checkUserExists(queryArgs[3], queryArgs[4]);
+
+            case "updateUser":
+                sqlcontroller.checkUserExists(queryArgs[3], queryArgs[4]);
         }
 
         //this.sendToAllClients(msg);

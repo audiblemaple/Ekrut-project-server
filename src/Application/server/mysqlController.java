@@ -31,7 +31,7 @@ public class mysqlController {
 	public void addUser(String ID,  String username, String password, String name, String lastname, String phonenumber, String email){
 		PreparedStatement stmt;
 		String query = "INSERT INTO userdata.users(ID, username, password, name, lastname, phonenumber, email) VALUES(?, ?, ?, ?, ?, ?,?)";
-		if (!checkUserExists(ID)){
+		if (!checkUserExists(username, password)){
 			try{
 				stmt = connection.prepareStatement(query);
 				stmt.setString(1,ID);
@@ -42,33 +42,53 @@ public class mysqlController {
 				stmt.setString(6,phonenumber);
 				stmt.setString(7,email);
 				stmt.executeUpdate();
-
+				if(checkUserExists(username, password)){
+					System.out.printf("user added successfully");
+				}
 			}
 			catch (SQLException e){
 				e.printStackTrace();
 			}
 		}
-		if(checkUserExists(ID)){
-			System.out.printf("user added successfully");
+		else {
+			System.out.printf("user already exists");
 		}
 	}
-	public boolean checkUserExists(String ID){
-
-
-		Statement stmt;
+	public boolean checkUserExists(String username, String password){
+		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user =" + ID +")";
+		String actualuname;
+		String actualpswd;
+		String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
 		try{
-			stmt = connection.createStatement();
-			res = stmt.executeQuery(query);
-			if (res.absolute(1)){
-				return true;
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+			if (res.next()){
+				if (res.getString("username").equals(username) && res.getString("password").equals(password)){
+					return true;
+				}
 			}
+			stmt.close();
+			res.close();
 		}
 		catch (SQLException e){
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public void updateUser(){
+		PreparedStatement stmt;
+		String query = "UPDATE mysql.user";
+		try {
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, "Expected 20:00");
+			stmt.setString(2, "Amsterdam");
+			stmt.executeUpdate();
+			System.out.println("updateStatuses done sucssesfuly");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
