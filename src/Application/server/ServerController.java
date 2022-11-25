@@ -3,6 +3,8 @@ package Application.server;
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
 
+import java.io.IOException;
+
 /**
  * This class overrides some of the methods in the abstract 
  * superclass in order to give more functionality to the Application.server.
@@ -100,7 +102,14 @@ public class ServerController extends AbstractServer {
 
         switch (queryArgs[0]){
             case "newUser":
-                sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7]);
+                if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7])){
+                    try{
+                        client.sendToClient("user added successfully");
+                    }
+                    catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
                 break;
 
             case "checkExists":

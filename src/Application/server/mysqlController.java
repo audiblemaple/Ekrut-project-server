@@ -28,7 +28,7 @@ public class mysqlController {
 		}
 	}
 
-	public void addUser(String ID,  String username, String password, String name, String lastname, String phonenumber, String email){
+	public boolean addUser(String ID,  String username, String password, String name, String lastname, String phonenumber, String email){
 		PreparedStatement stmt;
 		String query = "INSERT INTO userdata.users(ID, username, password, name, lastname, phonenumber, email) VALUES(?, ?, ?, ?, ?, ?,?)";
 		if (!checkUserExists(username, password)){
@@ -44,15 +44,16 @@ public class mysqlController {
 				stmt.executeUpdate();
 				if(checkUserExists(username, password)){
 					System.out.printf("user added successfully");
+					return true;
 				}
 			}
 			catch (SQLException e){
 				e.printStackTrace();
+				return false;
 			}
 		}
-		else {
-			System.out.printf("user already exists");
-		}
+		System.out.printf("user already exists");
+		return false;
 	}
 	public boolean checkUserExists(String username, String password){
 		PreparedStatement stmt;
