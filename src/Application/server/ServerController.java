@@ -102,25 +102,49 @@ public class ServerController extends AbstractServer {
 
         switch (queryArgs[0]){
             case "newUser":
-                if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7])){
-                    try{
-                        client.sendToClient("user added successfully");
-                    }
-                    catch (IOException e){
-                        e.printStackTrace();
-                    }
+                if(sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3])){
+                    sendMessageToClient(client, "Failed to add user, user already in database.");
+                    break;
                 }
+                if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7])){
+                    sendMessageToClient(client, "user added successfully.");
+                    break;
+                }
+                sendMessageToClient(client, "failed to add user to database.");
+                break;
+
+            case "deleteUser":
+                if (sqlcontroller.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
+                    sendMessageToClient(client, "User deleted successfully.");
+                    break;
+                }
+                sendMessageToClient(client, "Error deleting user.");
                 break;
 
             case "checkExists":
-                sqlcontroller.checkUserExists(queryArgs[3], queryArgs[4]);
+                if(sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3])){
+                    sendMessageToClient(client, "true");
+                    break;
+                }
+                sendMessageToClient(client, "false");
+                break;
 
             case "updateUser":
-                sqlcontroller.checkUserExists(queryArgs[3], queryArgs[4]);
-        }
+                sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3]);
+                break;
 
+            default:
+                sendMessageToClient(client, "Unknown command.");
+        }
         //this.sendToAllClients(msg);
     }
-
+    private void sendMessageToClient(ConnectionToClient client , String message){
+        try{
+            client.sendToClient(message);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }
 //End of EchoServer class

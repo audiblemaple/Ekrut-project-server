@@ -55,16 +55,15 @@ public class mysqlController {
 		System.out.printf("user already exists");
 		return false;
 	}
-	public boolean checkUserExists(String username, String password){
+	public boolean checkUserExists(String ID, String username, String password){
 		PreparedStatement stmt;
 		ResultSet res;
-		String actualuname;
-		String actualpswd;
-		String query = "SELECT * FROM userdata.users WHERE username = ? and password = ?";
+		String query = "SELECT * FROM userdata.users WHERE ID=? username = ? and password = ?";
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1,username);
-			stmt.setString(2,password);
+			stmt.setString(1,ID);
+			stmt.setString(2,username);
+			stmt.setString(3,password);
 			res = stmt.executeQuery();
 			if (res.next()){
 				if (res.getString("username").equals(username) && res.getString("password").equals(password)){
@@ -80,16 +79,34 @@ public class mysqlController {
 		return false;
 	}
 
+	public boolean deleteUser(String ID, String username, String password){
+		PreparedStatement stmt;
+		String query = "DELETE FROM userdata.users WHERE ID=? username=? password=?";
+		if(checkUserExists()){
+
+		}
+		try {
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, ID);
+			stmt.setString(2, username);
+			stmt.setString(3, password);
+			stmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	// TODO: write functionality of update user
 	public void updateUser(){
 		PreparedStatement stmt;
-		String query = "UPDATE mysql.user";
+		String query = "DELETE FROM table_name WHERE username=? ;";
 		try {
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, "Expected 20:00");
-			stmt.setString(2, "Amsterdam");
+			stmt.setString(1, "");
 			stmt.executeUpdate();
-			System.out.println("updateStatuses done sucssesfuly");
+			System.out.println("updateStatuses done successfully");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +114,8 @@ public class mysqlController {
 
 }
 //	SPARE  PARTS:
-//String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
+// String query = "DELETE FROM userdata.users WHERE ID=? and username=? and password=?";
+// String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
 // SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'username')
 // SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = ?)
 // String query = "SELECT * FROM userdata.users WHERE ID=?";
