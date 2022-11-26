@@ -58,7 +58,7 @@ public class mysqlController {
 	public boolean checkUserExists(String ID, String username, String password){
 		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT * FROM userdata.users WHERE ID=? username = ? and password = ?";
+		String query = "SELECT * FROM userdata.users WHERE (ID, username, password) = (?, ?, ?)";
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1,ID);
@@ -112,7 +112,9 @@ public class mysqlController {
 	}
 
 }
+
 //	SPARE  PARTS:
+// String query = "SELECT * FROM userdata.users WHERE ID=? username=? and password=?";
 // String query = "DELETE FROM userdata.users WHERE ID=? and username=? and password=?";
 // String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
 // SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'username')

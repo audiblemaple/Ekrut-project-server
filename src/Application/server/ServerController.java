@@ -1,7 +1,7 @@
 package Application.server;
 // This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
-// license found at www.lloseng.com 
+// license found at www.lloseng.com
 
 import java.io.IOException;
 
@@ -155,9 +155,8 @@ public class ServerController extends AbstractServer {
 
 
 // newUser ID username password name lastname phonenumber email
-// checkuserexists
-
-// login username password
+// checkuserexists ID username password
+// deleteUser ID username password
 
 
 
