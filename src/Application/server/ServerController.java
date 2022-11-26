@@ -148,3 +148,38 @@ public class ServerController extends AbstractServer {
     }
 }
 //End of EchoServer class
+
+
+
+
+
+
+// newUser ID username password name lastname phonenumber email
+// checkuserexists
+
+// login username password
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

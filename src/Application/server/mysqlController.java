@@ -31,7 +31,7 @@ public class mysqlController {
 	public boolean addUser(String ID,  String username, String password, String name, String lastname, String phonenumber, String email){
 		PreparedStatement stmt;
 		String query = "INSERT INTO userdata.users(ID, username, password, name, lastname, phonenumber, email) VALUES(?, ?, ?, ?, ?, ?,?)";
-		if (!checkUserExists(username, password)){
+		if (!checkUserExists(ID, username, password)){
 			try{
 				stmt = connection.prepareStatement(query);
 				stmt.setString(1,ID);
@@ -42,7 +42,7 @@ public class mysqlController {
 				stmt.setString(6,phonenumber);
 				stmt.setString(7,email);
 				stmt.executeUpdate();
-				if(checkUserExists(username, password)){
+				if(checkUserExists(ID, username, password)){
 					System.out.printf("user added successfully");
 					return true;
 				}
@@ -82,9 +82,8 @@ public class mysqlController {
 	public boolean deleteUser(String ID, String username, String password){
 		PreparedStatement stmt;
 		String query = "DELETE FROM userdata.users WHERE ID=? username=? password=?";
-		if(checkUserExists()){
-
-		}
+		if(!checkUserExists(ID, username, password))
+			return false;
 		try {
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1, ID);
