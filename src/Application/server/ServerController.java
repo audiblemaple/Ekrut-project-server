@@ -104,7 +104,7 @@ public class ServerController extends AbstractServer {
             case "newUser":
                 if(sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3])){
                     sendMessageToClient(client, "Failed to add user, user already in database.");
-                    break;
+                    return;
                 }
                 if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7])){
                     sendMessageToClient(client, "user added successfully.");
