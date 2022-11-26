@@ -133,6 +133,11 @@ public class ServerController extends AbstractServer {
                 sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3]);
                 break;
 
+            case "?":
+                sendMessageToClient(client, "newUser ID username password name lastname phonenumber email\n" +
+                                                    "checkExists ID username password\n" +
+                                                    "deleteUser ID username password");
+
             default:
                 sendMessageToClient(client, "Unknown command.");
         }
@@ -148,7 +153,6 @@ public class ServerController extends AbstractServer {
     }
 }
 //End of EchoServer class
-
 
 
 
