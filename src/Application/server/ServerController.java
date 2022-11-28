@@ -72,7 +72,7 @@ public class ServerController extends AbstractServer {
    */
   protected void serverStarted() {
       System.out.println("Server listening for connections on port " + getPort());
-      sqlcontroller = new mysqlController();
+      sqlcontroller = mysqlController.getSQLInstance();
   }
   
   //Class methods ***************************************************

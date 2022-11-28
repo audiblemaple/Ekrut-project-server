@@ -3,8 +3,9 @@ import java.sql.*;
 
 
 public class mysqlController {
+	private static mysqlController sqlInstance = null;
 	private Connection connection;
-	public mysqlController(){
+	private mysqlController(){
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 			System.out.println("Driver definition succeed");
@@ -26,6 +27,13 @@ public class mysqlController {
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
+	}
+
+	public static mysqlController getSQLInstance(){
+		if (sqlInstance == null)
+			sqlInstance = new mysqlController();
+
+		return sqlInstance;
 	}
 
 	public boolean addUser(String ID,  String username, String password, String name, String lastname, String phonenumber, String email){
