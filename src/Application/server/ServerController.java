@@ -27,7 +27,7 @@ public class ServerController extends AbstractServer {
   final public static int DEFAULT_PORT = 5555;
   private mysqlController sqlcontroller;
   private LoginController loginController;
-  private HashMap<String, ConnectionToClient> loggedInClients;
+  private HashMap<ConnectionToClient, String> loggedInClients;
   
   //Constructors ****************************************************
   
@@ -38,6 +38,7 @@ public class ServerController extends AbstractServer {
    */
   public ServerController(int port) {
     super(port);
+      loggedInClients = new HashMap<>();
   }
 
   
@@ -127,10 +128,10 @@ public class ServerController extends AbstractServer {
                 sendMessageToClient(client, "Error deleting user.");
                 break;
 
-            case "checkExists":
+            case "login":
                 String UID = loginController.authenticate(queryArgs[1], queryArgs[2]);
                 if(!UID.equals("")){
-                    addLoggedClient(UID, client);
+                    addLoggedClient(client, UID);
                     sendMessageToClient(client, "Login successful.");
                     break;
                 }
@@ -143,8 +144,9 @@ public class ServerController extends AbstractServer {
 
             case "?":
                 sendMessageToClient(client, "newUser ID username password name lastname phonenumber email\n" +
-                                                    "checkExists ID username password\n" +
+                                                    "login username password\n" +
                                                     "deleteUser ID username password");
+                break;
 
             default:
                 sendMessageToClient(client, "Unknown command.");
@@ -166,10 +168,12 @@ public class ServerController extends AbstractServer {
     }
 
     // add a new connected client to client map
-    protected void addLoggedClient(String ID, ConnectionToClient client){
-        loggedInClients.put(ID, client);
+    protected void addLoggedClient(ConnectionToClient client, String ID){
+        loggedInClients.put(client, ID);
     }
 }
+
+
 //End of EchoServer class
 
 
