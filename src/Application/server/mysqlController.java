@@ -39,7 +39,7 @@ public class mysqlController {
 	public boolean addUser(String ID,  String username, String password, String name, String lastname, String phonenumber, String email){
 		PreparedStatement stmt;
 		String query = "INSERT INTO userdata.users(ID, username, password, name, lastname, phonenumber, email) VALUES(?, ?, ?, ?, ?, ?,?)";
-		if (!checkUserExists(ID, username, password)){
+		if (!checkUserExists(username, password).equals("")){
 			try{
 				stmt = connection.prepareStatement(query);
 				stmt.setString(1,ID);
@@ -50,7 +50,7 @@ public class mysqlController {
 				stmt.setString(6,phonenumber);
 				stmt.setString(7,email);
 				stmt.executeUpdate();
-				if(checkUserExists(ID, username, password)){
+				if(checkUserExists(username, password).equals("")){
 					System.out.printf("user added successfully");
 					return true;
 				}
@@ -63,19 +63,18 @@ public class mysqlController {
 		System.out.printf("user already exists");
 		return false;
 	}
-	public boolean checkUserExists(String ID, String username, String password){
+	public String checkUserExists(String username, String password){
 		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT * FROM userdata.users WHERE (ID, username, password) = (?, ?, ?)";
+		String query = "SELECT ID,username,password FROM userdata.users WHERE (username, password) = (?, ?)";
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1,ID);
-			stmt.setString(2,username);
-			stmt.setString(3,password);
+			stmt.setString(1,username);
+			stmt.setString(2,password);
 			res = stmt.executeQuery();
 			if (res.next()){
 				if (res.getString("username").equals(username) && res.getString("password").equals(password)){
-					return true;
+					return res.getString("ID");
 				}
 			}
 			stmt.close();
@@ -84,13 +83,13 @@ public class mysqlController {
 		catch (SQLException e){
 			e.printStackTrace();
 		}
-		return false;
+		return "";
 	}
 
 	public boolean deleteUser(String ID, String username, String password){
 		PreparedStatement stmt;
 		String query = "DELETE FROM userdata.users WHERE ID=? username=? password=?";
-		if(!checkUserExists(ID, username, password))
+		if(!checkUserExists(username, password).equals(""))
 			return false;
 		try {
 			stmt = connection.prepareStatement(query);
@@ -122,6 +121,8 @@ public class mysqlController {
 }
 
 //	SPARE  PARTS:
+
+// String query = "SELECT * FROM userdata.users WHERE (ID, username, password) = (?, ?, ?)";
 // String query = "SELECT * FROM userdata.users WHERE ID=? username=? and password=?";
 // String query = "DELETE FROM userdata.users WHERE ID=? and username=? and password=?";
 // String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";

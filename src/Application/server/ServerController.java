@@ -4,6 +4,9 @@ package Application.server;
 // license found at www.lloseng.com
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * This class overrides some of the methods in the abstract 
@@ -23,6 +26,8 @@ public class ServerController extends AbstractServer {
    */
   final public static int DEFAULT_PORT = 5555;
   private mysqlController sqlcontroller;
+  private LoginController loginController;
+  private HashMap<String, ConnectionToClient> loggedInClients;
   
   //Constructors ****************************************************
   
@@ -73,6 +78,7 @@ public class ServerController extends AbstractServer {
   protected void serverStarted() {
       System.out.println("Server listening for connections on port " + getPort());
       sqlcontroller = mysqlController.getSQLInstance();
+      loginController = new LoginController();
   }
   
   //Class methods ***************************************************
@@ -102,7 +108,7 @@ public class ServerController extends AbstractServer {
 
         switch (queryArgs[0]){
             case "newUser":
-                if(sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3])){
+                if(sqlcontroller.checkUserExists(queryArgs[2], queryArgs[3]).equals("")){
                     sendMessageToClient(client, "Failed to add user, user already in database.");
                     return;
                 }
@@ -122,15 +128,17 @@ public class ServerController extends AbstractServer {
                 break;
 
             case "checkExists":
-                if(sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3])){
-                    sendMessageToClient(client, "true");
+                String UID = loginController.authenticate(queryArgs[1], queryArgs[2]);
+                if(!UID.equals("")){
+                    addLoggedClient(UID, client);
+                    sendMessageToClient(client, "Login successful.");
                     break;
                 }
                 sendMessageToClient(client, "false");
                 break;
 
             case "updateUser":
-                sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2], queryArgs[3]);
+                sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2]);
                 break;
 
             case "?":
@@ -150,6 +158,16 @@ public class ServerController extends AbstractServer {
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    // get number of currently connected clients.
+    public int getNumOfClients(){
+        return this.getNumberOfClients();
+    }
+
+    // add a new connected client to client map
+    protected void addLoggedClient(String ID, ConnectionToClient client){
+        loggedInClients.put(ID, client);
     }
 }
 //End of EchoServer class
