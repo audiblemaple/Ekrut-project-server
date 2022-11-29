@@ -28,7 +28,8 @@ public class ServerController extends AbstractServer {
   private mysqlController sqlcontroller;
   private LoginController loginController;
   private HashMap<ConnectionToClient, String> loggedInClients;
-  
+  private ConnectionToClient client;
+
   //Constructors ****************************************************
   
   /**
@@ -37,7 +38,7 @@ public class ServerController extends AbstractServer {
    * @param port The port number to connect on.
    */
   public ServerController(int port) {
-    super(port);
+      super(port);
       loggedInClients = new HashMap<>();
   }
 
@@ -51,35 +52,56 @@ public class ServerController extends AbstractServer {
    //* @param args[0] The port number to listen on.  Defaults to 5555
    *          if no argument is entered.
    */
-  public static void main(String[] args) {
+  public boolean run(int arg, String IP, String username, String password) {
     int port = 0; //Port to listen on
 
     try {
-        port = Integer.parseInt(args[0]); //Get port from command line
+        port = arg; //Get port from command line
     }
     catch(Throwable t) {
         port = DEFAULT_PORT; //Set port to 5555
     }
 
     ServerController sv = new ServerController(port);
+    sqlcontroller = mysqlController.getSQLInstance(IP, username, password);
+    loginController = new LoginController();
 
     try {
         sv.listen(); //Start listening for connections
     }
     catch (Exception ex) {
         System.out.println("ERROR - Could not listen for clients!");
+        return false;
     }
+    return true;
   }
 
-  
-  /**
+  protected void closeConnection(){
+      sqlcontroller.disconnect();
+  }
+
+
+    @Override
+    protected void clientConnected(ConnectionToClient client) {
+        super.clientConnected(client);
+        this.client = client;
+    }
+
+    @Override
+    protected synchronized void clientDisconnected(ConnectionToClient client) {
+        super.clientDisconnected(client);
+        if (this.client.equals(client)){
+            System.out.println("disconnected bish");
+        }
+    }
+
+    /**
    * This method overrides the one in the superclass.  Called
    * when the Application.server starts listening for connections.
    */
+
   protected void serverStarted() {
       System.out.println("Server listening for connections on port " + getPort());
-      sqlcontroller = mysqlController.getSQLInstance();
-      loginController = new LoginController();
   }
   
   //Class methods ***************************************************
@@ -171,7 +193,13 @@ public class ServerController extends AbstractServer {
     protected void addLoggedClient(ConnectionToClient client, String ID){
         loggedInClients.put(client, ID);
     }
+
+    protected String getDatabaseName(){
+        return sqlcontroller.getname();
+    }
 }
+
+
 
 
 //End of EchoServer class
@@ -190,9 +218,28 @@ public class ServerController extends AbstractServer {
 
 
 
+// spare
 
-
-
+//  public static void main(String[] args) {
+//    int port = 0; //Port to listen on
+//
+//    try {
+//        port = Integer.parseInt(args[0]); //Get port from command line
+//    }
+//    catch(Throwable t) {
+//        port = DEFAULT_PORT; //Set port to 5555
+//    }
+//
+//    ServerController sv = new ServerController(port);
+//
+//
+//    try {
+//        sv.listen(); //Start listening for connections
+//    }
+//    catch (Exception ex) {
+//        System.out.println("ERROR - Could not listen for clients!");
+//    }
+//  }
 
 
 

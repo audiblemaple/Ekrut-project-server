@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" fx:controller="Presentation.ServerUI">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Application.server.ServerUIController">
    <children>
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="400.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -23,7 +23,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="60.0" layoutY="193.0" text="Port:">
+      <Label layoutX="60.0" layoutY="191.0" text="Port:">
          <font>
             <Font size="18.0" />
          </font>
@@ -43,7 +43,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="ipField" layoutX="195.0" layoutY="145.0" promptText="Enter IP...">
+      <TextField fx:id="ipField" layoutX="195.0" layoutY="144.0" promptText="Enter IP...">
          <font>
             <Font size="15.0" />
          </font>
@@ -68,7 +68,7 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="149.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="200.0" text="Connect">
+      <Button fx:id="connectButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="149.0" mnemonicParsing="false" onAction="#connectServer" prefHeight="45.0" prefWidth="200.0" text="Connect">
          <font>
             <Font size="21.0" />
          </font>
@@ -76,7 +76,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="230.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="200.0" text="Disconnect">
+      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="230.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="200.0" text="Disconnect">
          <font>
             <Font size="21.0" />
          </font>
@@ -84,7 +84,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="defulatButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="321.0" mnemonicParsing="false" onAction="#insertDefaultValues" prefHeight="45.0" prefWidth="200.0" text="Deafult">
+      <Button fx:id="defaultButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="321.0" mnemonicParsing="false" onAction="#insertDefaultValues" prefHeight="45.0" prefWidth="200.0" text="Default">
          <font>
             <Font size="21.0" />
          </font>

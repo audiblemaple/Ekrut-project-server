@@ -5,7 +5,7 @@ import java.sql.*;
 public class mysqlController {
 	private static mysqlController sqlInstance = null;
 	private Connection connection;
-	private mysqlController(){
+	private mysqlController(String IP, String username, String password){
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 			System.out.println("Driver definition succeed");
@@ -15,9 +15,8 @@ public class mysqlController {
 		}
 
 		try {
-			String jdbcURL = "jdbc:mysql://localhost:3306?serverTimezone=UTC";
-			String username = "root";
-			String password = "Aa123456";
+			//String jdbcURL = "jdbc:mysql://localhost:3306?serverTimezone=UTC";
+			String jdbcURL = "jdbc:mysql://" + IP + ":3306?serverTimezone=UTC";
 			connection = DriverManager.getConnection(jdbcURL,username,password);
 			System.out.println("SQL connection succeed");
 
@@ -30,8 +29,12 @@ public class mysqlController {
 	}
 
 	public static mysqlController getSQLInstance(){
+		return sqlInstance;
+	}
+
+	public static mysqlController getSQLInstance(String IP, String username, String password){
 		if (sqlInstance == null)
-			sqlInstance = new mysqlController();
+			sqlInstance = new mysqlController(IP, username, password);
 
 		return sqlInstance;
 	}
@@ -118,7 +121,31 @@ public class mysqlController {
 		}
 	}
 
+
+
+	protected void disconnect(){
+		try{
+			connection.close();
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+
+	protected String getname(){
+		try{
+			return connection.getCatalog();
+		}
+		catch (SQLException e){
+			return "null";
+		}
+	}
+
 }
+
+
+
+// @localhost
 
 //	SPARE  PARTS:
 
