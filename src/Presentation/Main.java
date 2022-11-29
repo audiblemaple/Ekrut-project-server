@@ -1,4 +1,4 @@
-package Presentation.serverGUI;
+package Presentation;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;

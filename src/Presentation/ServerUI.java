@@ -1,11 +1,11 @@
-package Presentation.serverGUI;
+package Presentation;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class ServerController {
+public class ServerUI {
 
 	    @FXML // fx:id="dbNameField"
 	    private TextField dbNameField; // Value injected by FXMLLoader

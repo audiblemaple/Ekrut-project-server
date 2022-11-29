@@ -132,7 +132,7 @@ public class ServerController extends AbstractServer {
                 String UID = loginController.authenticate(queryArgs[1], queryArgs[2]);
                 if(!UID.equals("")){
                     addLoggedClient(client, UID);
-                    sendMessageToClient(client, "Login successful.");
+                    sendMessageToClient(client, "true");
                     break;
                 }
                 sendMessageToClient(client, "false");
