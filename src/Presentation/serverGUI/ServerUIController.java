@@ -1,9 +1,10 @@
-package Application.server;
+package Presentation.serverGUI;
 
+import Application.server.ServerController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,13 @@ import javafx.application.Application;
 
 
 public class ServerUIController extends Application{
-    private static ServerController serverController;
+    @FXML // fx:id="defaultButton"
+    public Button disconnectButton; // Value injected by FXMLLoader
+    @FXML
+    public Button connectButton;
+    @FXML
+    protected TableView<?> connectionList;
+    private ServerController serverController;
     @FXML // fx:id="dbNameField"
     private TextField dbNameField; // Value injected by FXMLLoader
     @FXML // fx:id="ipField"
@@ -30,16 +37,26 @@ public class ServerUIController extends Application{
     private Button quitButton; // Value injected by FXMLLoader
     @FXML // fx:id="defaultButton"
     private Button defaultButton; // Value injected by FXMLLoader
-    @FXML // fx:id="defaultButton"
-    private Button disconnectButton; // Value injected by FXMLLoader
 
-    private double xOffset = 0;
-    private double yOffset = 0;
-
-    public static void main(String[] args) {
-        launch(args);
+    public String getIpField() {
+        return ipField.getText();
     }
 
+    public String getPasswordField() {
+        return passwordField.getText();
+    }
+
+    public String getPortField() {
+        return portField.getText();
+    }
+
+    public String getUsernameField() {
+        return usernameField.getText();
+    }
+
+    public TextField getDbNameField() {
+        return dbNameField;
+    }
 
 
     @Override
@@ -47,9 +64,10 @@ public class ServerUIController extends Application{
         try {
 
             // constructing our scene
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Presentation/ServerGUI.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Presentation/serverGUI/ServerUI.fxml"));
             Pane pane = loader.load();
             Scene scene = new Scene( pane );
+            scene.getStylesheets().addAll(this.getClass().getResource("application.css").toExternalForm());
             // setting the stage
             primaryStage.setScene( scene );
             primaryStage.setTitle( "EKRut Server" );
@@ -60,11 +78,17 @@ public class ServerUIController extends Application{
         }
     }
 
-//    public static  void runServer(String port){
-//        int portint = Integer.parseInt(port);
-//        serverController = new ServerController(portint);
-//        serverController.run(portint);
-//    }
+    @FXML
+    private void insertDefaultValues(ActionEvent event) {
+        ipField.setText("localhost");
+        portField.setText("5555");
+        usernameField.setText("root");
+        passwordField.setText("Aa123456");
+        dbNameField.setText("Ekrut");
+    }
+
+    public void refreshList(){
+    }
 
     @FXML
     private void connectServer(){
@@ -74,7 +98,7 @@ public class ServerUIController extends Application{
             a.show();
             return;
         }
-        serverController = new ServerController(Integer.parseInt(portField.getText()));
+        serverController = ServerController.getServerInstance(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText());   // new ServerController(Integer.parseInt(portField.getText()));
         if(serverController.run(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText())){
             defaultButton.setDisable(true);
             return;
@@ -92,28 +116,30 @@ public class ServerUIController extends Application{
     }
 
     @FXML
-    private void insertDefaultValues(ActionEvent event) {
-        ipField.setText("localhost");
-        portField.setText("5555");
-        usernameField.setText("root");
-        passwordField.setText("Aa123456");
-        dbNameField.setText("Ekrut");
-    }
-
-    @FXML
     private void quitApp(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 }
 
+
+
+
 // spare
+
+//    public static  void runServer(String port){
+//        int portint = Integer.parseInt(port);
+//        serverController = new ServerController(portint);
+//        serverController.run(portint);
+//    }
+
+
 //    @Override
 //    public void start(Stage primaryStage) {
 //        try {
 //            // constructing our scene
-//            //URL url = getClass().getResource("C:/methodologies project/prototype/prototype/src/Presentation/ServerGUI.fxml");
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("src/Presentation/ServerGUI.fxml"));
+//            //URL url = getClass().getResource("C:/methodologies project/prototype/prototype/src/Presentation/ServerUI.fxml");
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("src/Presentation/ServerUI.fxml"));
 //            Pane pane = FXMLLoader.load( url );
 //            Scene scene = new Scene( pane );
 //            // setting the stage

@@ -3,55 +3,41 @@ package Application.server;
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
+import Application.Common.AbstractServer;
+import Application.Common.ConnectionToClient;
 
-/**
- * This class overrides some of the methods in the abstract 
- * superclass in order to give more functionality to the Application.server.
- *
- * @author Dr Timothy C. Lethbridge
- * @author Dr Robert Lagani&egrave;re
- * @author Fran&ccedil;ois B&eacute;langer
- * @author Paul Holden
- * @version July 2000
- */
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
 public class ServerController extends AbstractServer {
   //Class variables *************************************************
-  
+
   /**
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
-  private mysqlController sqlcontroller;
-  private LoginController loginController;
+  private static ServerController serverController = null;
+  private MysqlController sqlcontroller;
   private HashMap<ConnectionToClient, String> loggedInClients;
-  private ConnectionToClient client;
+  private ArrayList<ConnectionToClient>  clients;
 
   //Constructors ****************************************************
-  
-  /**
-   * Constructs an instance of the echo Application.server.
-   *
-   * @param port The port number to connect on.
-   */
-  public ServerController(int port) {
+
+  private ServerController(int port, String IP, String username, String password) {
       super(port);
       loggedInClients = new HashMap<>();
+      sqlcontroller = MysqlController.getSQLInstance(IP, username, password);
+      clients = new ArrayList<>();
   }
 
-  
-  //Instance methods ************************************************
-  
-  /**
-   * This method is responsible for the creation of
-   * the Application.server instance (there is no UI in this phase).
-   *
-   //* @param args[0] The port number to listen on.  Defaults to 5555
-   *          if no argument is entered.
-   */
+  public static ServerController getServerInstance(int port, String IP, String username, String password){
+      if (serverController == null)
+          return new ServerController(port, IP, username, password);
+      return serverController;
+  }
+
   public boolean run(int arg, String IP, String username, String password) {
     int port = 0; //Port to listen on
 
@@ -62,12 +48,10 @@ public class ServerController extends AbstractServer {
         port = DEFAULT_PORT; //Set port to 5555
     }
 
-    ServerController sv = new ServerController(port);
-    sqlcontroller = mysqlController.getSQLInstance(IP, username, password);
-    loginController = new LoginController();
+    serverController = getServerInstance(port, IP, username, password);
 
     try {
-        sv.listen(); //Start listening for connections
+        serverController.listen(); //Start listening for connections
     }
     catch (Exception ex) {
         System.out.println("ERROR - Could not listen for clients!");
@@ -76,50 +60,38 @@ public class ServerController extends AbstractServer {
     return true;
   }
 
-  protected void closeConnection(){
+    public void closeConnection(){
       sqlcontroller.disconnect();
   }
-
 
     @Override
     protected void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
-        this.client = client;
+        this.clients.add(client);
     }
 
+    // TODO: check if this works after the guys implement the closeConnection on client side
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
         super.clientDisconnected(client);
-        if (this.client.equals(client)){
-            System.out.println("disconnected bish");
-        }
+        System.out.println("Client " + client + " disconnected.");
+//        if (this.client.equals(client)){
+//            System.out.println("disconnected bish");
+//        }
     }
-
-    /**
-   * This method overrides the one in the superclass.  Called
-   * when the Application.server starts listening for connections.
-   */
 
   protected void serverStarted() {
       System.out.println("Server listening for connections on port " + getPort());
   }
-  
+
   //Class methods ***************************************************
-  
-  /**
-   * This method overrides the one in the superclass.  Called
-   * when the Application.server stops listening for connections.
-   */
+
+
   protected void serverStopped() {
     System.out.println("Server has stopped listening for connections.");
   }
 
-    /**
-     * This method handles any messages received from the client.
-     *
-     * @param msg The message received from the client.
-     * @param client The connection from which the message originated.
-     */
+
     // TODO: add check if arguments are null or the index doesnt exist
     // TODO: add client array or map so the server could communicate back with the correct client
 
@@ -129,46 +101,52 @@ public class ServerController extends AbstractServer {
         String message = (String)msg;
         String[] queryArgs = message.split(" ");
 
+
         switch (queryArgs[0]){
             case "newUser":
-                if(sqlcontroller.checkUserExists(queryArgs[2], queryArgs[3]).equals("")){
-                    sendMessageToClient(client, "Failed to add user, user already in database.");
+                if(sqlcontroller.checkUserExists(queryArgs[3])){
+                    sendMessageToClient(client, "exists");
                     return;
                 }
-                if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6],queryArgs[7])){
-                    sendMessageToClient(client, "user added successfully.");
-                    break;
+                if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
+                    sendMessageToClient(client, "true");
+                    return;
                 }
-                sendMessageToClient(client, "failed to add user to database.");
-                break;
+                sendMessageToClient(client, "bad");
+                return;
 
             case "deleteUser":
                 if (sqlcontroller.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
-                    sendMessageToClient(client, "User deleted successfully.");
-                    break;
+                    sendMessageToClient(client, "true");
+                    return;
                 }
                 sendMessageToClient(client, "Error deleting user.");
-                break;
+                return;
 
+                // Non-functional for now
             case "login":
-                String UID = loginController.authenticate(queryArgs[1], queryArgs[2]);
-                if(!UID.equals("")){
-                    addLoggedClient(client, UID);
+                if(sqlcontroller.checkUserExists(queryArgs[1])){
                     sendMessageToClient(client, "true");
-                    break;
+                    return;
                 }
                 sendMessageToClient(client, "false");
-                break;
+                return;
 
             case "updateUser":
-                sqlcontroller.checkUserExists(queryArgs[1], queryArgs[2]);
-                break;
+                if(sqlcontroller.checkUserExists(queryArgs[1])){
+                    sqlcontroller.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
+                    sendMessageToClient(client,"true");
+                    return;
+                }
+                sendMessageToClient(client,"none");
+                return;
 
             case "?":
-                sendMessageToClient(client, "newUser ID username password name lastname phonenumber email\n" +
-                                                    "login username password\n" +
-                                                    "deleteUser ID username password");
-                break;
+                sendMessageToClient(client, "newUser name lastname ID phonenumber email creditcardnumber\n" +
+                                                    "update ID creditcardnumber subscribernumber" +
+                                                    "login ID\n" +
+                                                    "deleteUser ID");
+                return;
 
             default:
                 sendMessageToClient(client, "Unknown command.");
