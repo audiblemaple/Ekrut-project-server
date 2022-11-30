@@ -1,5 +1,6 @@
 package Presentation.serverGUI;
 
+import Application.Common.ConnectionToClient;
 import Application.server.ServerController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -14,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.application.Application;
 
+import java.util.ArrayList;
+
 
 public class ServerUIController extends Application{
     @FXML // fx:id="defaultButton"
@@ -22,6 +25,7 @@ public class ServerUIController extends Application{
     public Button connectButton;
     @FXML
     protected TableView<?> connectionList;
+    private ArrayList clientList;
     private ServerController serverController;
     @FXML // fx:id="dbNameField"
     private TextField dbNameField; // Value injected by FXMLLoader
@@ -87,7 +91,11 @@ public class ServerUIController extends Application{
         dbNameField.setText("Ekrut");
     }
 
-    public void refreshList(){
+    // TODO: add clients to TableView
+    public void refreshList(ArrayList clientList){
+        this.clientList = (ArrayList) clientList.clone();
+        System.out.printf(clientList.size() + " ");
+
     }
 
     @FXML
@@ -99,6 +107,7 @@ public class ServerUIController extends Application{
             return;
         }
         serverController = ServerController.getServerInstance(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText());   // new ServerController(Integer.parseInt(portField.getText()));
+        serverController.setUI(this);
         if(serverController.run(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText())){
             defaultButton.setDisable(true);
             return;

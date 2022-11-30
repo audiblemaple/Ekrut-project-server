@@ -5,6 +5,7 @@ package Application.server;
 
 import Application.Common.AbstractServer;
 import Application.Common.ConnectionToClient;
+import Presentation.serverGUI.ServerUIController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class ServerController extends AbstractServer {
    */
   final public static int DEFAULT_PORT = 5555;
   private static ServerController serverController = null;
+  private static ServerUIController serverUI;
   private MysqlController sqlcontroller;
   private HashMap<ConnectionToClient, String> loggedInClients;
   private ArrayList<ConnectionToClient>  clients;
@@ -38,62 +40,62 @@ public class ServerController extends AbstractServer {
       return serverController;
   }
 
-  public boolean run(int arg, String IP, String username, String password) {
-    int port = 0; //Port to listen on
-
-    try {
-        port = arg; //Get port from command line
-    }
-    catch(Throwable t) {
-        port = DEFAULT_PORT; //Set port to 5555
-    }
-
-    serverController = getServerInstance(port, IP, username, password);
-
-    try {
-        serverController.listen(); //Start listening for connections
-    }
-    catch (Exception ex) {
-        System.out.println("ERROR - Could not listen for clients!");
-        return false;
-    }
-    return true;
+  public void setUI(ServerUIController ui){
+      serverUI = ui;
   }
+
+    public boolean run(int arg, String IP, String username, String password) {
+      int port = 0; //Port to listen on
+
+      try {
+          port = arg; //Get port from command line
+      }
+      catch(Throwable t) {
+          port = DEFAULT_PORT; //Set port to 5555
+      }
+
+      serverController = getServerInstance(port, IP, username, password);
+
+      try {
+          serverController.listen(); //Start listening for connections
+      }
+      catch (Exception ex) {
+          System.out.println("ERROR - Could not listen for clients!");
+          return false;
+      }
+      return true;
+    }
 
     public void closeConnection(){
       sqlcontroller.disconnect();
-  }
+    }
 
     @Override
-    protected void clientConnected(ConnectionToClient client) {
+    public void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
         this.clients.add(client);
+        serverUI.refreshList(this.clients);
     }
 
     // TODO: check if this works after the guys implement the closeConnection on client side
+    // TODO: check why it was synchronized
     @Override
-    protected synchronized void clientDisconnected(ConnectionToClient client) {
+    public void clientDisconnected(ConnectionToClient client) {
         super.clientDisconnected(client);
+        this.clients.remove(client);
         System.out.println("Client " + client + " disconnected.");
 //        if (this.client.equals(client)){
 //            System.out.println("disconnected bish");
 //        }
     }
 
-  protected void serverStarted() {
-      System.out.println("Server listening for connections on port " + getPort());
-  }
+    protected void serverStarted() {
+        System.out.println("Server listening for connections on port " + getPort());
+    }
 
-  //Class methods ***************************************************
-
-
-  protected void serverStopped() {
-    System.out.println("Server has stopped listening for connections.");
-  }
-
-
-    // TODO: add check if arguments are null or the index doesnt exist
-    // TODO: add client array or map so the server could communicate back with the correct client
+    protected void serverStopped() {
+        System.out.println("Server has stopped listening for connections.");
+    }
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         System.out.println("Message received: " + msg + " from " + client);
@@ -160,6 +162,11 @@ public class ServerController extends AbstractServer {
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    // getter for arrayList of clients
+    public ArrayList getclientList(){
+        return this.clients;
     }
 
     // get number of currently connected clients.

@@ -147,7 +147,6 @@ public class MysqlController {
 		}
 	}
 
-
 	protected String getname(){
 		try{
 			return connection.getCatalog();
