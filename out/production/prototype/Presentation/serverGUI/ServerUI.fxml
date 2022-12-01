@@ -76,7 +76,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="230.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="200.0" text="Disconnect">
+      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="234.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="200.0" text="Disconnect">
          <font>
             <Font size="21.0" />
          </font>
@@ -92,11 +92,11 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="connectionList" layoutX="59.0" layoutY="472.0" prefHeight="200.0" prefWidth="883.0">
+      <TableView fx:id="connectionList" focusTraversable="false" layoutX="59.0" layoutY="472.0" prefHeight="200.0" prefWidth="518.0">
         <columns>
-          <TableColumn prefWidth="255.0" text="IP" />
-          <TableColumn prefWidth="373.0" text="Host" />
-            <TableColumn minWidth="0.0" prefWidth="254.0" text="Status" />
+          <TableColumn fx:id="ipColumn" editable="false" prefWidth="129.0" resizable="false" text="IP" />
+          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="211.0" resizable="false" text="Host" />
+            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="176.0" resizable="false" text="Status" />
         </columns>
       </TableView>
       <Label layoutX="59.0" layoutY="88.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
