@@ -3,6 +3,10 @@
     -fx-background-image: url("server.png");
     -fx-background-color: transparent;
     -fx-background-repeat: stretch;
-    -fx-background-size: 150%;
+    -fx-background-size: 120%;
     -fx-background-position: center center;
+}
+
+.table-view{
+    -fx-opacity: 90%;
 }

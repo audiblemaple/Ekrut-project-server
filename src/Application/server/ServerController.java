@@ -73,8 +73,8 @@ public class ServerController extends AbstractServer {
     @Override
     public void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
-        this.clients.add(client);
         if(!this.clients.contains(client)){
+            this.clients.add(client);
             serverUI.refreshList(this.clients);
         }
     }
