@@ -105,7 +105,6 @@ public class ServerController extends AbstractServer {
         String message = (String)msg;
         String[] queryArgs = message.split(" ");
 
-
         switch (queryArgs[0]){
             case "newUser":
                 if(sqlcontroller.checkUserExists(queryArgs[3])){
@@ -183,6 +182,12 @@ public class ServerController extends AbstractServer {
 
     protected String getDatabaseName(){
         return sqlcontroller.getname();
+    }
+
+    public void disconnectFromDB(){
+      sqlcontroller.disconnect();
+      this.stopListening();
+      this.closeConnection();
     }
 }
 

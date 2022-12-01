@@ -11,64 +11,64 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentation.serverGUI.ServerUIController">
+<Pane fx:id="pane" maxHeight="700.0" maxWidth="679.0" minHeight="700.0" minWidth="679.0" prefHeight="700.0" prefWidth="679.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentation.serverGUI.ServerUIController">
    <children>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="400.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="59.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@logo.png" />
          </image>
       </ImageView>
-      <Label layoutX="59.0" layoutY="147.0" text="IP:">
+      <Label layoutX="60.0" layoutY="158.0" text="IP:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="60.0" layoutY="191.0" text="Port:">
+      <Label layoutX="60.0" layoutY="207.0" text="Port:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="59.0" layoutY="243.0" text="DB Username:">
+      <Label layoutX="60.0" layoutY="255.0" text="DB Username:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="59.0" layoutY="287.0" text="DB Password:">
+      <Label layoutX="59.0" layoutY="299.0" text="DB Password:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="59.0" layoutY="332.0" text="DB Name:">
+      <Label layoutX="60.0" layoutY="342.0" text="DB Name:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="ipField" layoutX="195.0" layoutY="144.0" promptText="Enter IP...">
+      <TextField fx:id="ipField" layoutX="184.0" layoutY="158.0" promptText="Enter IP...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="portField" layoutX="195.0" layoutY="189.0" promptText="Enter Port...">
+      <TextField fx:id="portField" layoutX="184.0" layoutY="205.0" promptText="Enter Port...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="usernameField" layoutX="195.0" layoutY="241.0" promptText="Enter Username...">
+      <TextField fx:id="usernameField" layoutX="184.0" layoutY="255.0" promptText="Enter Username...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="passwordField" layoutX="195.0" layoutY="285.0" promptText="Enter Password...">
+      <TextField fx:id="passwordField" layoutX="184.0" layoutY="299.0" promptText="Enter Password...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="dbNameField" layoutX="195.0" layoutY="330.0" promptText="Enter DB Name...">
+      <TextField fx:id="dbNameField" layoutX="184.0" layoutY="344.0" promptText="Enter DB Name...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button fx:id="connectButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="149.0" mnemonicParsing="false" onAction="#connectServer" prefHeight="45.0" prefWidth="200.0" text="Connect">
+      <Button fx:id="connectButton" alignment="CENTER" depthTest="DISABLE" layoutX="500.0" layoutY="158.0" mnemonicParsing="false" onAction="#connectServer" prefHeight="45.0" prefWidth="138.0" text="Connect">
          <font>
             <Font size="21.0" />
          </font>
@@ -76,7 +76,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="234.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="200.0" text="Disconnect">
+      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="500.0" layoutY="243.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="138.0" text="Disconnect">
          <font>
             <Font size="21.0" />
          </font>
@@ -84,7 +84,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="defaultButton" alignment="CENTER" depthTest="DISABLE" layoutX="630.0" layoutY="321.0" mnemonicParsing="false" onAction="#insertDefaultValues" prefHeight="45.0" prefWidth="200.0" text="Default">
+      <Button fx:id="defaultButton" alignment="CENTER" depthTest="DISABLE" layoutX="500.0" layoutY="330.0" mnemonicParsing="false" onAction="#insertDefaultValues" prefHeight="45.0" prefWidth="138.0" text="Default">
          <font>
             <Font size="21.0" />
          </font>
@@ -92,14 +92,14 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="connectionList" focusTraversable="false" layoutX="59.0" layoutY="472.0" prefHeight="200.0" prefWidth="518.0">
+      <TableView fx:id="connectionList" focusTraversable="false" layoutX="60.0" layoutY="459.0" prefHeight="225.0" prefWidth="408.0">
         <columns>
           <TableColumn fx:id="ipColumn" editable="false" prefWidth="129.0" resizable="false" text="IP" />
-          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="211.0" resizable="false" text="Host" />
-            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="176.0" resizable="false" text="Status" />
+          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="158.0" resizable="false" text="Host" />
+            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="117.0" resizable="false" text="Status" />
         </columns>
       </TableView>
-      <Label layoutX="59.0" layoutY="88.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
+      <Label layoutX="59.0" layoutY="100.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
          <font>
             <Font name="Arial" size="27.0" />
          </font>
@@ -109,7 +109,7 @@
             <Font name="Arial" size="27.0" />
          </font>
       </Label>
-      <Button fx:id="quitButton" layoutX="949.0" layoutY="14.0" mnemonicParsing="false" onAction="#quitApp" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #000;" text="X" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="quitButton" layoutX="603.0" layoutY="14.0" mnemonicParsing="false" onAction="#quitApp" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #000;" text="X" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Tahoma Bold" size="15.0" />
          </font>
