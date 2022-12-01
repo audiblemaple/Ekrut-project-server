@@ -6,12 +6,11 @@ import Data.Connection;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +18,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.layout.Pane;
 import javafx.application.Application;
 import javafx.stage.StageStyle;
-
-import javax.tools.Tool;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -33,7 +30,6 @@ public class ServerUIController extends Application implements Initializable {
     public Button connectButton;
     @FXML
     protected TableView<Connection> connectionList;
-    private ArrayList clientList;
     private ServerController serverController;
     @FXML // fx:id="dbNameField"
     private TextField dbNameField; // Value injected by FXMLLoader
@@ -50,14 +46,70 @@ public class ServerUIController extends Application implements Initializable {
     @FXML // fx:id="defaultButton"
     private Button defaultButton; // Value injected by FXMLLoader
     @FXML
+    private Text connectedClientsNum;
+    @FXML
     private TableColumn<Connection, String> ipColumn;
     @FXML
     private TableColumn<Connection, String> hostNameColumn;
     @FXML
     private TableColumn<Connection, String> connectionStatusColumn;
+
+    private ArrayList clientList;
     private ObservableList<Connection> observableConnections = FXCollections.observableArrayList();
     private double xoffset;
     private double yoffset;
+
+
+    // TODO: get database name
+    @FXML
+    private void insertDefaultValues(ActionEvent event) {
+        ipField.setText("localhost");
+        portField.setText("5555");
+        usernameField.setText("root");
+        passwordField.setText("Aa123456");
+        dbNameField.setText("Ekrut");
+    }
+
+    @FXML
+    private void connectServer(){
+        if(ipField.getText().equals("") || portField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
+            Alert a = new Alert(Alert.AlertType.WARNING, "All fields need to be filled in order to log int to server.");
+            a.setTitle("Connection Error");
+            a.show();
+            return;
+        }
+        serverController = ServerController.getServerInstance(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText());   // new ServerController(Integer.parseInt(portField.getText()));
+        serverController.setUI(this);
+        if(serverController.run(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText())){
+            // disable default and connect button
+            defaultButton.setDisable(true);
+            connectButton.setDisable(true);
+            disconnectButton.setDisable(false);
+            return;
+        }
+        Alert a = new Alert(Alert.AlertType.ERROR, "Could not listen for clients!");
+        a.setTitle("Server Error");
+        a.show();
+    }
+
+    // TODO: fix problem where disconnect works from the second time only
+    @FXML
+    private void disconnectServer(){
+        serverController.disconnectFromDB();
+        defaultButton.setDisable(false);
+        connectButton.setDisable(false);
+        disconnectButton.setDisable(true);
+        connectedClientsNum.setText("Connected Clients: " + clientList.size());
+    }
+
+    @FXML
+    private void quitApp(ActionEvent event) {
+        if(!disconnectButton.isDisabled())
+            serverController.disconnectFromDB();
+
+        Platform.exit();
+        System.exit(0);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -100,68 +152,24 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     public void refreshList(ArrayList<ConnectionToClient> clientList){
-        connectionList.getItems().removeAll();
+        connectionList.getItems().clear();
         Connection connectionData = new Connection("", "" ,"");
         for(ConnectionToClient conn : clientList){
             // TODO: REDO this part the to string ios not very optimal
             if (conn.toString().equals("null"))
                 continue;
-
             connectionData.setClientIP(conn.getInetAddress().getHostAddress());
             connectionData.setHostName(conn.getInetAddress().getHostName());
             connectionData.setConnectionStatus("Connected");
-
             connectionList.getItems().add(connectionData);
         }
+        setConnectedNum("Connected Clients: " + clientList.size());
     }
 
-    // TODO: get database name
-    @FXML
-    private void insertDefaultValues(ActionEvent event) {
-        ipField.setText("localhost");
-        portField.setText("5555");
-        usernameField.setText("root");
-        passwordField.setText("Aa123456");
-        dbNameField.setText("Ekrut");
+    private void setConnectedNum(String str){
+        connectedClientsNum.setText(str);
+
     }
-
-
-    @FXML
-    private void connectServer(){
-        if(ipField.getText().equals("") || portField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
-            Alert a = new Alert(Alert.AlertType.WARNING, "All fields need to be filled in order to log int to server.");
-            a.setTitle("Connection Error");
-            a.show();
-            return;
-        }
-        serverController = ServerController.getServerInstance(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText());   // new ServerController(Integer.parseInt(portField.getText()));
-        serverController.setUI(this);
-        if(serverController.run(Integer.parseInt(portField.getText()), ipField.getText(), usernameField.getText(), passwordField.getText())){
-            // disable default and connect button
-            defaultButton.setDisable(true);
-            connectButton.setDisable(true);
-            disconnectButton.setDisable(false);
-            return;
-        }
-        Alert a = new Alert(Alert.AlertType.ERROR, "Could not listen for clients!");
-        a.setTitle("Server Error");
-        a.show();
-    }
-
-    @FXML
-    private void disconnectServer(){
-        serverController.disconnectFromDB();
-        defaultButton.setDisable(false);
-        connectButton.setDisable(false);
-        disconnectButton.setDisable(true);
-    }
-
-    @FXML
-    private void quitApp(ActionEvent event) {
-        Platform.exit();
-        System.exit(0);
-    }
-
     public String getIpField() {
         return ipField.getText();
     }

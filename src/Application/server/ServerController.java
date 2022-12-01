@@ -22,14 +22,12 @@ public class ServerController extends AbstractServer {
   private static ServerController serverController = null;
   private static ServerUIController serverUI;
   private MysqlController sqlcontroller;
-  private HashMap<ConnectionToClient, String> loggedInClients;
   private ArrayList<ConnectionToClient>  clients;
 
   //Constructors ****************************************************
 
   private ServerController(int port, String IP, String username, String password) {
       super(port);
-      loggedInClients = new HashMap<>();
       sqlcontroller = MysqlController.getSQLInstance(IP, username, password);
       clients = new ArrayList<>();
   }
@@ -40,9 +38,29 @@ public class ServerController extends AbstractServer {
       return serverController;
   }
 
-  public void setUI(ServerUIController ui){
-      serverUI = ui;
-  }
+  //Overriden methods ***********************************************
+    @Override
+    public void clientConnected(ConnectionToClient client) {
+        super.clientConnected(client);
+        if(!this.clients.contains(client)){
+            this.clients.add(client);
+            serverUI.refreshList(this.clients);
+        }
+    }
+
+    // TODO: check if this works after the guys implement the closeConnection on client side
+    // TODO: check why it was synchronized
+    @Override
+    public void clientDisconnected(ConnectionToClient client) {
+        super.clientDisconnected(client);
+        this.clients.remove(client);
+        System.out.println("Client: " + client + " disconnected.");
+//        if (this.client.equals(client)){
+//            System.out.println("disconnected bish");
+//        }
+    }
+
+
 
     public boolean run(int arg, String IP, String username, String password) {
       int port = 0; //Port to listen on
@@ -64,31 +82,6 @@ public class ServerController extends AbstractServer {
           return false;
       }
       return true;
-    }
-
-    public void closeConnection(){
-      sqlcontroller.disconnect();
-    }
-
-    @Override
-    public void clientConnected(ConnectionToClient client) {
-        super.clientConnected(client);
-        if(!this.clients.contains(client)){
-            this.clients.add(client);
-            serverUI.refreshList(this.clients);
-        }
-    }
-
-    // TODO: check if this works after the guys implement the closeConnection on client side
-    // TODO: check why it was synchronized
-    @Override
-    public void clientDisconnected(ConnectionToClient client) {
-        super.clientDisconnected(client);
-        this.clients.remove(client);
-        System.out.println("Client: " + client + " disconnected.");
-//        if (this.client.equals(client)){
-//            System.out.println("disconnected bish");
-//        }
     }
 
     protected void serverStarted() {
@@ -171,13 +164,11 @@ public class ServerController extends AbstractServer {
         return this.getNumberOfClients();
     }
 
-    // add a new connected client to client map
-    protected void addLoggedClient(ConnectionToClient client, String ID){
-        loggedInClients.put(client, ID);
-    }
-
-    protected String getDatabaseName(){
+    public String getDatabaseName(){
         return sqlcontroller.getname();
+    }
+    public void setUI(ServerUIController ui){
+        serverUI = ui;
     }
 
     public void disconnectFromDB(){
