@@ -126,13 +126,9 @@ public class ServerController extends AbstractServer {
                 sendMessageToClient(client, "Error deleting user.");
                 return;
 
-                // Non-functional for now
+            // Non-functional for now
             case "login":
-                if(sqlcontroller.checkUserExists(queryArgs[1])){
-                    sendMessageToClient(client, sqlcontroller.getAllDB());
-                    return;
-                }
-                sendMessageToClient(client, "false");
+                sendMessageToClient(client, sqlcontroller.getAllDB());
                 return;
 
             case "updateUser":
@@ -185,65 +181,10 @@ public class ServerController extends AbstractServer {
     }
 
     public void disconnectFromDB(){
-      sqlcontroller.disconnect();
-      this.stopListening();
-      this.closeConnection();
+      try{
+          this.close();
+      }catch (IOException exception){
+          exception.printStackTrace();
+      }
     }
 }
-
-
-
-
-//End of EchoServer class
-
-
-
-
-
-// newUser ID username password name lastname phonenumber email
-// checkuserexists ID username password
-// deleteUser ID username password
-
-
-
-
-
-
-
-// spare
-
-//  public static void main(String[] args) {
-//    int port = 0; //Port to listen on
-//
-//    try {
-//        port = Integer.parseInt(args[0]); //Get port from command line
-//    }
-//    catch(Throwable t) {
-//        port = DEFAULT_PORT; //Set port to 5555
-//    }
-//
-//    ServerController sv = new ServerController(port);
-//
-//
-//    try {
-//        sv.listen(); //Start listening for connections
-//    }
-//    catch (Exception ex) {
-//        System.out.println("ERROR - Could not listen for clients!");
-//    }
-//  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

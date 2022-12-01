@@ -9,4 +9,6 @@
 
 .table-view{
     -fx-opacity: 80%;
+    -fx-border-radius: 10;
 }
+

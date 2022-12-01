@@ -115,8 +115,6 @@ public class ServerUIController extends Application implements Initializable {
         }
     }
 
-
-
     // TODO: get database name
     @FXML
     private void insertDefaultValues(ActionEvent event) {

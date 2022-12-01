@@ -146,7 +146,7 @@ public class MysqlController {
 	public String getAllDB(){
 		ArrayList<Subscriber> subscribers = new ArrayList<>();
 		String query = "SELECT * FROM userdata.subscriber";
-		String database = "name lastname ID phonenumber email creditcardnumber subscribernumber ";
+		String database = "";
 		try{
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(query);
@@ -188,34 +188,3 @@ public class MysqlController {
 	}
 
 }
-
-
-
-// @localhost
-
-//	SPARE  PARTS:
-
-// String query = "SELECT * FROM userdata.users WHERE (ID, username, password) = (?, ?, ?)";
-// String query = "SELECT * FROM userdata.users WHERE ID=? username=? and password=?";
-// String query = "DELETE FROM userdata.users WHERE ID=? and username=? and password=?";
-// String query = "SELECT * FROM userdata.users WHERE username = '" + username + "' and password = '" + password + "'";
-// SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'username')
-// SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = ?)
-// String query = "SELECT * FROM userdata.users WHERE ID=?";
-
-//	public static void printCourses(Connection con) {
-//		Statement stmt;
-//		try {
-//			// stmt = con.createStatement();
-//			stmt = con.prepareStatement("INSERT INTO userdata.users(ID,username,approvalstatus) VALUES('Master',\"abc\",true), ('Designe',\"egf\",false);\n");
-//			ResultSet rs = stmt.executeQuery("SELECT * FROM userdata.users;");
-//	 		while(rs.next()) {
-//				 // Print out the values
-//				 System.out.println(rs.getString(1)+"  " +rs.getString(2));
-//			}
-//			rs.close();
-//			//stmt.executeUpdate("UPDATE course SET semestr=\"W08\" WHERE num=61309");
-//		} catch (SQLException e) {e.printStackTrace();}
-//	}
-
-
