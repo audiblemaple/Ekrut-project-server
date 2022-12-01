@@ -1,5 +1,8 @@
 package Application.server;
+import Data.UserData.Subscriber;
+
 import java.sql.*;
+import java.util.ArrayList;
 
 
 public class MysqlController {
@@ -78,6 +81,7 @@ public class MysqlController {
 			res = stmt.executeQuery();
 			if (res.next()){
 				if (res.getString("ID").equals(ID)){
+
 					return true;
 				}
 			}
@@ -139,6 +143,33 @@ public class MysqlController {
 		}
 	}
 
+	public String getAllDB(){
+		ArrayList<Subscriber> subscribers = new ArrayList<>();
+		String query = "SELECT * FROM userdata.subscriber";
+		String database = "name lastname ID phonenumber email creditcardnumber subscribernumber ";
+		try{
+			Statement stmt = connection.createStatement();
+			ResultSet res = stmt.executeQuery(query);
+			while(res.next()){
+				database += res.getString("name");
+				database +=" ";
+				database += res.getString("lastname");
+				database +=" ";
+				database += res.getString("phonenumber");
+				database +=" ";
+				database += res.getString("email");
+				database +=" ";
+				database += res.getString("creditcardnumber");
+				database +=" ";
+				database += res.getString("subscribernumber");
+				database +="\n";
+			}
+			return database;
+		}catch (SQLException exception){
+			exception.printStackTrace();
+			return null;
+		}
+	}
 	protected void disconnect(){
 		try{
 			connection.close();

@@ -74,7 +74,9 @@ public class ServerController extends AbstractServer {
     public void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
         this.clients.add(client);
-        serverUI.refreshList(this.clients);
+        if(!this.clients.contains(client)){
+            serverUI.refreshList(this.clients);
+        }
     }
 
     // TODO: check if this works after the guys implement the closeConnection on client side
@@ -83,7 +85,7 @@ public class ServerController extends AbstractServer {
     public void clientDisconnected(ConnectionToClient client) {
         super.clientDisconnected(client);
         this.clients.remove(client);
-        System.out.println("Client " + client + " disconnected.");
+        System.out.println("Client: " + client + " disconnected.");
 //        if (this.client.equals(client)){
 //            System.out.println("disconnected bish");
 //        }
@@ -128,7 +130,7 @@ public class ServerController extends AbstractServer {
                 // Non-functional for now
             case "login":
                 if(sqlcontroller.checkUserExists(queryArgs[1])){
-                    sendMessageToClient(client, "true");
+                    sendMessageToClient(client, sqlcontroller.getAllDB());
                     return;
                 }
                 sendMessageToClient(client, "false");

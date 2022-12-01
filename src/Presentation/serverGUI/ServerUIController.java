@@ -92,7 +92,7 @@ public class ServerUIController extends Application{
     }
 
     // TODO: add clients to TableView
-    public void refreshList(ArrayList clientList){
+    public void refreshList(ArrayList<ConnectionToClient> clientList){
         this.clientList = (ArrayList) clientList.clone();
         System.out.printf(clientList.size() + " ");
 
