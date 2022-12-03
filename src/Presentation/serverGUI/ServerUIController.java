@@ -1,27 +1,26 @@
 package Presentation.serverGUI;
 
+import javafx.scene.control.cell.PropertyValueFactory;
 import Application.Common.ConnectionToClient;
 import Application.server.ServerController;
-import Data.Connection;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.Pane;
-import javafx.application.Application;
-import javafx.stage.StageStyle;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-
+import javafx.stage.StageStyle;
+import javafx.scene.control.*;
+import javafx.scene.text.Text;
+import javafx.fxml.FXMLLoader;
+import java.util.ArrayList;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.fxml.FXML;
+import Data.Connection;
+import java.net.URL;
 
 public class ServerUIController extends Application implements Initializable {
     @FXML // fx:id="defaultButton"
@@ -60,7 +59,6 @@ public class ServerUIController extends Application implements Initializable {
     private double yoffset;
 
 
-    // TODO: get database name
     @FXML
     private void insertDefaultValues(ActionEvent event) {
         ipField.setText("localhost");
@@ -92,7 +90,6 @@ public class ServerUIController extends Application implements Initializable {
         a.show();
     }
 
-    // TODO: fix problem where disconnect works from the second time only
     @FXML
     private void disconnectServer(){
         serverController.disconnectFromDB();
@@ -127,11 +124,14 @@ public class ServerUIController extends Application implements Initializable {
             // constructing our scene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Presentation/serverGUI/ServerUI.fxml"));
             Pane pane = loader.load();
+
+            // event handler for when the mouse is pressed on the scene to trigger the drag and move event
             pane.setOnMousePressed(event -> {
                 xoffset = event.getSceneX();
                 yoffset = event.getSceneY();
             });
 
+            // event handler for when the mouse is pressed AND dragged to move the window
             pane.setOnMouseDragged(event -> {
                 primaryStage.setX(event.getScreenX()-xoffset);
                 primaryStage.setY(event.getScreenY()-yoffset);
@@ -151,24 +151,26 @@ public class ServerUIController extends Application implements Initializable {
         }
     }
 
-    public void refreshList(ArrayList<ConnectionToClient> clientList){
-        connectionList.getItems().clear();
-        Connection connectionData = new Connection("", "" ,"");
-        for(ConnectionToClient conn : clientList){
-            // TODO: REDO this part the to string ios not very optimal
-            if (conn.toString().equals("null"))
-                continue;
-            connectionData.setClientIP(conn.getInetAddress().getHostAddress());
-            connectionData.setHostName(conn.getInetAddress().getHostName());
-            connectionData.setConnectionStatus("Connected");
-            connectionList.getItems().add(connectionData);
+    public void addClientConnection(ConnectionToClient client){
+        Connection connectionData;
+        connectionData  = new Connection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"Connected");
+        connectionList.getItems().add(connectionData);
+        setConnectedNum("Connected Clients: " + observableConnections.size());
+    }
+
+    public void removeClientConnection(ConnectionToClient client){
+        Connection connectionData;
+        for(Connection conn : observableConnections){
+            if (client.getInetAddress().getHostAddress().equals(conn.getClientIP())){
+                observableConnections.remove(conn);
+                setConnectedNum("Connected Clients: " + observableConnections.size());
+                return;
+            }
         }
-        setConnectedNum("Connected Clients: " + clientList.size());
     }
 
     private void setConnectedNum(String str){
         connectedClientsNum.setText(str);
-
     }
     public String getIpField() {
         return ipField.getText();

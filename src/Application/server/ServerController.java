@@ -1,23 +1,13 @@
 package Application.server;
-// This file contains material supporting section 3.7 of the textbook:
-// "Object Oriented Software Engineering" and is issued under the open-source
-// license found at www.lloseng.com
-
 import Application.Common.AbstractServer;
 import Application.Common.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 
 public class ServerController extends AbstractServer {
-  //Class variables *************************************************
+  //Class fields *************************************************
 
-  /**
-   * The default port to listen on.
-   */
   final public static int DEFAULT_PORT = 5555;
   private static ServerController serverController = null;
   private static ServerUIController serverUI;
@@ -38,29 +28,18 @@ public class ServerController extends AbstractServer {
       return serverController;
   }
 
-  //Overriden methods ***********************************************
+  //Overriden method ***********************************************
     @Override
-    public void clientConnected(ConnectionToClient client) {
+    protected void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
-        if(!this.clients.contains(client)){
-            this.clients.add(client);
-            serverUI.refreshList(this.clients);
-        }
+        this.clients.add(client);
+        serverUI.addClientConnection(client);
     }
 
-    // TODO: check if this works after the guys implement the closeConnection on client side
-    // TODO: check why it was synchronized
-    @Override
-    public void clientDisconnected(ConnectionToClient client) {
-        super.clientDisconnected(client);
+    private void disconnectClient(ConnectionToClient client){
         this.clients.remove(client);
-        System.out.println("Client: " + client + " disconnected.");
-//        if (this.client.equals(client)){
-//            System.out.println("disconnected bish");
-//        }
+        serverUI.removeClientConnection(client);
     }
-
-
 
     public boolean run(int arg, String IP, String username, String password) {
       int port = 0; //Port to listen on
@@ -131,6 +110,10 @@ public class ServerController extends AbstractServer {
                     return;
                 }
                 sendMessageToClient(client,"none");
+                return;
+
+            case "disconnect":
+                disconnectClient(client);
                 return;
 
             case "?":
