@@ -16,7 +16,7 @@ public class ServerController extends AbstractServer {
 
   //Constructors ****************************************************
 
-  private ServerController(int port, String IP, String username, String password) {
+  public ServerController(int port, String IP, String username, String password) {
       super(port);
       sqlcontroller = MysqlController.getSQLInstance(IP, username, password);
       clients = new ArrayList<>();

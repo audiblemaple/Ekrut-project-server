@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 public class ServerUI extends Application {
     private ServerUIController serverUI;
+    private ServerController serverController;
+    private MysqlController mysqlController;
     public static void main(String[] args) {
         launch(args);
     }
@@ -17,14 +19,16 @@ public class ServerUI extends Application {
         serverUI.start(primaryStage);
     }
 
-
-    public void startServer(){
-
+    public void startDataBase(){
+        // mysqlController = new MysqlController();
     }
 
+    public void startServer(){
+        // serverController = new ServerController();
+        // serverController = ServerController.getServerInstance();
+    }
 
     // TODO: fix disconnect exceptions
     // TODO: fix architecture problems with server instantiations and constructors
     // TODO: get database name
-
 }
