@@ -3,7 +3,7 @@ package Presentation.serverGUI;
 import Application.server.ServerUI;
 import javafx.scene.Parent;
 import javafx.scene.control.cell.PropertyValueFactory;
-import Application.Common.ConnectionToClient;
+import OCSF.ConnectionToClient;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.application.Application;
@@ -13,9 +13,7 @@ import javafx.event.ActionEvent;
 import java.util.ResourceBundle;
 import javafx.stage.StageStyle;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
 import javafx.fxml.FXMLLoader;
-import java.util.ArrayList;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.fxml.FXML;
@@ -156,10 +154,11 @@ public class ServerUIController extends Application implements Initializable {
 
     public void removeClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
+        String ip = "";
         for(UserConnection conn : observableUserConnections){
-            if (client.getInetAddress().getHostAddress().equals(conn.getClientIP())){
+            ip = conn.getClientIP();
+            if (client.getInetAddress().getHostAddress().equals(ip)){
                 observableUserConnections.remove(conn);
-                return;
             }
         }
     }

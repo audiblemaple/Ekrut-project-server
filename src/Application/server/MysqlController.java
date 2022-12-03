@@ -146,6 +146,9 @@ public class MysqlController {
 	public void updateUser(String id, String creditcardnumber, String subscribernumber){
 		PreparedStatement stmt;
 		String query = "UPDATE " + this.dataBasename + ".subscriber SET creditcardnumber = ?, subscribernumber = ? WHERE id = ?";
+		if(creditcardnumber == "null"){
+			creditcardnumber = "";
+		}
 		try {
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1, creditcardnumber);

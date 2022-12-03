@@ -1,7 +1,7 @@
 package Application.server;
 
-import Application.Common.AbstractServer;
-import Application.Common.ConnectionToClient;
+import OCSF.AbstractServer;
+import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
 import javafx.stage.Stage;
 import java.io.IOException;
