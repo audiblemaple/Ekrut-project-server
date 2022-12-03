@@ -1,74 +1,53 @@
 package Application.server;
+
 import Application.Common.AbstractServer;
 import Application.Common.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
+import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ServerController extends AbstractServer {
   //Class fields *************************************************
-
-  final public static int DEFAULT_PORT = 5555;
-  private static ServerController serverController = null;
-  private static ServerUIController serverUI;
-  private MysqlController sqlcontroller;
-  private ArrayList<ConnectionToClient>  clients;
+  public ServerUIController serverUI;
+  private MysqlController sqlController;
 
   //Constructors ****************************************************
-
-  public ServerController(int port, String IP, String username, String password) {
+  public ServerController(int port, Stage primaryStage) {
       super(port);
-      sqlcontroller = MysqlController.getSQLInstance(IP, username, password);
-      clients = new ArrayList<>();
+      sqlController = MysqlController.getSQLInstance();
+      serverUI = new ServerUIController();
+      try{
+          this.serverUI.start(primaryStage);
+          System.out.println("dsd");
+      }catch (Exception exception){
+          exception.printStackTrace();
+      }
   }
 
-  public static ServerController getServerInstance(int port, String IP, String username, String password){
-      if (serverController == null)
-          return new ServerController(port, IP, username, password);
-      return serverController;
+  protected void serverStarted() {
+      System.out.println("Server listening for connections on port " + getPort());
   }
 
-  //Overriden method ***********************************************
+  protected void serverStopped() {
+      try{
+          close();
+          System.out.println("Server has stopped listening for connections.");
+
+      }catch (IOException exception){
+          exception.printStackTrace();
+      }
+  }
+
+    // listen for client connections, this method is called when a client is connected
     @Override
     protected void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
-        this.clients.add(client);
-        serverUI.addClientConnection(client);
+        this.serverUI.addClientConnection(client);
     }
 
+    // this method
     private void disconnectClient(ConnectionToClient client){
-        this.clients.remove(client);
-        serverUI.removeClientConnection(client);
-    }
-
-    public boolean run(int arg, String IP, String username, String password) {
-      int port = 0; //Port to listen on
-
-      try {
-          port = arg; //Get port from command line
-      }
-      catch(Throwable t) {
-          port = DEFAULT_PORT; //Set port to 5555
-      }
-
-      serverController = getServerInstance(port, IP, username, password);
-
-      try {
-          serverController.listen(); //Start listening for connections
-      }
-      catch (Exception ex) {
-          System.out.println("ERROR - Could not listen for clients!");
-          return false;
-      }
-      return true;
-    }
-
-    protected void serverStarted() {
-        System.out.println("Server listening for connections on port " + getPort());
-    }
-
-    protected void serverStopped() {
-        System.out.println("Server has stopped listening for connections.");
+        this.serverUI.removeClientConnection(client);
     }
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
@@ -79,11 +58,11 @@ public class ServerController extends AbstractServer {
 
         switch (queryArgs[0]){
             case "newUser":
-                if(sqlcontroller.checkUserExists(queryArgs[3])){
+                if(sqlController.checkUserExists(queryArgs[3])){
                     sendMessageToClient(client, "exists");
                     return;
                 }
-                if(sqlcontroller.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
+                if(sqlController.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
                     sendMessageToClient(client, "true");
                     return;
                 }
@@ -91,7 +70,7 @@ public class ServerController extends AbstractServer {
                 return;
 
             case "deleteUser":
-                if (sqlcontroller.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
+                if (sqlController.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
                     sendMessageToClient(client, "true");
                     return;
                 }
@@ -100,12 +79,12 @@ public class ServerController extends AbstractServer {
 
             // Non-functional for now
             case "login":
-                sendMessageToClient(client, sqlcontroller.getAllDB());
+                sendMessageToClient(client, sqlController.getAllDB());
                 return;
 
             case "updateUser":
-                if(sqlcontroller.checkUserExists(queryArgs[1])){
-                    sqlcontroller.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
+                if(sqlController.checkUserExists(queryArgs[1])){
+                    sqlController.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
                     sendMessageToClient(client,"true");
                     return;
                 }
@@ -135,30 +114,5 @@ public class ServerController extends AbstractServer {
         catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    // getter for arrayList of clients
-    public ArrayList getclientList(){
-        return this.clients;
-    }
-
-    // get number of currently connected clients.
-    public int getNumOfClients(){
-        return this.getNumberOfClients();
-    }
-
-    public String getDatabaseName(){
-        return sqlcontroller.getname();
-    }
-    public void setUI(ServerUIController ui){
-        serverUI = ui;
-    }
-
-    public void disconnectFromDB(){
-      try{
-          this.close();
-      }catch (IOException exception){
-          exception.printStackTrace();
-      }
     }
 }

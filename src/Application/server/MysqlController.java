@@ -7,58 +7,73 @@ import java.util.ArrayList;
 
 public class MysqlController {
 	private static MysqlController sqlInstance = null;
+	private String dataBasename;
+	private String dataBaseusername;
+	private String dataBasepassword;
+	private String IP;
 	private Connection connection;
-	private MysqlController(String IP, String username, String password){
+
+	public static MysqlController getSQLInstance(){
+		if (sqlInstance == null)
+			sqlInstance = new MysqlController();
+		return sqlInstance;
+	}
+
+	public void setDataBaseName(String name) {
+		this.dataBasename = name;
+	}
+	public void setDataBaseUsername(String username) {
+		this.dataBaseusername = username;
+	}
+	public void setDataBasePassword(String password) {
+		this.dataBasepassword = password;
+	}
+	public void setDataBaseIP(String IP) {
+		this.IP = IP;
+	}
+
+	public  String connectDataBase(){
+		String returnStatement = "";
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			System.out.println("Driver definition succeed");
+			returnStatement += "Driver definition succeed\n";
 		} catch (Exception ex) {
-			System.out.println("Driver definition failed");
+			returnStatement += "Driver definition failed\n";
 		}
 
 		try {
-			//String jdbcURL = "jdbc:mysql://localhost:3306?serverTimezone=UTC";
-			String jdbcURL = "jdbc:mysql://" + IP + ":3306?serverTimezone=UTC";
-			connection = DriverManager.getConnection(jdbcURL,username,password);
-			System.out.println("SQL connection succeed");
+			String jdbcURL = "jdbc:mysql://" + this.IP + ":3306?serverTimezone=UTC";
+			this.connection = DriverManager.getConnection(jdbcURL, this.dataBaseusername, this.dataBasepassword);
+			returnStatement += "SQL connection succeed\n";
+			return returnStatement;
 
 		} catch (SQLException ex) {
 			/* handle any errors*/
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			returnStatement += "SQLException: " + ex.getMessage() + "\n";
+			returnStatement += "SQLState: " + ex.getSQLState() + "\n";
+			returnStatement += "VendorError: " + ex.getErrorCode() + "\n";
+			return returnStatement;
 		}
 	}
-
-	public static MysqlController getSQLInstance(){
-		return sqlInstance;
-	}
-
-	public static MysqlController getSQLInstance(String IP, String username, String password){
-		if (sqlInstance == null)
-			sqlInstance = new MysqlController(IP, username, password);
-
-		return sqlInstance;
-	}
-
-	public boolean addUser(String name,  String lastname, String ID, String phonenumber, String email, String creditcardnumber){
+	public boolean addUser(String firstname,  String lastname, String id, String phonenumber, String emailaddress, String creditcardnumber){
 		// adding 1 to subscriber number to save the incremented number of subscribers
-		Integer subscriberNum = getSubscriberNum() + 1;
+		Integer subscribernumber = getSubscriberNum() + 1;
 		PreparedStatement stmt;
-		String query = "INSERT INTO userdata.subscriber(name, lastname, ID, phonenumber, email, creditcardnumber, subscribernumber) VALUES(?, ?, ?, ?, ?, ?,?)";
-		if (!checkUserExists(ID)){
+		String query = "INSERT INTO " +  this.dataBasename + ".subscriber(firstname, lastname, id, phonenumber, emailaddress, creditcardnumber, subscribernumber) VALUES(?, ?, ?, ?, ?, ?,?)";
+
+		if (!checkUserExists(id)){
 			try{
 				stmt = connection.prepareStatement(query);
-				stmt.setString(1,name);
+				stmt.setString(1,firstname);
 				stmt.setString(2,lastname);
-				stmt.setString(3,ID);
+				stmt.setString(3,id);
 				stmt.setString(4,phonenumber);
-				stmt.setString(5,email);
+				stmt.setString(5,emailaddress);
 				stmt.setString(6,creditcardnumber);
-				stmt.setString(7,subscriberNum.toString());
+				stmt.setString(7,subscribernumber.toString());
 
 				stmt.executeUpdate();
-				if(checkUserExists(ID)){
+				if(checkUserExists(id)){
 					System.out.printf("user added successfully");
 					return true;
 				}
@@ -71,16 +86,17 @@ public class MysqlController {
 		System.out.printf("user already exists");
 		return false;
 	}
-	public boolean checkUserExists(String ID){
+	public boolean checkUserExists(String id){
 		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT * FROM userdata.subscriber WHERE (ID) = (?)";
+		String query = "SELECT * FROM " + this.dataBasename +".subscriber WHERE (id) = (?)";
+
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1,ID);
+			stmt.setString(1,id);
 			res = stmt.executeQuery();
 			if (res.next()){
-				if (res.getString("ID").equals(ID)){
+				if (res.getString("id").equals(id)){
 
 					return true;
 				}
@@ -95,7 +111,7 @@ public class MysqlController {
 	}
 
 	private int getSubscriberNum(){
-		String query = "SELECT COUNT(*) FROM userdata.subscriber";
+		String query = "SELECT COUNT(*) FROM " + this.dataBasename + ".subscriber";
 		try{
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(query);
@@ -109,14 +125,14 @@ public class MysqlController {
 		return 0;
 	}
 
-	public boolean deleteUser(String ID, String username, String password){
+	public boolean deleteUser(String id, String username, String password){
 		PreparedStatement stmt;
-		String query = "DELETE FROM userdata.subscriber WHERE ID=? username=? password=?";
-		if(!checkUserExists(ID))
+		String query = "DELETE FROM " + this.dataBasename +  ".subscriber WHERE id=? username=? password=?";
+		if(!checkUserExists(id))
 			return false;
 		try {
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, ID);
+			stmt.setString(1, id);
 			stmt.setString(2, username);
 			stmt.setString(3, password);
 			stmt.executeUpdate();
@@ -127,15 +143,14 @@ public class MysqlController {
 		return false;
 	}
 
-	public void updateUser(String ID, String creditcardnum, String subscribernum){
+	public void updateUser(String id, String creditcardnumber, String subscribernumber){
 		PreparedStatement stmt;
-		//String query = "UPDATE userdata.subscriber set creditcardnumber=? subscribernumber=? WHERE ID=?";
-		String query = "UPDATE userdata.subscriber SET creditcardnumber = ?, subscribernumber = ? WHERE ID = ?";
+		String query = "UPDATE " + this.dataBasename + ".subscriber SET creditcardnumber = ?, subscribernumber = ? WHERE id = ?";
 		try {
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, creditcardnum);
-			stmt.setString(2, subscribernum);
-			stmt.setString(3, ID);
+			stmt.setString(1, creditcardnumber);
+			stmt.setString(2, subscribernumber);
+			stmt.setString(3, id);
 			stmt.executeUpdate();
 			System.out.println("update done successfully");
 		} catch (SQLException e) {
@@ -144,20 +159,21 @@ public class MysqlController {
 	}
 
 	public String getAllDB(){
-		ArrayList<Subscriber> subscribers = new ArrayList<>();
-		String query = "SELECT * FROM userdata.subscriber";
+		String query = "SELECT * FROM " + this.dataBasename + ".subscriber";
 		String database = "";
 		try{
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(query);
 			while(res.next()){
-				database += res.getString("name");
+				database += res.getString("firstname");
 				database +=" ";
 				database += res.getString("lastname");
 				database +=" ";
+				database += res.getString("id");
+				database +=" ";
 				database += res.getString("phonenumber");
 				database +=" ";
-				database += res.getString("email");
+				database += res.getString("emailaddress");
 				database +=" ";
 				database += res.getString("creditcardnumber");
 				database +=" ";
@@ -176,6 +192,10 @@ public class MysqlController {
 		}catch (SQLException e){
 			e.printStackTrace();
 		}
+	}
+
+	public Connection getConnection(){
+		return this.connection;
 	}
 
 	protected String getname(){

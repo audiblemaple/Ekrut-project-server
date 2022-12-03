@@ -1,14 +1,12 @@
 package Data;
 
-import javafx.beans.property.SimpleStringProperty;
-
-public class Connection {
+public class UserConnection {
     private String clientIP;
     private String hostName;
     private String connectionStatus;
 
 
-    public Connection(String clientIP, String hostName, String connectionStatus) {
+    public UserConnection(String clientIP, String hostName, String connectionStatus) {
         this.clientIP = clientIP;
         this.hostName = hostName;
         this.connectionStatus = connectionStatus;
