@@ -19,22 +19,22 @@
             <Image url="@logo.png" />
          </image>
       </ImageView>
-      <Label layoutX="34.0" layoutY="160.0" text="IP:">
+      <Label layoutX="34.0" layoutY="160.0" text="DB IP:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="31.0" layoutY="207.0" text="Username:">
+      <Label layoutX="31.0" layoutY="207.0" text="DB Username:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="32.0" layoutY="257.0" text="Password:">
+      <Label layoutX="32.0" layoutY="257.0" text="DB Password:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="33.0" layoutY="305.0" text="Name:">
+      <Label layoutX="33.0" layoutY="305.0" text="DB Name:">
          <font>
             <Font size="18.0" />
          </font>
