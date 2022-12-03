@@ -12,3 +12,6 @@
     -fx-border-radius: 10;
 }
 
+#console{
+    -fx-opacity: 90%;
+}
