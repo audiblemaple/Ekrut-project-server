@@ -92,8 +92,8 @@ public class ServerController extends AbstractServer {
                 return;
 
             case "disconnect":
-                disconnectClient(client);
                 sendMessageToClient(client, "disconnected");
+                disconnectClient(client);
                 return;
 
             case "?":

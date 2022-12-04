@@ -148,6 +148,13 @@ public class ServerUIController extends Application implements Initializable {
 
     public void addClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
+        String ip = "";
+        for(UserConnection conn : observableUserConnections){
+            ip = conn.getClientIP();
+            if (client.getInetAddress().getHostAddress().equals(ip)){
+                return;
+            }
+        }
         userConnectionData = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"Connected");
         observableUserConnections.add(userConnectionData);
     }
@@ -165,7 +172,7 @@ public class ServerUIController extends Application implements Initializable {
 
     private void consolePrint(String msg){
         String txt = console.getText();
-        console.setText(txt + msg);
+        console.setText(txt + msg + "\n");
     }
 }
 
