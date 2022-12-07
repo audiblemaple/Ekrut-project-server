@@ -27,9 +27,9 @@ public class ServerUIController extends Application implements Initializable {
     @FXML
     public Button connectButton;
     @FXML
-    private TableView<UserConnection> connectionList;
-    @FXML
     private TextArea console;
+    @FXML
+    private TableView<UserConnection> connectionList;
     @FXML // fx:id="dbNameField"
     private TextField dbNameField; // Value injected by FXMLLoader
     @FXML // fx:id="ipField"
@@ -80,7 +80,6 @@ public class ServerUIController extends Application implements Initializable {
     @FXML
     private void disconnectServer(){
         ServerUI.shutdownServer();
-        consolePrint("Server has stopped listening for connections");
         defaultButton.setDisable(false);
         connectButton.setDisable(false);
         disconnectButton.setDisable(true);
@@ -170,9 +169,9 @@ public class ServerUIController extends Application implements Initializable {
         }
     }
 
-    private void consolePrint(String msg){
+    public void consolePrint(String msg){
         String txt = console.getText();
-        console.setText(txt + msg + "\n");
+        console.setText(txt + msg);
     }
 }
 

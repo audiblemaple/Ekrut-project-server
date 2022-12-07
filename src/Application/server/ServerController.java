@@ -51,8 +51,6 @@ public class ServerController extends AbstractServer {
     }
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        System.out.println("Message received: " + msg + " from " + client);
-
         String message = (String)msg;
         String[] queryArgs = message.split(" ");
 
