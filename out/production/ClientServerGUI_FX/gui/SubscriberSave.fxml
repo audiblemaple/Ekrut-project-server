@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="349.0" prefWidth="312.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SubscriberSaveController">
+   <children>
+      <ImageView fitHeight="389.0" fitWidth="349.0" opacity="0.1" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/gui/bckgrnd.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="53.0" fitWidth="83.0" layoutX="37.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/gui/logo.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="133.0" layoutY="23.0" text="Selected Sucscriber:" />
+      <Pane layoutX="29.0" layoutY="61.0">
+         <children>
+            <Label id="lblName" layoutX="26.0" layoutY="4.0" text="Sub. ID" />
+            <Label id="lblName" layoutX="23.0" layoutY="57.0" text="First.Name:" />
+            <Label id="lblSurname" layoutX="23.0" layoutY="115.0" text="Last.name:" />
+            <TextField id="lblName" fx:id="txtFisrtName" editable="false" layoutX="93.0" layoutY="52.0" opacity="0.7" />
+            <TextField id="lblSurname" fx:id="txtLastNameame" editable="false" layoutX="93.0" layoutY="110.0" opacity="0.7" />
+            <TextField id="lblName" fx:id="txtID" editable="false" layoutX="92.0" opacity="0.7" />
+            <Label id="lblName" layoutY="159.0" text="Credit.CardNumber:" />
+            <Label id="lblName" layoutX="12.0" layoutY="198.0" text="Sub.Number" />
+            <TextField id="lblSurname" fx:id="txtCreditCardNumber" layoutX="126.0" layoutY="155.0" />
+            <TextField id="lblSurname" fx:id="txtSubNumber" layoutX="126.0" layoutY="194.0" />
+         </children>
+      </Pane>
+      <Button fx:id="btnclose" layoutX="198.0" layoutY="310.0" mnemonicParsing="false" onAction="#Closebtn" text="Close" />
+      <Button fx:id="btnSave" layoutX="92.0" layoutY="310.0" mnemonicParsing="false" onAction="#Savebtn" text="Save" />
+      <Label fx:id="lblsuccess" layoutX="67.0" layoutY="280.0" text="Subscriber Saved Successfully" textFill="#00d31c" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblFailed" layoutX="77.0" layoutY="290.0" text="Subscriber Saved FAILED" textFill="RED" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SubscriberEditController">
+   <children>
+      <ImageView fitHeight="437.0" fitWidth="400.0" opacity="0.1" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/gui/bckgrnd.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="437.0" fitWidth="400.0" layoutX="201.0" opacity="0.1" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/gui/bckgrnd.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="222.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/gui/logo.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="btnRefresh" layoutX="257.0" layoutY="344.0" mnemonicParsing="false" onAction="#loadSubscriber" text="Refresh Table" />
+      <Button fx:id="btnclose" layoutX="430.0" layoutY="344.0" mnemonicParsing="false" onAction="#Closebtn" text="Close" />
+      <Button fx:id="btnUpdate" layoutX="108.0" layoutY="344.0" mnemonicParsing="false" onAction="#Updatebtn" text="Update" />
+      <Label fx:id="lblselect" layoutX="170.0" layoutY="391.0" text="Please select Subscriber From Table" textFill="RED" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TableView fx:id="Table" layoutY="129.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0">
+        <columns>
+          <TableColumn fx:id="txtFirstname" prefWidth="84.0" text="FirstName" />
+            <TableColumn fx:id="txtLastname" prefWidth="84.0" text="Surname" />
+            <TableColumn fx:id="txtId" prefWidth="84.0" text="Sub. ID" />
+            <TableColumn fx:id="txtPhonenumber" prefWidth="84.0" text="Phone num." />
+            <TableColumn fx:id="txtEmailaddress" prefWidth="84.0" text="Email add." />
+            <TableColumn fx:id="txtCreditcardnumber" prefWidth="103.0" text="CreditCard num." />
+            <TableColumn fx:id="txtSubscribernumber" prefWidth="76.0" text="Sub. num.:" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
