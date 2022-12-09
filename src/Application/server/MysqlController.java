@@ -1,8 +1,8 @@
 package Application.server;
-import Data.UserData.Subscriber;
+import Common.Message;
+import Data.UserData.User;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 
 public class MysqlController {
@@ -61,42 +61,43 @@ public class MysqlController {
 		PreparedStatement stmt;
 		String query = "INSERT INTO " +  this.dataBasename + ".subscriber(firstname, lastname, id, phonenumber, emailaddress, creditcardnumber, subscribernumber) VALUES(?, ?, ?, ?, ?, ?,?)";
 
-		if (!checkUserExists(id)){
-			try{
-				stmt = connection.prepareStatement(query);
-				stmt.setString(1,firstname);
-				stmt.setString(2,lastname);
-				stmt.setString(3,id);
-				stmt.setString(4,phonenumber);
-				stmt.setString(5,emailaddress);
-				stmt.setString(6,creditcardnumber);
-				stmt.setString(7,subscribernumber.toString());
-
-				stmt.executeUpdate();
-				if(checkUserExists(id)){
-					System.out.printf("user added successfully");
-					return true;
-				}
-			}
-			catch (SQLException e){
-				e.printStackTrace();
-				return false;
-			}
-		}
+//		if (!checkUserExists(id)){
+//			try{
+//				stmt = connection.prepareStatement(query);
+//				stmt.setString(1,firstname);
+//				stmt.setString(2,lastname);
+//				stmt.setString(3,id);
+//				stmt.setString(4,phonenumber);
+//				stmt.setString(5,emailaddress);
+//				stmt.setString(6,creditcardnumber);
+//				stmt.setString(7,subscribernumber.toString());
+//
+//				stmt.executeUpdate();
+//				if(checkUserExists(id)){
+//					System.out.printf("user added successfully");
+//					return true;
+//				}
+//			}
+//			catch (SQLException e){
+//				e.printStackTrace();
+//				return false;
+//			}
+//		}
 		System.out.printf("user already exists");
 		return false;
 	}
-	public boolean checkUserExists(String id){
+
+	public boolean checkUserExists(User clientMessage){
 		PreparedStatement stmt;
 		ResultSet res;
 		String query = "SELECT * FROM " + this.dataBasename +".subscriber WHERE (id) = (?)";
 
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1,id);
+			stmt.setString(1,clientMessage.getId());
 			res = stmt.executeQuery();
 			if (res.next()){
-				if (res.getString("id").equals(id)){
+				if (res.getString("id").equals(clientMessage.getId())){
 
 					return true;
 				}
@@ -128,18 +129,18 @@ public class MysqlController {
 	public boolean deleteUser(String id, String username, String password){
 		PreparedStatement stmt;
 		String query = "DELETE FROM " + this.dataBasename +  ".subscriber WHERE id=? username=? password=?";
-		if(!checkUserExists(id))
-			return false;
-		try {
-			stmt = connection.prepareStatement(query);
-			stmt.setString(1, id);
-			stmt.setString(2, username);
-			stmt.setString(3, password);
-			stmt.executeUpdate();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		if(!checkUserExists(id))
+//			return false;
+//		try {
+//			stmt = connection.prepareStatement(query);
+//			stmt.setString(1, id);
+//			stmt.setString(2, username);
+//			stmt.setString(3, password);
+//			stmt.executeUpdate();
+//			return true;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 		return false;
 	}
 

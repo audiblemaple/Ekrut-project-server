@@ -5,7 +5,6 @@ public class UserConnection {
     private String hostName;
     private String connectionStatus;
 
-
     public UserConnection(String clientIP, String hostName, String connectionStatus) {
         this.clientIP = clientIP;
         this.hostName = hostName;

@@ -1,5 +1,8 @@
 package Application.server;
 
+import Common.Message;
+import Common.MessageFromServer;
+import Data.UserData.User;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
@@ -18,7 +21,6 @@ public class ServerController extends AbstractServer {
       serverUI = new ServerUIController();
       try{
           this.serverUI.start(primaryStage);
-          System.out.println("dsd");
       }catch (Exception exception){
           exception.printStackTrace();
       }
@@ -51,60 +53,56 @@ public class ServerController extends AbstractServer {
     }
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        String message = (String)msg;
-        String[] queryArgs = message.split(" ");
+        Message clientMessage = (Message)msg;
+        Message serverResponse = null;
 
-        switch (queryArgs[0]){
-            case "newUser":
-                if(sqlController.checkUserExists(queryArgs[3])){
-                    sendMessageToClient(client, "exists");
+        // TODO: fix everything up here and in the mysql controller.
+
+
+        switch (clientMessage.getTask()){
+            case LOGIN_REQUEST:
+                if(sqlController.checkUserExists((User)clientMessage.getData())){
+                    Message reply = new Message(null, MessageFromServer.UPDATE_SUCCESSFUL); // TODO: change here!!!!!!!!!
+                    sendMessageToClient(client, reply);
                     return;
                 }
-                if(sqlController.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
-                    sendMessageToClient(client, "true");
-                    return;
-                }
-                sendMessageToClient(client, "bad");
-                return;
-
-            case "deleteUser":
-                if (sqlController.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
-                    sendMessageToClient(client, "true");
-                    return;
-                }
-                sendMessageToClient(client, "Error deleting user.");
-                return;
-
-            // Non-functional for now
-            case "login":
-                sendMessageToClient(client, sqlController.getAllDB());
-                return;
-
-            case "updateUser":
-                if(sqlController.checkUserExists(queryArgs[1])){
-                    sqlController.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
-                    sendMessageToClient(client,"true");
-                    return;
-                }
-                sendMessageToClient(client,"none");
-                return;
-
-            case "disconnect":
-                sendMessageToClient(client, "disconnected");
-                disconnectClient(client);
-                return;
-
-            case "?":
-                sendMessageToClient(client, "newUser name lastname ID phonenumber email creditcardnumber\n" +
-                                                    "update ID creditcardnumber subscribernumber" +
-                                                    "login ID\n" +
-                                                    "deleteUser ID");
-                return;
-
-            default:
-                sendMessageToClient(client, "Unknown command.");
+//                if(sqlController.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
+//                    sendMessageToClient(client, "true");
+//                    return;
+//                }
+//                sendMessageToClient(client, "bad");
+//                return;
+//
+//            case DELETE_USER:
+//                if (sqlController.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
+//                    sendMessageToClient(client, "true");
+//                    return;
+//                }
+//                sendMessageToClient(client, "Error deleting user.");
+//                return;
+//
+//            // Non-functional for now
+//            case LOGIN:
+//                sendMessageToClient(client, sqlController.getAllDB());
+//                return;
+//
+//            case UPDATE_USER:
+//                if(sqlController.checkUserExists(queryArgs[1])){
+//                    sqlController.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
+//                    sendMessageToClient(client,"true");
+//                    return;
+//                }
+//                sendMessageToClient(client,"none");
+//                return;
+//
+//            case DISCONNECT_CLIENT:
+//                sendMessageToClient(client, "disconnected");
+//                disconnectClient(client);
+//                return;
+//
+//            default:
+//                System.out.println("Unknown command.");
         }
-        //this.sendToAllClients(msg);
     }
     private void sendMessageToClient(ConnectionToClient client , String message){
         try{
@@ -114,4 +112,74 @@ public class ServerController extends AbstractServer {
             e.printStackTrace();
         }
     }
+
+    private void sendMessageToClient(ConnectionToClient client , Object message){
+        try{
+            client.sendToClient(message);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }
+
+
+
+
+// SPARE
+//    public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+//        String message = (String)msg;
+//        String[] queryArgs = message.split(" ");
+//
+//        switch (queryArgs[0]){
+//            case "newUser":
+//                if(sqlController.checkUserExists(queryArgs[3])){
+//                    sendMessageToClient(client, "exists");
+//                    return;
+//                }
+//                if(sqlController.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
+//                    sendMessageToClient(client, "true");
+//                    return;
+//                }
+//                sendMessageToClient(client, "bad");
+//                return;
+//
+//            case "deleteUser":
+//                if (sqlController.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
+//                    sendMessageToClient(client, "true");
+//                    return;
+//                }
+//                sendMessageToClient(client, "Error deleting user.");
+//                return;
+//
+//            // Non-functional for now
+//            case "login":
+//                sendMessageToClient(client, sqlController.getAllDB());
+//                return;
+//
+//            case "updateUser":
+//                if(sqlController.checkUserExists(queryArgs[1])){
+//                    sqlController.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
+//                    sendMessageToClient(client,"true");
+//                    return;
+//                }
+//                sendMessageToClient(client,"none");
+//                return;
+//
+//            case "disconnect":
+//                sendMessageToClient(client, "disconnected");
+//                disconnectClient(client);
+//                return;
+//
+//            case "?":
+//                sendMessageToClient(client, "newUser name lastname ID phonenumber email creditcardnumber\n" +
+//                        "update ID creditcardnumber subscribernumber" +
+//                        "login ID\n" +
+//                        "deleteUser ID");
+//                return;
+//
+//            default:
+//                sendMessageToClient(client, "Unknown command.");
+//        }
+//        //this.sendToAllClients(msg);
+//    }

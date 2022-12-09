@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../finishedClient/ClientServerGUI_FX/ClientServerGUI_FX.iml" filepath="$PROJECT_DIR$/../../finishedClient/ClientServerGUI_FX/ClientServerGUI_FX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Common/Common.iml" filepath="$PROJECT_DIR$/../../Common/Common.iml" />
       <module fileurl="file://$PROJECT_DIR$/prototype.iml" filepath="$PROJECT_DIR$/prototype.iml" />
     </modules>
   </component>

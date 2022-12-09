@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="common3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../finishedClient/ClientServerGUI_FX/src/common.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
