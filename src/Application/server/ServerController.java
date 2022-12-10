@@ -1,7 +1,7 @@
 package Application.server;
 
-import Common.Message;
-import Common.MessageFromServer;
+
+import MessageFromServer;
 import Data.UserData.User;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
