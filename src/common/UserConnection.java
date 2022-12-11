@@ -1,4 +1,4 @@
-package Data;
+package common;
 
 public class UserConnection {
     private String clientIP;

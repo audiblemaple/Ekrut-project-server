@@ -1,11 +1,12 @@
 package Application.server;
 
 
-import MessageFromServer;
-import Data.UserData.User;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
+import common.connectivity.Message;
+import common.connectivity.MessageFromServer;
+import common.connectivity.Subscriber;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -61,7 +62,7 @@ public class ServerController extends AbstractServer {
 
         switch (clientMessage.getTask()){
             case LOGIN_REQUEST:
-                if(sqlController.checkUserExists((User)clientMessage.getData())){
+                if(sqlController.checkUserExists((Subscriber)clientMessage.getData())){
                     Message reply = new Message(null, MessageFromServer.UPDATE_SUCCESSFUL); // TODO: change here!!!!!!!!!
                     sendMessageToClient(client, reply);
                     return;

@@ -1,3 +1,5 @@
+package common.connectivity;
+
 import java.io.Serializable;
 
 /** Represents a Message used for communication client <-> server.

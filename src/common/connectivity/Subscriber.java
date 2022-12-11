@@ -1,3 +1,5 @@
+package common.connectivity;
+
 public class Subscriber {
 
 	// CLASS VARIABLES ***********************************************

@@ -17,7 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.fxml.FXML;
-import Data.UserConnection;
+import common.UserConnection;
 import java.net.URL;
 
 public class ServerUIController extends Application implements Initializable {
