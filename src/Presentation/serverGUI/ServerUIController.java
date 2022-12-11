@@ -111,6 +111,7 @@ public class ServerUIController extends Application implements Initializable {
         this.connectionStatusColumn.setCellValueFactory(new PropertyValueFactory<>("ConnectionStatus"));
         this.connectionList.setItems(observableUserConnections);
         this.disconnectButton.setDisable(true);
+        this.connectionList.setPlaceholder(new Label(""));
     }
 
     @Override

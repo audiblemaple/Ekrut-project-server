@@ -3,13 +3,14 @@ package common.connectivity;
 import java.io.Serializable;
 
 public enum MessageFromClient implements Serializable {
-    LOGIN,
-    DISCONNECT_CLIENT,
-    UPDATE_USER,
-    ADD_USER,
-    DELETE_USER,
-    CHECK_USER_EXISTS,
-    REQUEST_TABLE_USER,
+    REQUEST_DISCONNECT_CLIENT,
+    REQUEST_UPDATE_USER,
     REQUEST_TABLE_ORDER,
-    LOGIN_REQUEST;
+    REQUEST_DELETE_USER,
+    REQUEST_TABLE_USER,
+    REQUEST_ADD_USER,
+    REQUEST_LOGOUT,
+    REQUEST_LOGIN,
+
+
 }

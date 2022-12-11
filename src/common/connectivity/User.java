@@ -1,8 +1,8 @@
 package common.connectivity;
 
-public class Subscriber {
+public class User {
 
-	// CLASS VARIABLES ***********************************************
+	// CLASS FIELDS ***********************************************
 	private String firstname;
 	private String lastname;
 	private String id;
@@ -10,11 +10,15 @@ public class Subscriber {
 	private String emailaddress;
 	private String creditcardnumber;
 	private String subscribernumber;
+	private String isLoggedIn;
 	//                 ***********************************************
 
 	// CLASS Constructors ********************************************
-	public Subscriber(String firstname, String lastname, String id, String phonenumber, String emailaddress,
-                      String creditcardnumber, String subscribernumber) {
+	public User() {
+
+	}
+	public User(String firstname, String lastname, String id, String phonenumber, String emailaddress,
+				String creditcardnumber, String subscribernumber) {
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.id = id;
@@ -80,6 +84,14 @@ public class Subscriber {
 
 	public void setSubscribernumber(String subscribernumber) {
 		this.subscribernumber = subscribernumber;
+	}
+
+	public String getIsLoggedIn() {
+		return isLoggedIn;
+	}
+
+	public void setIsLoggedIn(String isLoggedIn) {
+		this.isLoggedIn = isLoggedIn;
 	}
     //  **************************************************************
 	

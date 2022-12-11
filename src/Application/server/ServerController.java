@@ -4,9 +4,7 @@ package Application.server;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
-import common.connectivity.Message;
 import common.connectivity.MessageFromServer;
-import common.connectivity.Subscriber;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -54,56 +52,9 @@ public class ServerController extends AbstractServer {
     }
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        Message clientMessage = (Message)msg;
-        Message serverResponse = null;
+        MessageHandler.handleMessage(msg, client);
+        // TODO: add message handler...
 
-        // TODO: fix everything up here and in the mysql controller.
-
-
-        switch (clientMessage.getTask()){
-            case LOGIN_REQUEST:
-                if(sqlController.checkUserExists((Subscriber)clientMessage.getData())){
-                    Message reply = new Message(null, MessageFromServer.UPDATE_SUCCESSFUL); // TODO: change here!!!!!!!!!
-                    sendMessageToClient(client, reply);
-                    return;
-                }
-//                if(sqlController.addUser(queryArgs[1], queryArgs[2], queryArgs[3],queryArgs[4],queryArgs[5],queryArgs[6])){
-//                    sendMessageToClient(client, "true");
-//                    return;
-//                }
-//                sendMessageToClient(client, "bad");
-//                return;
-//
-//            case DELETE_USER:
-//                if (sqlController.deleteUser(queryArgs[1], queryArgs[2], queryArgs[3])){
-//                    sendMessageToClient(client, "true");
-//                    return;
-//                }
-//                sendMessageToClient(client, "Error deleting user.");
-//                return;
-//
-//            // Non-functional for now
-//            case LOGIN:
-//                sendMessageToClient(client, sqlController.getAllDB());
-//                return;
-//
-//            case UPDATE_USER:
-//                if(sqlController.checkUserExists(queryArgs[1])){
-//                    sqlController.updateUser(queryArgs[1], queryArgs[2], queryArgs[3]);
-//                    sendMessageToClient(client,"true");
-//                    return;
-//                }
-//                sendMessageToClient(client,"none");
-//                return;
-//
-//            case DISCONNECT_CLIENT:
-//                sendMessageToClient(client, "disconnected");
-//                disconnectClient(client);
-//                return;
-//
-//            default:
-//                System.out.println("Unknown command.");
-        }
     }
     private void sendMessageToClient(ConnectionToClient client , String message){
         try{
