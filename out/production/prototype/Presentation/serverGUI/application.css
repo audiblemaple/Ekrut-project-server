@@ -30,6 +30,21 @@
     -fx-text-box-border: transparent;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************tableview style*************************************************/
+
+
 .table-view{
     -fx-background-color: transparent;
 }
@@ -52,7 +67,7 @@
 
 .table-view .table-cell{
     -fx-border-color: transparent;
-    -fx-padding: 0 0 0 0px;
+    -fx-padding: 2 0 2 10px;
 }
 .table-row-cell: hover {
     -fx-background-color: #93f9b911;
@@ -94,3 +109,4 @@
     -fx-background-color: #f602bc;
     -fx-background-radius: 15px;
 }
+/**************************************************************************************************/

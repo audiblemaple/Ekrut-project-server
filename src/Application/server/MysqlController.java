@@ -67,7 +67,7 @@ public class MysqlController {
 		// adding 1 to subscriber number to save the incremented number of subscribers
 		Integer subscribernumber = getSubscriberNum() + 1;
 		PreparedStatement stmt;
-		String query = "INSERT INTO " +  this.dataBasename + ".subscriber(firstname, lastname, id, phonenumber, emailaddress, creditcardnumber, subscribernumber) VALUES(?, ?, ?, ?, ?, ?,?)";
+		String query = "INSERT INTO " +  this.dataBasename + ".user(firstname, lastname, id, phonenumber, emailaddress, creditcardnumber, subscribernumber) VALUES(?, ?, ?, ?, ?, ?,?)";
 
 //		if (!checkUserExists(id)){
 //			try{
@@ -98,7 +98,7 @@ public class MysqlController {
 	public boolean checkUserExists(User clientMessage){
 		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT * FROM " + this.dataBasename +".subscriber WHERE (id) = (?)";
+		String query = "SELECT * FROM " + this.dataBasename +".user WHERE (id) = (?)";
 
 		try{
 			stmt = connection.prepareStatement(query);
@@ -120,7 +120,7 @@ public class MysqlController {
 	}
 
 	private int getSubscriberNum(){
-		String query = "SELECT COUNT(*) FROM " + this.dataBasename + ".subscriber";
+		String query = "SELECT COUNT(*) FROM " + this.dataBasename + ".user";
 		try{
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(query);
@@ -136,7 +136,7 @@ public class MysqlController {
 
 	public boolean deleteUser(String id, String username, String password){
 		PreparedStatement stmt;
-		String query = "DELETE FROM " + this.dataBasename +  ".subscriber WHERE id=? username=? password=?";
+		String query = "DELETE FROM " + this.dataBasename +  ".user WHERE id=? username=? password=?";
 //		if(!checkUserExists(id))
 //			return false;
 //		try {
@@ -171,7 +171,7 @@ public class MysqlController {
 	}
 
 	public String getAllDB(){
-		String query = "SELECT * FROM " + this.dataBasename + ".subscriber";
+		String query = "SELECT * FROM " + this.dataBasename + ".user";
 		String database = "";
 		try{
 			Statement stmt = connection.createStatement();
@@ -226,16 +226,11 @@ public class MysqlController {
 
 		PreparedStatement stmt;
 		ResultSet res;
-		String loginQuery = "SELECT (firstname, lastname, id, phonenumber, emailaddress,isloggedin) FROM ?.users WHERE (username, password) = (?, ?)";
-		String setLoginStatusQuery = "UPDATE ?.subscriber SET isloggedin = ? WHERE username = ?";
-		String checkUpdated = "SELECT (isloggedin) FROM ?.users WHERE username = ?";
-		String expected = "";
-
+		String loginQuery = "SELECT * FROM " + this.dataBasename + ".users WHERE username = ? AND password = ?";
 		try{
 			stmt = connection.prepareStatement(loginQuery);
-			stmt.setString(1, this.dataBasename);
-			stmt.setString(2, credentials.get(0));
-			stmt.setString(3, credentials.get(1));
+			stmt.setString(1, credentials.get(0));
+			stmt.setString(2, credentials.get(1));
 			res = stmt.executeQuery();
 			User user = new User();
 
@@ -245,57 +240,66 @@ public class MysqlController {
 				user.setId(res.getString("id"));
 				user.setPhonenumber(res.getString("phonenumber"));
 				user.setEmailaddress(res.getString("emailaddress"));
-				user.setIsLoggedIn("isloggedin");
 			}
 
+			if(setUserLogInStatus(credentials, "1")){
+				return null;
+			}
+			return user;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean logUserOut(ArrayList<String> credentials){
+		if (credentials == null)
+			throw  new NullPointerException();
+		if (!isLoggedIn(credentials))
+			return false;
+		setUserLogInStatus(credentials, "0");
+		return true;
+	}
+
+
+	public boolean setUserLogInStatus(ArrayList<String> credentials, String status){
+		PreparedStatement stmt;
+		String setLoginStatusQuery = "UPDATE " + this.dataBasename + ".users SET isloggedin = ? WHERE username = ?";
+		try{
 			stmt = connection.prepareStatement(setLoginStatusQuery);
-			stmt.setString(1, this.dataBasename);
-			stmt.setString(2, "1");
-			stmt.setString(3, credentials.get(0));
-			stmt.executeUpdate();
-
-
-			stmt = connection.prepareStatement(checkUpdated);
-			stmt.setString(1, this.dataBasename);
+			stmt.setString(1, status);
 			stmt.setString(2, credentials.get(0));
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean isLoggedIn(ArrayList<String> credentials){
+		if (credentials == null)
+			throw new NullPointerException();
+
+		PreparedStatement stmt;
+		ResultSet res;
+
+		String checkUpdated = "SELECT (isloggedin) FROM " + this.dataBasename + ".users WHERE username = ?";
+		String expected = "";
+		try{
+			stmt = connection.prepareStatement(checkUpdated);
+			stmt.setString(1, credentials.get(0));
 			res = stmt.executeQuery();
 			while (res.next()){
 				expected = res.getString("isloggedin");
 			}
-			if (expected.equals("1"))
-				return user;
-
-			return null;
+			// if equals 1 then logged in.
+			return expected.equals("1");
 
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
-			return null;
-		}
-	}
-
-	public boolean logUserOut(String username){
-		PreparedStatement stmt;
-
-		String setLoginStatusQuery = "UPDATE ?.subscriber SET isloggedin = ? WHERE username = ?";
-		try{
-			stmt = connection.prepareStatement(setLoginStatusQuery);
-			stmt.setString(1, this.dataBasename);
-			stmt.setString(2, "0");
-			stmt.setString(3, username);
-			stmt.executeUpdate();
-			return false;
-		}catch (SQLException sqlException){
-			sqlException.printStackTrace();
-			return false;
-		}
-	}
-
-	public boolean isLoggedIn(User user){
-		if (user == null)
-			throw new NullPointerException();
-		if (user.getIsLoggedIn().equals("1")) // TODO: DECIDE ON TYPE OF ARGUMENT 1 is logged in!!!!
 			return true;
-		return false;
+		}
 	}
 }
 

@@ -4,7 +4,6 @@ package Application.server;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
-import common.connectivity.MessageFromServer;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -52,8 +51,8 @@ public class ServerController extends AbstractServer {
     }
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+        // TODO: add printing requests to console
         MessageHandler.handleMessage(msg, client);
-        // TODO: add message handler...
 
     }
     private void sendMessageToClient(ConnectionToClient client , String message){

@@ -1,7 +1,13 @@
 package common.connectivity;
 
-public class User {
+import java.io.Serializable;
 
+public class User implements Serializable{
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	// CLASS FIELDS ***********************************************
 	private String firstname;
 	private String lastname;
@@ -15,7 +21,13 @@ public class User {
 
 	// CLASS Constructors ********************************************
 	public User() {
-
+		this.firstname = null;
+		this.lastname = null;
+		this.id = null;
+		this.phonenumber = null;
+		this.emailaddress = null;
+		this.creditcardnumber = null;
+		this.subscribernumber = null;
 	}
 	public User(String firstname, String lastname, String id, String phonenumber, String emailaddress,
 				String creditcardnumber, String subscribernumber) {
@@ -27,8 +39,8 @@ public class User {
 		this.creditcardnumber = creditcardnumber;
 		this.subscribernumber = subscribernumber;
 	}
-    //  **************************************************************
-	
+	//  **************************************************************
+
 	// CLASS GETTERS/SETTERS *****************************************
 	public String getFirstname() {
 		return firstname;
@@ -93,13 +105,13 @@ public class User {
 	public void setIsLoggedIn(String isLoggedIn) {
 		this.isLoggedIn = isLoggedIn;
 	}
-    //  **************************************************************
-	
+	//  **************************************************************
+
 	// CLASS TO-STRING ***********************************************
 	@Override
 	public String toString(){
 		return String.format("%s %s %s %s %s %s %s\n",firstname,lastname,id,phonenumber,
 				emailaddress,creditcardnumber,subscribernumber.toString());
 	}
-    //  **************************************************************
+	//  **************************************************************
 }
