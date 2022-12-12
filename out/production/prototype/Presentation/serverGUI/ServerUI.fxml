@@ -83,11 +83,11 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="connectionList" focusTraversable="false" layoutX="34.0" layoutY="459.0" prefHeight="225.0" prefWidth="303.0">
+      <TableView fx:id="connectionList" focusTraversable="false" layoutX="34.0" layoutY="459.0" prefHeight="225.0" prefWidth="293.0">
         <columns>
           <TableColumn fx:id="ipColumn" editable="false" prefWidth="97.0" resizable="false" text="IP" />
-          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="110.0" resizable="false" text="Host" />
-            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="116.0" resizable="false" text="Status" />
+          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="86.0" resizable="false" text="Host" />
+            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="109.0" resizable="false" text="Status" />
         </columns>
       </TableView>
       <Label layoutX="28.0" layoutY="100.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
