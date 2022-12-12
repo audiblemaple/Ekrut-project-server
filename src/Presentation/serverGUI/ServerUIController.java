@@ -159,7 +159,7 @@ public class ServerUIController extends Application implements Initializable {
         observableUserConnections.add(userConnectionData);
     }
 
-    public void removeClientConnection(ConnectionToClient client){
+    public void removeClientConnection(ConnectionToClient client){ // TODO: add disconnected string when client disconnects
         UserConnection userConnectionData;
         String ip = "";
         for(UserConnection conn : observableUserConnections){

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="pane" maxHeight="700.0" maxWidth="679.0" minHeight="700.0" minWidth="679.0" prefHeight="700.0" prefWidth="679.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentation.serverGUI.ServerUIController">
+<Pane fx:id="pane" maxHeight="700.0" maxWidth="679.0" minHeight="700.0" minWidth="679.0" prefHeight="700.0" prefWidth="679.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentation.serverGUI.ServerUIController">
    <children>
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="59.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -83,11 +83,11 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="connectionList" focusTraversable="false" layoutX="34.0" layoutY="459.0" prefHeight="225.0" prefWidth="293.0">
+      <TableView fx:id="connectionList" focusTraversable="false" layoutX="32.0" layoutY="459.0" prefHeight="225.0" prefWidth="266.0">
         <columns>
-          <TableColumn fx:id="ipColumn" editable="false" prefWidth="97.0" resizable="false" text="IP" />
-          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="86.0" resizable="false" text="Host" />
-            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="109.0" resizable="false" text="Status" />
+          <TableColumn fx:id="ipColumn" editable="false" prefWidth="89.0" resizable="false" text="IP" />
+          <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="95.0" resizable="false" text="Host" />
+            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="76.0" resizable="false" text="Status" />
         </columns>
       </TableView>
       <Label layoutX="28.0" layoutY="100.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
@@ -95,20 +95,25 @@
             <Font name="Arial" size="27.0" />
          </font>
       </Label>
-      <Button fx:id="quitButton" layoutX="627.0" layoutY="14.0" mnemonicParsing="false" onAction="#quitApp" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #000;" text="X" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="quitButton" layoutX="620.0" layoutY="14.0" mnemonicParsing="false" onAction="#quitApp" prefHeight="39.0" prefWidth="42.0" style="-fx-background-color: #000;" text="X" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Tahoma Bold" size="15.0" />
          </font>
       </Button>
-      <TextArea fx:id="console" layoutX="398.0" layoutY="459.0" prefHeight="225.0" prefWidth="258.0" />
-      <Label layoutX="398.0" layoutY="414.0" text="Server console">
+      <TextArea fx:id="console" editable="false" layoutX="321.0" layoutY="459.0" prefHeight="225.0" prefWidth="335.0" />
+      <Label layoutX="321.0" layoutY="414.0" text="Server console">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Label layoutX="34.0" layoutY="414.0" text="Connected clients">
+      <Label layoutX="33.0" layoutY="414.0" text="Connected clients">
          <font>
             <Font size="28.0" />
+         </font>
+      </Label>
+      <Label layoutX="28.0" layoutY="379.0" text="do not panic, colors will probably change" textFill="#eb0d0d">
+         <font>
+            <Font size="23.0" />
          </font>
       </Label>
    </children>
