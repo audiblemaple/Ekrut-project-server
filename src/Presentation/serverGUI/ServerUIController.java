@@ -1,6 +1,7 @@
 package Presentation.serverGUI;
 
 import Application.server.ServerUI;
+import javafx.event.EventType;
 import javafx.scene.Parent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import OCSF.ConnectionToClient;
@@ -11,6 +12,8 @@ import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
 import java.util.ResourceBundle;
+
+import javafx.scene.input.KeyCode;
 import javafx.stage.StageStyle;
 import javafx.scene.control.*;
 import javafx.fxml.FXMLLoader;

@@ -3,13 +3,12 @@
 .root{
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-color1: rgba(0, 255, 181, 0.20);
-    -fx-color2: rgba(221, 0, 255, 0.20);
-    -fx-color3: rgba(0, 255, 181, 0.50);
-    -fx-color4: rgba(221, 0, 255, 0.50);
-    -fx-color5: rgba(0, 54, 115, 0.5);
-
+    -fx-color1: rgba(0, 247, 255, 0.2);
+    -fx-color2: rgba(255, 0, 183, 0.2);
+    -fx-color3: rgba(0, 255, 255, 0.5);
+    -fx-color4: rgba(255, 0, 111, 0.5);
 }
+
 #pane{
     -fx-background-image: url("server.png");
     -fx-background-color: transparent;
@@ -23,10 +22,13 @@
 /*********************************buton style************************************************/
 .button{
     /*-fx-background-color: #afafaf;*/
-    -fx-background-color: linear-gradient(to left bottom, -fx-color4,  -fx-color3);
+    -fx-background-color: linear-gradient(to top, -fx-color4,  -fx-color3);
     -fx-font-size: 18px;
 }
 .button: hover{
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-scale-z: 1.1;
     -fx-font-size: 20px;
     -fx-font-weight: bolder;
 }
@@ -40,6 +42,10 @@
     -fx-background-color: linear-gradient(to left bottom, -fx-color1,  -fx-color2);
     -fx-text-fill: black;
     -fx-prompt-text-fill: #707070;
+}
+
+.text-field: disabled{
+    -fx-opacity: 50%;
 }
 /********************************************************************************************/
 
@@ -108,7 +114,7 @@
 }
 .table-row-cell: hover {
     -fx-background-color: #93f9b911;
-    -fx-text-background-color: -fx-color5;
+    -fx-text-background-color: #02f8f8;
 }
 .table-row-cell: odd{
     -fx-background-color:  rgba(165, 245, 205, 0.27);
