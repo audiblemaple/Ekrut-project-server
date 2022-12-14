@@ -54,6 +54,13 @@ public class ServerUIController extends Application implements Initializable {
     private double xoffset;
     private double yoffset;
 
+    public void consolePrint(String msg){
+        this.console.appendText(msg);
+        this.console.appendText("\n");
+//        String txt = console.getText();
+//        console.setText(txt + msg);
+    }
+
     @FXML
     private void insertDefaultValues(ActionEvent event) {
         ipField.setText("localhost");
@@ -61,6 +68,7 @@ public class ServerUIController extends Application implements Initializable {
         passwordField.setText("Aa123456");
         dbNameField.setText("ekrutdatabase");
     }
+
     @FXML
     private void connectServer(){
         if(ipField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
@@ -87,6 +95,7 @@ public class ServerUIController extends Application implements Initializable {
         connectButton.setDisable(false);
         disconnectButton.setDisable(true);
         observableUserConnections.clear();
+        consolePrint("Server has stopped listening for connections.");
 
         this.defaultButton.setDisable(false);
         this.connectButton.setDisable(false);
@@ -171,11 +180,6 @@ public class ServerUIController extends Application implements Initializable {
                 observableUserConnections.remove(conn);
             }
         }
-    }
-
-    public void consolePrint(String msg){
-        String txt = console.getText();
-        console.setText(txt + msg);
     }
 }
 

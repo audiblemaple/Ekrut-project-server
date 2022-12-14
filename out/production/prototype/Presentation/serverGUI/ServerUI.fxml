@@ -111,10 +111,5 @@
             <Font size="28.0" />
          </font>
       </Label>
-      <Label layoutX="28.0" layoutY="379.0" text="do not panic, colors will probably change" textFill="#eb0d0d">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Label>
    </children>
 </Pane>

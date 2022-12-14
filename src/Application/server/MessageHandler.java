@@ -4,6 +4,7 @@ import OCSF.ConnectionToClient;
 import common.connectivity.User;
 import common.connectivity.Message;
 import common.connectivity.MessageFromServer;
+import common.orders.Product;
 
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class MessageHandler {
     private static User userData;
     public static void handleMessage(Object clientMessage, ConnectionToClient client){
         Message message = (Message) clientMessage;
+        ArrayList<Product> productList = null;
         switch(message.getTask().name()){
             case "REQUEST_LOGIN":
                 if(message == null) {
@@ -45,6 +47,35 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message(null, MessageFromServer.LOGOUT_FAILED_NOT_LOGGED_IN));
                 break;
+
+            case "REQUEST_MACHINE_PRODUCTS":
+                if(message == null){
+                    sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_GETTING_MACHINE_PRODUCTS));
+                    break;
+                }
+                productList = mysqlcontroller.getAllProductsForMachine((String)message.getData());
+                if(productList != null){
+                    sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
+                break;
+
+            case "REQUEST_ALL_MACHINE_PRODUCTS":
+                if(message == null){
+                    sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_GETTING_MACHINE_PRODUCTS));
+                    break;
+                }
+                productList = mysqlcontroller.getAllProductsForAllMachines();
+                if(productList != null){
+                    sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
+                break;
+
+
+
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }

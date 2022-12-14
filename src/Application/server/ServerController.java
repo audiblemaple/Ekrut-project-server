@@ -32,7 +32,6 @@ public class ServerController extends AbstractServer {
       try{
           close();
           System.out.println("Server has stopped listening for connections.");
-
       }catch (IOException exception){
           exception.printStackTrace();
       }
