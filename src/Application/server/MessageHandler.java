@@ -74,6 +74,24 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
                 break;
 
+            case "REQUEST_ADD_USER":
+
+                if(message == null){
+                    sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_ADDING_USER));
+                    break;
+                }
+                String result = mysqlcontroller.dataExists((User) message.getData());
+                if(!result.equals("")){
+                    sendMessageToClient(client, new Message(result, MessageFromServer.ERROR_ADDING_USER_EXISTS));
+                    break;
+                }
+                if(mysqlcontroller.addUser((User) message.getData())){
+                    sendMessageToClient(client, new Message(null, MessageFromServer.USER_ADDED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_ADDING_USER));
+                break;
+
 
 
             default:

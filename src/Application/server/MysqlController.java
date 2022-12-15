@@ -122,6 +122,7 @@ public class MysqlController {
 				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
 				product.setAmount(res.getInt("amount"));
+				product.setDescription(res.getString("description"));
 				productList.add(product);
 			}
 			return productList;
@@ -132,10 +133,85 @@ public class MysqlController {
 	}
 
 
+	public String dataExists(User user){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query = "SELECT * FROM " + this.dataBasename + ".users WHERE username = ? AND id = ?";
 
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, user.getUsername());
+			stmt.setString(2, user.getId());
+			res = stmt.executeQuery();
+			while(res.next()){
+				User temp = new User();
+				temp.setUsername(res.getString("username"));
+				temp.setId(res.getString("id"));
+				if(temp.getUsername().equals(user.getUsername())){
+					return "username already exists.";
+				}
+				if (temp.getId().equals(user.getId())){
+					return "id is already exists.";
+				}
+			}
+			return "";
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
 
+	public boolean addUser(User user){
+		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress, isloggedin, department) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,user.getUsername());
+			stmt.setString(2,user.getPassword());
+			stmt.setString(3,user.getFirstname());
+			stmt.setString(4,user.getLastname());
+			stmt.setString(5,user.getId());
+			stmt.setString(6,user.getPhonenumber());
+			stmt.setString(7,user.getEmailaddress());
+			stmt.setBoolean(8,false);
+			stmt.setString(9,user.getDepartment());
+			stmt.executeUpdate();
 
+			if(checkUserAdded(user.getId())){
+				return true;
+			}
+			return false;
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 
+	private boolean checkUserAdded(String id){
+		PreparedStatement stmt;
+		ResultSet res;
+		String loginQuery = "SELECT id FROM " + this.dataBasename + ".users WHERE id = ?";
+
+		try{
+			stmt = connection.prepareStatement(loginQuery);
+			stmt.setString(1, id);
+			res = stmt.executeQuery();
+			String expected = "";
+
+			while(res.next()){
+				expected = res.getString("id");
+			}
+
+			if(expected.equals(id)){
+				return true;
+			}
+			return false;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 
 
 
@@ -180,6 +256,7 @@ public class MysqlController {
 				user.setId(res.getString("id"));
 				user.setPhonenumber(res.getString("phonenumber"));
 				user.setEmailaddress(res.getString("emailaddress"));
+				user.setDepartment(res.getString("department"));
 			}
 
 			if(setUserLogInStatus(credentials, "1")){
@@ -276,37 +353,7 @@ public class MysqlController {
 //	}
 
 
-//	public boolean addUser(String firstname,  String lastname, String id, String phonenumber, String emailaddress, String creditcardnumber){
-//		// adding 1 to subscriber number to save the incremented number of subscribers
-//		Integer subscribernumber = getSubscriberNum() + 1;
-//		PreparedStatement stmt;
-//		String query = "INSERT INTO " +  this.dataBasename + ".user(firstname, lastname, id, phonenumber, emailaddress, creditcardnumber, subscribernumber) VALUES(?, ?, ?, ?, ?, ?,?)";
-//
-////		if (!checkUserExists(id)){
-////			try{
-////				stmt = connection.prepareStatement(query);
-////				stmt.setString(1,firstname);
-////				stmt.setString(2,lastname);
-////				stmt.setString(3,id);
-////				stmt.setString(4,phonenumber);
-////				stmt.setString(5,emailaddress);
-////				stmt.setString(6,creditcardnumber);
-////				stmt.setString(7,subscribernumber.toString());
-////
-////				stmt.executeUpdate();
-////				if(checkUserExists(id)){
-////					System.out.printf("user added successfully");
-////					return true;
-////				}
-////			}
-////			catch (SQLException e){
-////				e.printStackTrace();
-////				return false;
-////			}
-////		}
-//		System.out.printf("user already exists");
-//		return false;
-//	}
+
 
 
 

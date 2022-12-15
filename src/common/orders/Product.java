@@ -7,15 +7,17 @@ public class Product implements Serializable {
     private float discount;
     private String name;
     private int amount;
+    private String description;
 
     public Product() {
     }
 
-    public Product(float price, float discount, String name, int amount) {
+    public Product(float price, float discount, String name, int amount, String description) {
         this.price = price;
         this.discount = discount;
         this.name = name;
         this.amount = amount;
+        this.description = description;
     }
 
     public float getPrice() {
@@ -48,5 +50,13 @@ public class Product implements Serializable {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

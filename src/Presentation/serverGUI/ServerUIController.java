@@ -1,6 +1,7 @@
 package Presentation.serverGUI;
 
 import Application.server.ServerUI;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Parent;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -14,6 +15,7 @@ import javafx.event.ActionEvent;
 import java.util.ResourceBundle;
 
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.StageStyle;
 import javafx.scene.control.*;
 import javafx.fxml.FXMLLoader;
@@ -69,8 +71,27 @@ public class ServerUIController extends Application implements Initializable {
         dbNameField.setText("ekrutdatabase");
     }
 
+//    @FXML
+//    private void connectServer(){
+//        if(ipField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
+//            Alert a = new Alert(Alert.AlertType.WARNING, "All fields need to be filled in order to log int to server.");
+//            a.setTitle("Connection Error");
+//            a.show();
+//            return;
+//        }
+//        String consoleOut = ServerUI.startServer(this.ipField.getText(), this.dbNameField.getText(), this.usernameField.getText(), this.passwordField.getText());
+//        consolePrint(consoleOut + "\n");
+//        this.defaultButton.setDisable(true);
+//        this.connectButton.setDisable(true);
+//        this.disconnectButton.setDisable(false);
+//        this.dbNameField.setDisable(true);
+//        this.ipField.setDisable(true);
+//        this.usernameField.setDisable(true);
+//        this.passwordField.setDisable(true);
+//    }
+
     @FXML
-    private void connectServer(){
+    void connectServer(ActionEvent event) {
         if(ipField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
             Alert a = new Alert(Alert.AlertType.WARNING, "All fields need to be filled in order to log int to server.");
             a.setTitle("Connection Error");

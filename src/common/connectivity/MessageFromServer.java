@@ -14,6 +14,9 @@ public enum MessageFromServer implements Serializable {
     IMPORT_ORDER_TABLE_COMPLETE,            // TODO
     DELETE_USER_UNSUCCESSFUL,               // TODO
     IMPORT_USER_UNSUCCESSFUL,               // TODO
+    ERROR_ADDING_USER_EXISTS,               // V
+    USER_ADDED_SUCCESSFULLY,                // V
+    ERROR_ADDING_USER,                      // V
     LOGOUT_SUCCESSFUL,                      // V
     LOGIN_SUCCESSFUL,                       // V
     LOGOUT_ERROR,                           // V
