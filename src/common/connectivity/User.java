@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class User implements Serializable{
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	// CLASS FIELDS ***********************************************
 	private String username;
@@ -18,29 +15,34 @@ public class User implements Serializable{
 	private String emailaddress;
 	private String isLoggedIn;
 	private String department;
+	private String status;
 
 
-	//****************************************************************
+//****************************************************************
 
 	// CLASS Constructors ********************************************
 	public User() {
-		this.firstname = null;
-		this.lastname = null;
-		this.id = null;
-		this.phonenumber = null;
+		this.firstname 	  = null;
+		this.lastname 	  = null;
+		this.id 		  = null;
+		this.phonenumber  = null;
 		this.emailaddress = null;
-
-		this.password = null;
-		this.username = null;
+		this.password 	  = null;
+		this.username 	  = null;
+		this.status		  = null;
 	}
-	public User(String firstname, String lastname, String id, String phonenumber, String emailaddress,
-				String creditcardnumber, String subscribernumber) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.id = id;
-		this.phonenumber = phonenumber;
+	public User(String username, String password, String firstname,String lastname, String id,
+				String phonenumber, String emailaddress, String isLoggedIn, String department, String status) {
+		this.username 	  = username;
+		this.password 	  = password;
+		this.firstname 	  = firstname;
+		this.lastname 	  = lastname;
+		this.id 		  = id;
+		this.phonenumber  = phonenumber;
 		this.emailaddress = emailaddress;
-
+		this.isLoggedIn   = isLoggedIn;
+		this.department   = department;
+		this.status 	  = status;
 	}
 	//  **************************************************************
 
@@ -116,13 +118,22 @@ public class User implements Serializable{
 		this.department = department;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	//  **************************************************************
 
 	// CLASS TO-STRING ***********************************************
 	@Override
 	public String toString(){
 		return String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s\n"
-				,username,password,firstname,lastname,id,phonenumber, emailaddress,isLoggedIn, department);
+				,username, password, firstname, lastname, id, phonenumber,
+				emailaddress, isLoggedIn, department);
 	}
 	//  **************************************************************
 }

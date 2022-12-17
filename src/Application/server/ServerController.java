@@ -51,6 +51,13 @@ public class ServerController extends AbstractServer {
 
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         // TODO: add printing requests to console
+        if (msg instanceof String){
+            String message = (String)msg;
+            if(message.equals("disconnect")){
+                this.serverUI.removeClientConnection(client);
+                sendMessageToClient(client, "disconnected");
+            }
+        }
         MessageHandler.handleMessage(msg, client);
 
     }

@@ -1,6 +1,7 @@
 package Application.server;
 
 import OCSF.ConnectionToClient;
+import Presentation.serverGUI.ServerUIController;
 import common.connectivity.User;
 import common.connectivity.Message;
 import common.connectivity.MessageFromServer;
@@ -17,7 +18,7 @@ public class MessageHandler {
     public static void handleMessage(Object clientMessage, ConnectionToClient client){
         Message message = (Message) clientMessage;
         ArrayList<Product> productList = null;
-        switch(message.getTask().name()){
+        switch(message.getTask().name()){ // TODO: add disconnect message to set client connection status to disconnected
             case "REQUEST_LOGIN":
                 if(message == null) {
                     sendMessageToClient(client, new Message(null, MessageFromServer.LOGIN_ERROR));
@@ -30,7 +31,7 @@ public class MessageHandler {
                 }
                 userData = mysqlcontroller.logUserIn(userLogInCredentials);
                 if (userData == null){
-                    sendMessageToClient(client, new Message(null, MessageFromServer.LOGIN_ERROR));
+                    sendMessageToClient(client, new Message(null, MessageFromServer.LOG_IN_ERROR_USER_DOES_NOT_EXIST));
                     break;
                 }
                 sendMessageToClient(client ,new Message(userData, MessageFromServer.LOGIN_SUCCESSFUL));
@@ -91,6 +92,19 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_ADDING_USER));
                 break;
+
+            case "REQUEST_DELETE_USER":
+                if(message == null){
+                    sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_DELETING_USER));
+                    break;
+                }
+                if(mysqlcontroller.deleteUser((String)message.getData())){
+                    sendMessageToClient(client, new Message(null, MessageFromServer.DELETE_USER_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_DELETING_USER));
+                break;
+
 
 
 

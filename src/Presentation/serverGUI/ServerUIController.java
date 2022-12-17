@@ -1,29 +1,29 @@
 package Presentation.serverGUI;
 
 import Application.server.ServerUI;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.scene.Parent;
-import javafx.scene.control.cell.PropertyValueFactory;
 import OCSF.ConnectionToClient;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
+import common.UserConnection;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.Initializable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import java.util.ResourceBundle;
-
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.StageStyle;
-import javafx.scene.control.*;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.fxml.FXML;
-import common.UserConnection;
+import javafx.stage.StageStyle;
+
 import java.net.URL;
+import java.util.ResourceBundle;
 
 public class ServerUIController extends Application implements Initializable {
     public static ObservableList<UserConnection> observableUserConnections = FXCollections.observableArrayList();
@@ -33,6 +33,8 @@ public class ServerUIController extends Application implements Initializable {
     public Button connectButton;
     @FXML
     private TextArea console;
+    @FXML
+    private Pane pane;
     @FXML
     private TableView<UserConnection> connectionList;
     @FXML // fx:id="dbNameField"
@@ -58,9 +60,6 @@ public class ServerUIController extends Application implements Initializable {
 
     public void consolePrint(String msg){
         this.console.appendText(msg);
-        this.console.appendText("\n");
-//        String txt = console.getText();
-//        console.setText(txt + msg);
     }
 
     @FXML
@@ -71,27 +70,8 @@ public class ServerUIController extends Application implements Initializable {
         dbNameField.setText("ekrutdatabase");
     }
 
-//    @FXML
-//    private void connectServer(){
-//        if(ipField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
-//            Alert a = new Alert(Alert.AlertType.WARNING, "All fields need to be filled in order to log int to server.");
-//            a.setTitle("Connection Error");
-//            a.show();
-//            return;
-//        }
-//        String consoleOut = ServerUI.startServer(this.ipField.getText(), this.dbNameField.getText(), this.usernameField.getText(), this.passwordField.getText());
-//        consolePrint(consoleOut + "\n");
-//        this.defaultButton.setDisable(true);
-//        this.connectButton.setDisable(true);
-//        this.disconnectButton.setDisable(false);
-//        this.dbNameField.setDisable(true);
-//        this.ipField.setDisable(true);
-//        this.usernameField.setDisable(true);
-//        this.passwordField.setDisable(true);
-//    }
-
     @FXML
-    void connectServer(ActionEvent event) {
+    void connectServer() {
         if(ipField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
             Alert a = new Alert(Alert.AlertType.WARNING, "All fields need to be filled in order to log int to server.");
             a.setTitle("Connection Error");
@@ -116,7 +96,7 @@ public class ServerUIController extends Application implements Initializable {
         connectButton.setDisable(false);
         disconnectButton.setDisable(true);
         observableUserConnections.clear();
-        consolePrint("Server has stopped listening for connections.");
+        consolePrint("Server has stopped listening for connections.\n");
 
         this.defaultButton.setDisable(false);
         this.connectButton.setDisable(false);
@@ -131,7 +111,7 @@ public class ServerUIController extends Application implements Initializable {
     private void quitApp(ActionEvent event) {
         if(!disconnectButton.isDisabled())
             ServerUI.shutdownServer();
-        consolePrint("Server has stopped listening for connections");
+        consolePrint("Server has stopped listening for connections\n");
         Platform.exit();
         System.exit(0);
     }
@@ -155,7 +135,7 @@ public class ServerUIController extends Application implements Initializable {
             Scene scene = new Scene(root);
             scene.getStylesheets().addAll(this.getClass().getResource("application.css").toExternalForm());
 
-            // event handler for when the mouse is pressed on the scene to trigger the drag and move event
+            // event handler for when the mouse is pressed on the scene to later trigger the drag event
             root.setOnMousePressed(event -> {
                 xoffset = event.getSceneX();
                 yoffset = event.getSceneY();
@@ -185,6 +165,9 @@ public class ServerUIController extends Application implements Initializable {
         for(UserConnection conn : observableUserConnections){
             ip = conn.getClientIP();
             if (client.getInetAddress().getHostAddress().equals(ip)){
+                userConnectionData = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"Connected");
+                observableUserConnections.remove(conn);
+                observableUserConnections.add(userConnectionData);
                 return;
             }
         }
@@ -195,10 +178,12 @@ public class ServerUIController extends Application implements Initializable {
     public void removeClientConnection(ConnectionToClient client){ // TODO: add disconnected string when client disconnects
         UserConnection userConnectionData;
         String ip = "";
+        UserConnection connection = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"disconnected");
         for(UserConnection conn : observableUserConnections){
             ip = conn.getClientIP();
             if (client.getInetAddress().getHostAddress().equals(ip)){
                 observableUserConnections.remove(conn);
+                observableUserConnections.add(connection);
             }
         }
     }

@@ -177,7 +177,7 @@ public class MysqlController {
 			stmt.setString(9,user.getDepartment());
 			stmt.executeUpdate();
 
-			if(checkUserAdded(user.getId())){
+			if(checkUserExists(user.getId())){
 				return true;
 			}
 			return false;
@@ -188,7 +188,8 @@ public class MysqlController {
 		}
 	}
 
-	private boolean checkUserAdded(String id){
+
+	private boolean checkUserExists(String id){
 		PreparedStatement stmt;
 		ResultSet res;
 		String loginQuery = "SELECT id FROM " + this.dataBasename + ".users WHERE id = ?";
@@ -237,6 +238,7 @@ public class MysqlController {
 	}
 
 	public User logUserIn(ArrayList<String> credentials) {
+		boolean userFound = false;
 		if (credentials == null)
 			throw new NullPointerException();
 
@@ -251,18 +253,21 @@ public class MysqlController {
 			User user = new User();
 
 			while(res.next()){
+				userFound = true;
+				user.setUsername(res.getString("username"));
 				user.setFirstname(res.getString("firstname"));
 				user.setLastname(res.getString("lastname"));
 				user.setId(res.getString("id"));
 				user.setPhonenumber(res.getString("phonenumber"));
 				user.setEmailaddress(res.getString("emailaddress"));
 				user.setDepartment(res.getString("department"));
+				user.setStatus(res.getString("userstatus"));
 			}
-
-			if(setUserLogInStatus(credentials, "1")){
-				return null;
+			setUserLogInStatus(credentials, "1");
+			if(isLoggedIn(credentials) && userFound){
+				return user;
 			}
-			return user;
+			return null;
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 			return null;
@@ -317,6 +322,24 @@ public class MysqlController {
 			return true;
 		}
 	}
+
+	public boolean deleteUser(String id){
+		PreparedStatement stmt;
+		String query = "DELETE FROM " + this.dataBasename + ".users WHERE id=?";
+		if(!checkUserExists(id))
+			return false;
+		try {
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, id);
+			stmt.executeUpdate();
+
+			return !checkUserExists(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }
 
 
@@ -351,10 +374,6 @@ public class MysqlController {
 //			return null;
 //		}
 //	}
-
-
-
-
 
 
 
