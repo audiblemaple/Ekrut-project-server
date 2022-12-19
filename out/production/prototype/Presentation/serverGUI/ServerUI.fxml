@@ -87,7 +87,7 @@
         <columns>
           <TableColumn fx:id="ipColumn" editable="false" prefWidth="89.0" resizable="false" text="IP" />
           <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="95.0" resizable="false" text="Host" />
-            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="76.0" resizable="false" text="Status" />
+            <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="96.0" resizable="false" text="Status" />
         </columns>
       </TableView>
       <Label layoutX="28.0" layoutY="100.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
