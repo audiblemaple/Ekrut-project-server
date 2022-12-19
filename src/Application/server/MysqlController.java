@@ -340,6 +340,29 @@ public class MysqlController {
 		}
 	}
 
+	public ArrayList<String> getMachineIds(){
+		ArrayList<String> machines = new ArrayList<String>();
+		PreparedStatement stmt;
+		ResultSet res;
+		boolean hasResult = false;
+		String loginQuery = "SELECT * FROM " + this.dataBasename + ".machines";
+		try{
+			stmt = connection.prepareStatement(loginQuery);
+			res = stmt.executeQuery();
+
+			while(res.next()){
+				hasResult = true;
+				machines.add(res.getString("machineid"));
+			}
+			if (hasResult)
+				return machines;
+
+			return null;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
 }
 
 

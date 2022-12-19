@@ -11,6 +11,8 @@ public enum MessageFromServer implements Serializable {
     LOGIN_FAILED_ALREADY_LOGGED_IN,         // V
     ERROR_GETTING_MACHINE_PRODUCTS,         // V
     IMPORT_USER_TABLE_SUCCESSFUL,           // TODO
+    IMPORT_MACHINE_ID_SUCCESSFUL,           // V
+    ERROR_IMPORTING_MACHINE_IDS,            // V
     LOGOUT_FAILED_NOT_LOGGED_IN,            // V
     IMPORT_ORDER_TABLE_COMPLETE,            // TODO
     ERROR_ADDING_USER_EXISTS,               // V
@@ -21,6 +23,5 @@ public enum MessageFromServer implements Serializable {
     LOGOUT_SUCCESSFUL,                      // V
     LOGIN_SUCCESSFUL,                       // V
     LOGOUT_ERROR,                           // V
-    LOGIN_ERROR,                            // V
     UNKNOWN_TASK,                           // V
-    }
+}
