@@ -96,6 +96,8 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(machines, MessageFromServer.IMPORT_MACHINE_ID_SUCCESSFUL));
                 break;
 
+
+
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }
