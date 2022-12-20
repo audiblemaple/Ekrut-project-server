@@ -117,7 +117,7 @@ CREATE TABLE `users` (
   `emailaddress` varchar(45) DEFAULT NULL,
   `isloggedin` tinyint(1) NOT NULL DEFAULT '0',
   `userstatus` enum('approved','not approved','frozen') DEFAULT 'not approved',
-  `department` enum('MEMBER','CEO') NOT NULL,
+  `department` enum('member','ceo','customer_service') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`)
@@ -130,7 +130,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('lior','123','lior','jigalo','316109115','0528081434','audiblemaple@gmail.com',0,'approved','MEMBER');
+INSERT INTO `users` VALUES ('dsa','dsa','dsa','dsa','111111111','dsa',NULL,0,'not approved','customer_service'),('avi','123','avi','baguette','123515','0522321455','adsadsa@dsa.com',0,'approved','customer_service'),('fdsfsdf','dsa','dsa','dsa','222222222','dsa',NULL,0,'not approved','customer_service'),('lior','123','lior','jigalo','316109115','0528081434','audiblemaple@gmail.com',0,'approved','member');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +143,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-19  9:08:26
+-- Dump completed on 2022-12-20 17:57:20

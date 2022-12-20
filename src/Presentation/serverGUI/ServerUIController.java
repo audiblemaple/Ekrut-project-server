@@ -26,9 +26,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * this class controls all the server's gui behavior
- *
  * @author Lior Jigalo
+ *  * this class controls all the server's gui behavior
  */
 public class ServerUIController extends Application implements Initializable {
     public static ObservableList<UserConnection> observableUserConnections = FXCollections.observableArrayList();
@@ -64,16 +63,16 @@ public class ServerUIController extends Application implements Initializable {
     private double yoffset;
 
     /**
-     * This method allows us to print output to the server's console.
      * @param msg String a message to display in the servers console.
+     * This method allows us to print output to the server's console.
      */
     public void consolePrint(String msg){
         this.console.appendText(msg);
     }
 
     /**
-     * This method inserts default values to the input fields.
      * @param event ActionEvent fires when clicking on defaultButton.
+     * This method inserts default values to the input fields.
      */
     @FXML
     private void insertDefaultValues(ActionEvent event) {
@@ -107,7 +106,7 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     *This method disconnects the serve from the database, it is also disables disconnectButton, enables all input fields, connectButton and defaultButton.
+     *This method disconnects the server from the database, it is also disables disconnectButton, enables all input fields, connectButton and defaultButton.
      */
     @FXML
     private void disconnectServer(){
@@ -128,8 +127,8 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     * This method closes connection with the database and quits the application.
      * @param event ActionEvent fires when the exit button is clicked
+     * This method closes connection with the database and quits the application.
      */
     @FXML
     private void quitApp(ActionEvent event) {
@@ -141,16 +140,15 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     * This method initializes the tableview and empties server console on screen load
      * @param location  The location used to resolve relative paths for the root object, or
      *                  {@code null} if the location is not known.
      * @param resources The resources used to localize the root object, or {@code null} if
      *                  the root object was not localized.
+     * This method initializes the tableview and empties server console on screen load
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialize tableView to display connections
-        this.console.setText("");
         this.ipColumn.setCellValueFactory(new PropertyValueFactory<>("ClientIP"));
         this.hostNameColumn.setCellValueFactory(new PropertyValueFactory<>("HostName"));
         this.connectionStatusColumn.setCellValueFactory(new PropertyValueFactory<>("ConnectionStatus"));
@@ -160,11 +158,11 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     * This method loads the fxml, starts listening for click and drag events on the main program screen.
      * @param primaryStage the primary stage for this application, onto which
      *                     the application scene can be set.
      *                     Applications may create other stages, if needed, but they will not be
      *                     primary stages.
+     * This method loads the fxml, starts listening for click and drag events on the main program screen.
      */
     @Override
     public void start(Stage primaryStage) {
@@ -199,8 +197,8 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     * This method adds a client connection to the list of connected clients.
      * @param client
+     * This method adds a client connection to the list of connected clients.
      */
     public void addClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
@@ -219,8 +217,8 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     * This method removes a client connection from the list.
      * @param client
+     * * This method removes a client connection from the list.
      */
     public void removeClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
