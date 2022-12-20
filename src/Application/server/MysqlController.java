@@ -22,22 +22,37 @@ public class MysqlController {
 		return sqlInstance;
 	}
 
+	/**
+	 * @param name
+	 */
 	public void setDataBaseName(String name) {
 		this.dataBasename = name;
 	}
 
+	/**
+	 * @param username
+	 */
 	public void setDataBaseUsername(String username) {
 		this.dataBaseusername = username;
 	}
 
+	/**
+	 * @param password
+	 */
 	public void setDataBasePassword(String password) {
 		this.dataBasepassword = password;
 	}
 
+	/**
+	 * @param IP
+	 */
 	public void setDataBaseIP(String IP) {
 		this.IP = IP;
 	}
 
+	/**
+	 * @return
+	 */
 	public  String connectDataBase(){
 		String returnStatement = "";
 		try {
@@ -62,6 +77,9 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	private int getUserNum(){
 		String query = "SELECT COUNT(*) FROM " + this.dataBasename + ".user";
 		try{
@@ -77,8 +95,10 @@ public class MysqlController {
 	}
 
 
-
-
+	/**
+	 * @param machineId
+	 * @return
+	 */
 	public ArrayList<Product> getAllProductsForMachine(String machineId){
 		if (machineId == null)
 			throw new NullPointerException();
@@ -107,6 +127,9 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public ArrayList<Product> getAllProductsForAllMachines(){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -133,10 +156,14 @@ public class MysqlController {
 	}
 
 
+	/**
+	 * @param user
+	 * @return
+	 */
 	public String dataExists(User user){
 		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT * FROM " + this.dataBasename + ".users WHERE username = ? AND id = ?";
+		String query = "SELECT * FROM " + this.dataBasename + ".users WHERE username = ? OR id = ?";
 
 		try{
 			stmt = connection.prepareStatement(query);
@@ -151,7 +178,7 @@ public class MysqlController {
 					return "username already exists.";
 				}
 				if (temp.getId().equals(user.getId())){
-					return "id is already exists.";
+					return "id already exists.";
 				}
 			}
 			return "";
@@ -161,6 +188,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @param user
+	 * @return
+	 */
 	public boolean addUser(User user){
 		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress, isloggedin, department) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
@@ -189,6 +220,10 @@ public class MysqlController {
 	}
 
 
+	/**
+	 * @param id
+	 * @return
+	 */
 	private boolean checkUserExists(String id){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -215,7 +250,9 @@ public class MysqlController {
 	}
 
 
-
+	/**
+	 *
+	 */
 	protected void disconnect(){
 		try{
 			connection.close();
@@ -224,10 +261,16 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public Connection getConnection(){
 		return this.connection;
 	}
 
+	/**
+	 * @return
+	 */
 	protected String getName(){
 		try{
 			return connection.getCatalog();
@@ -237,6 +280,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @param credentials
+	 * @return
+	 */
 	public User logUserIn(ArrayList<String> credentials) {
 		boolean userFound = false;
 		if (credentials == null)
@@ -274,6 +321,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @param credentials
+	 * @return
+	 */
 	public boolean logUserOut(ArrayList<String> credentials){
 		if (credentials == null)
 			throw  new NullPointerException();
@@ -283,6 +334,11 @@ public class MysqlController {
 		return true;
 	}
 
+	/**
+	 * @param credentials
+	 * @param status
+	 * @return
+	 */
 	public boolean setUserLogInStatus(ArrayList<String> credentials, String status){
 		PreparedStatement stmt;
 		String setLoginStatusQuery = "UPDATE " + this.dataBasename + ".users SET isloggedin = ? WHERE username = ?";
@@ -298,6 +354,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @param credentials
+	 * @return
+	 */
 	public boolean isLoggedIn(ArrayList<String> credentials){
 		if (credentials == null)
 			throw new NullPointerException();
@@ -323,6 +383,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * @param id
+	 * @return
+	 */
 	public boolean deleteUser(String id){
 		PreparedStatement stmt;
 		String query = "DELETE FROM " + this.dataBasename + ".users WHERE id=?";
@@ -340,12 +404,16 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * @return
+	 */
 	public ArrayList<String> getMachineIds(){
 		ArrayList<String> machines = new ArrayList<String>();
 		PreparedStatement stmt;
 		ResultSet res;
 		boolean hasResult = false;
-		String loginQuery = "SELECT * FROM " + this.dataBasename + ".machines";
+		String loginQuery = "SELECT * FROM " + this.dataBasename + ".machines"; // TODO: add only machine id field
 		try{
 			stmt = connection.prepareStatement(loginQuery);
 			res = stmt.executeQuery();

@@ -15,6 +15,11 @@ public class MessageHandler {
     private static MysqlController mysqlcontroller = MysqlController.getSQLInstance();
     private static ArrayList<String> userLogInCredentials;
     private static User userData;
+
+    /**
+     * @param clientMessage
+     * @param client
+     */
     public static void handleMessage(Object clientMessage, ConnectionToClient client){
         // if got null return unknown task
         if (clientMessage == null){
@@ -66,7 +71,6 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_ADD_USER":
-
                 String result = mysqlcontroller.dataExists((User) message.getData());
                 if(!result.equals("")){
                     sendMessageToClient(client, new Message(result, MessageFromServer.ERROR_ADDING_USER_EXISTS));
@@ -97,13 +101,16 @@ public class MessageHandler {
                 break;
 
 
-
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }
     }
 
 
+    /**
+     * @param client
+     * @param message
+     */
     private static void sendMessageToClient(ConnectionToClient client, Message message){
         try {
             client.sendToClient(message);

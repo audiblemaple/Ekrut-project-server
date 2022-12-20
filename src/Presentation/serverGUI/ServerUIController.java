@@ -58,10 +58,16 @@ public class ServerUIController extends Application implements Initializable {
     private double xoffset;
     private double yoffset;
 
+    /**
+     * @param msg
+     */
     public void consolePrint(String msg){
         this.console.appendText(msg);
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void insertDefaultValues(ActionEvent event) {
         ipField.setText("localhost");
@@ -70,6 +76,9 @@ public class ServerUIController extends Application implements Initializable {
         dbNameField.setText("ekrutdatabase");
     }
 
+    /**
+     *
+     */
     @FXML
     void connectServer() {
         if(ipField.getText().equals("") ||  usernameField.getText().equals("") || passwordField.getText().equals("") || dbNameField.getText().equals("")){
@@ -89,6 +98,9 @@ public class ServerUIController extends Application implements Initializable {
         this.passwordField.setDisable(true);
     }
 
+    /**
+     *
+     */
     @FXML
     private void disconnectServer(){
         ServerUI.shutdownServer();
@@ -107,6 +119,9 @@ public class ServerUIController extends Application implements Initializable {
         this.passwordField.setDisable(false);
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void quitApp(ActionEvent event) {
         if(!disconnectButton.isDisabled())
@@ -116,6 +131,12 @@ public class ServerUIController extends Application implements Initializable {
         System.exit(0);
     }
 
+    /**
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialize tableView to display connections
@@ -127,6 +148,12 @@ public class ServerUIController extends Application implements Initializable {
         this.connectionList.setPlaceholder(new Label(""));
     }
 
+    /**
+     * @param primaryStage the primary stage for this application, onto which
+     *                     the application scene can be set.
+     *                     Applications may create other stages, if needed, but they will not be
+     *                     primary stages.
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -159,6 +186,9 @@ public class ServerUIController extends Application implements Initializable {
         }
     }
 
+    /**
+     * @param client
+     */
     public void addClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
         String ip = "";
@@ -175,6 +205,9 @@ public class ServerUIController extends Application implements Initializable {
         observableUserConnections.add(userConnectionData);
     }
 
+    /**
+     * @param client
+     */
     public void removeClientConnection(ConnectionToClient client){ // TODO: add disconnected string when client disconnects
         UserConnection userConnectionData;
         String ip = "";

@@ -12,6 +12,10 @@ public class ServerController extends AbstractServer {
   public ServerUIController serverUI;
   private MysqlController sqlController;
 
+    /**
+     * @param port
+     * @param primaryStage
+     */
   //Constructors ****************************************************
   public ServerController(int port, Stage primaryStage) {
       super(port);
@@ -24,10 +28,16 @@ public class ServerController extends AbstractServer {
       }
   }
 
+    /**
+     *
+     */
   protected void serverStarted() {
       System.out.println("Server listening for connections on port " + getPort());
   }
 
+    /**
+     *
+     */
   protected void serverStopped() {
       try{
           close();
@@ -37,6 +47,9 @@ public class ServerController extends AbstractServer {
       }
   }
 
+    /**
+     * @param client the connection connected to the client.
+     */
     // listen for client connections, this method is called when a client is connected
     @Override
     protected void clientConnected(ConnectionToClient client) {
@@ -44,11 +57,19 @@ public class ServerController extends AbstractServer {
         this.serverUI.addClientConnection(client);
     }
 
+    /**
+     * @param client
+     */
     // this method
     private void disconnectClient(ConnectionToClient client){
         this.serverUI.removeClientConnection(client);
     }
 
+    /**
+     * @param msg    the message sent.
+     * @param client the connection connected to the client that
+     *               sent the message.
+     */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         // TODO: add printing requests to console
         if (msg instanceof String){
@@ -61,6 +82,11 @@ public class ServerController extends AbstractServer {
         MessageHandler.handleMessage(msg, client);
 
     }
+
+    /**
+     * @param client
+     * @param message
+     */
     private void sendMessageToClient(ConnectionToClient client , String message){
         try{
             client.sendToClient(message);
@@ -70,6 +96,10 @@ public class ServerController extends AbstractServer {
         }
     }
 
+    /**
+     * @param client
+     * @param message
+     */
     private void sendMessageToClient(ConnectionToClient client , Object message){
         try{
             client.sendToClient(message);

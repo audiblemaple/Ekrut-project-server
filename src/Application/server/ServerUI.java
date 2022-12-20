@@ -7,11 +7,25 @@ import java.io.IOException;
 public class ServerUI extends Application {
     private static ServerController serverController;
     private static MysqlController mysqlController;
+
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
     // starting the server
+
+    /**
+     * 
+     * @param IP
+     * @param name
+     * @param username
+     * @param password
+     * @return
+     */
     public static String startServer(String IP, String name, String username, String password){
         String serverResponse = "";
         String dataBaseResponse = "";
@@ -36,6 +50,10 @@ public class ServerUI extends Application {
     }
 
     // shutting down the server
+
+    /**
+     *
+     */
     public static void shutdownServer() {
         try{
             serverController.close();
@@ -46,6 +64,15 @@ public class ServerUI extends Application {
     }
 
     // starting the whole application
+
+    /**
+     *
+     * @param primaryStage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         serverController = new ServerController(5555, primaryStage);
