@@ -25,6 +25,11 @@ import javafx.stage.StageStyle;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * this class controls all the server's gui behavior
+ *
+ * @author Lior Jigalo
+ */
 public class ServerUIController extends Application implements Initializable {
     public static ObservableList<UserConnection> observableUserConnections = FXCollections.observableArrayList();
     @FXML // fx:id="defaultButton"
@@ -59,14 +64,16 @@ public class ServerUIController extends Application implements Initializable {
     private double yoffset;
 
     /**
-     * @param msg
+     * This method allows us to print output to the server's console.
+     * @param msg String a message to display in the servers console.
      */
     public void consolePrint(String msg){
         this.console.appendText(msg);
     }
 
     /**
-     * @param event
+     * This method inserts default values to the input fields.
+     * @param event ActionEvent fires when clicking on defaultButton.
      */
     @FXML
     private void insertDefaultValues(ActionEvent event) {
@@ -77,7 +84,8 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     *
+     * This method connects the server to the database, for this it needs four key parameters: database username, password, ip and name (schema name).
+     * This method also enables disconnectButton, disables all input fields, connectButton and defaultButton.
      */
     @FXML
     void connectServer() {
@@ -99,7 +107,7 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     *
+     *This method disconnects the serve from the database, it is also disables disconnectButton, enables all input fields, connectButton and defaultButton.
      */
     @FXML
     private void disconnectServer(){
@@ -120,7 +128,8 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
-     * @param event
+     * This method closes connection with the database and quits the application.
+     * @param event ActionEvent fires when the exit button is clicked
      */
     @FXML
     private void quitApp(ActionEvent event) {
@@ -132,6 +141,7 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
+     * This method initializes the tableview and empties server console on screen load
      * @param location  The location used to resolve relative paths for the root object, or
      *                  {@code null} if the location is not known.
      * @param resources The resources used to localize the root object, or {@code null} if
@@ -140,6 +150,7 @@ public class ServerUIController extends Application implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialize tableView to display connections
+        this.console.setText("");
         this.ipColumn.setCellValueFactory(new PropertyValueFactory<>("ClientIP"));
         this.hostNameColumn.setCellValueFactory(new PropertyValueFactory<>("HostName"));
         this.connectionStatusColumn.setCellValueFactory(new PropertyValueFactory<>("ConnectionStatus"));
@@ -149,6 +160,7 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
+     * This method loads the fxml, starts listening for click and drag events on the main program screen.
      * @param primaryStage the primary stage for this application, onto which
      *                     the application scene can be set.
      *                     Applications may create other stages, if needed, but they will not be
@@ -187,6 +199,7 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
+     * This method adds a client connection to the list of connected clients.
      * @param client
      */
     public void addClientConnection(ConnectionToClient client){
@@ -206,9 +219,10 @@ public class ServerUIController extends Application implements Initializable {
     }
 
     /**
+     * This method removes a client connection from the list.
      * @param client
      */
-    public void removeClientConnection(ConnectionToClient client){ // TODO: add disconnected string when client disconnects
+    public void removeClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
         String ip = "";
         UserConnection connection = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"disconnected");
