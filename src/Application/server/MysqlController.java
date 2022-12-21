@@ -8,6 +8,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 
+/**
+ * @author Lior Jigalo
+ * This class communcates with the database.
+ */
 public class MysqlController {
 	private static MysqlController sqlInstance = null;
 	private String dataBasename;
@@ -16,42 +20,38 @@ public class MysqlController {
 	private String IP;
 	private Connection connection;
 
+	/**
+	 * @return a single instance of this class.
+	 * This method allows to get an instance of this Singleton class.
+	 */
 	public static MysqlController getSQLInstance(){
 		if (sqlInstance == null)
 			sqlInstance = new MysqlController();
 		return sqlInstance;
 	}
 
-	/**
-	 * @param name
-	 */
+
 	public void setDataBaseName(String name) {
 		this.dataBasename = name;
 	}
 
-	/**
-	 * @param username
-	 */
+
 	public void setDataBaseUsername(String username) {
 		this.dataBaseusername = username;
 	}
 
-	/**
-	 * @param password
-	 */
+
 	public void setDataBasePassword(String password) {
 		this.dataBasepassword = password;
 	}
 
-	/**
-	 * @param IP
-	 */
 	public void setDataBaseIP(String IP) {
 		this.IP = IP;
 	}
 
 	/**
-	 * @return
+	 * @return returns connection message from database.
+	 * This method connects MysqlController to the database.
 	 */
 	public  String connectDataBase(){
 		String returnStatement = "";
@@ -78,7 +78,8 @@ public class MysqlController {
 	}
 
 	/**
-	 * @return
+	 * @return number of users in the database.
+	 * This method counts the number of users in the users table and returns it.
 	 */
 	private int getUserNum(){
 		String query = "SELECT COUNT(*) FROM " + this.dataBasename + ".user";
@@ -96,8 +97,9 @@ public class MysqlController {
 
 
 	/**
-	 * @param machineId
-	 * @return
+	 * @param machineId id of a specific machine in the database.
+	 * @return Arraylist of products in a specific machine.
+	 * This method finds all products that belong to a specific machine id.
 	 */
 	public ArrayList<Product> getAllProductsForMachine(String machineId){
 		if (machineId == null)
@@ -128,7 +130,8 @@ public class MysqlController {
 	}
 
 	/**
-	 * @return
+	 * @return Arraylist of all products from all machines.
+	 * This method finds all products from all machines.
 	 */
 	public ArrayList<Product> getAllProductsForAllMachines(){
 		PreparedStatement stmt;
@@ -157,8 +160,9 @@ public class MysqlController {
 
 
 	/**
-	 * @param user
-	 * @return
+	 * @param user whom existence is needed to be checked
+	 * @return if exists return error message, else an empty string.
+	 * This method checks if id or username of the given user already exists ind the database.
 	 */
 	public String dataExists(User user){
 		PreparedStatement stmt;
@@ -189,8 +193,9 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param user
-	 * @return
+	 * @param user to add to the database.
+	 * @return true on success, false on fail.
+	 * This method adds a new user to the database from parameter.
 	 */
 	public boolean addUser(User user){
 		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress, isloggedin, department) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -221,8 +226,9 @@ public class MysqlController {
 
 
 	/**
-	 * @param id
-	 * @return
+	 * @param id to check if exists in the database.
+	 * @return true if exists, false if not exists.
+	 * This method checks if an id exists in the user table.
 	 */
 	private boolean checkUserExists(String id){
 		PreparedStatement stmt;
@@ -251,7 +257,7 @@ public class MysqlController {
 
 
 	/**
-	 *
+	 * This method disconnects the class from the database.
 	 */
 	protected void disconnect(){
 		try{
@@ -261,15 +267,9 @@ public class MysqlController {
 		}
 	}
 
-	/**
-	 * @return
-	 */
-	public Connection getConnection(){
-		return this.connection;
-	}
 
 	/**
-	 * @return
+	 * @return database name.
 	 */
 	protected String getName(){
 		try{
@@ -281,8 +281,9 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param credentials
-	 * @return
+	 * @param credentials to check if exist in the user table.
+	 * @return on success: user object with all user data but the password, null on fail.
+	 * This method checks if username and password exist in the users table.
 	 */
 	public User logUserIn(ArrayList<String> credentials) {
 		boolean userFound = false;
@@ -322,8 +323,9 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param credentials
-	 * @return
+	 * @param credentials username to use to log the user out.
+	 * @return false on fail, true on success.
+	 * This method logs out the user.
 	 */
 	public boolean logUserOut(ArrayList<String> credentials){
 		if (credentials == null)
@@ -335,9 +337,10 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param credentials
-	 * @param status
-	 * @return
+	 * @param credentials to user to find the user
+	 * @param status to set in user table.
+	 * @return true on success, false on SQLException.
+	 * This method sets user login status to the parameter value.
 	 */
 	public boolean setUserLogInStatus(ArrayList<String> credentials, String status){
 		PreparedStatement stmt;
@@ -355,8 +358,9 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param credentials
-	 * @return
+	 * @param credentials to check if user is logged in.
+	 * @return true if logged in, else false.
+	 * This method checks users isloggedin value in user table.
 	 */
 	public boolean isLoggedIn(ArrayList<String> credentials){
 		if (credentials == null)
@@ -374,7 +378,7 @@ public class MysqlController {
 			while (res.next()){
 				expected = res.getString("isloggedin");
 			}
-			// if equals 1 then logged in.
+			// true if logged in.
 			return expected.equals("1");
 
 		}catch (SQLException sqlException){
@@ -384,8 +388,9 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param id
-	 * @return
+	 * @param id to find user.
+	 * @return true on success, else false.
+	 * This method deletes the given user using the id.
 	 */
 	public boolean deleteUser(String id){
 		PreparedStatement stmt;
@@ -406,7 +411,8 @@ public class MysqlController {
 
 
 	/**
-	 * @return
+	 * @return Arraylist of all machine ids.
+	 * This method gets all machine ids from machines table.
 	 */
 	public ArrayList<String> getMachineIds(){
 		ArrayList<String> machines = new ArrayList<String>();

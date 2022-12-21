@@ -11,14 +11,19 @@ import common.orders.Product;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * @author Lior Jigalo
+ * This class handles messages from the client.
+ */
 public class MessageHandler {
     private static MysqlController mysqlcontroller = MysqlController.getSQLInstance();
     private static ArrayList<String> userLogInCredentials;
     private static User userData;
 
     /**
-     * @param clientMessage
-     * @param client
+     * @param clientMessage message from the client.
+     * @param client        client to respond to.
+     * This method handles the message from the client.
      */
     public static void handleMessage(Object clientMessage, ConnectionToClient client){
         // if got null return unknown task
@@ -106,10 +111,10 @@ public class MessageHandler {
         }
     }
 
-
     /**
-     * @param client
-     * @param message
+     * @param client    the client to send the message to.
+     * @param message   the message to send to the client.
+     * This method sends a message to the client passed as a parameter.
      */
     private static void sendMessageToClient(ConnectionToClient client, Message message){
         try {

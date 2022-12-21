@@ -7,6 +7,10 @@ import Presentation.serverGUI.ServerUIController;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+/**
+ * @author Lior Jigalo
+ * This class controlls the server, and allows us to send and recieve messages from the client.
+ */
 public class ServerController extends AbstractServer {
   //Class fields *************************************************
   public ServerUIController serverUI;
@@ -15,6 +19,8 @@ public class ServerController extends AbstractServer {
     /**
      * @param port
      * @param primaryStage
+     * This is the constructor for the server controller.
+     * It initializes the MysqlController and serverUIController.
      */
   //Constructors ****************************************************
   public ServerController(int port, Stage primaryStage) {
@@ -29,14 +35,14 @@ public class ServerController extends AbstractServer {
   }
 
     /**
-     *
+     *This method gets hooked when the server starts listening for connections.
      */
   protected void serverStarted() {
       System.out.println("Server listening for connections on port " + getPort());
   }
 
     /**
-     *
+     *This message gets hooked when the server is stopped.
      */
   protected void serverStopped() {
       try{
@@ -49,6 +55,7 @@ public class ServerController extends AbstractServer {
 
     /**
      * @param client the connection connected to the client.
+     * This method gets hooked when a client is connected.
      */
     // listen for client connections, this method is called when a client is connected
     @Override
@@ -59,6 +66,7 @@ public class ServerController extends AbstractServer {
 
     /**
      * @param client
+     * This method calls the removeClientConnection in ServerUIController because the clientDisconnected method of the OCSF framework is broken.
      */
     // this method
     private void disconnectClient(ConnectionToClient client){
@@ -67,8 +75,8 @@ public class ServerController extends AbstractServer {
 
     /**
      * @param msg    the message sent.
-     * @param client the connection connected to the client that
-     *               sent the message.
+     * @param client the connection connected to the client that sent the message.
+     * This message handles the message from the client.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         // TODO: add printing requests to console
@@ -84,23 +92,11 @@ public class ServerController extends AbstractServer {
     }
 
     /**
-     * @param client
-     * @param message
+     * @param client    the client to send the message to.
+     * @param message   the message to send to the client.
+     * This method sends a message to the client passed as a parameter.
      */
     private void sendMessageToClient(ConnectionToClient client , String message){
-        try{
-            client.sendToClient(message);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param client
-     * @param message
-     */
-    private void sendMessageToClient(ConnectionToClient client , Object message){
         try{
             client.sendToClient(message);
         }
