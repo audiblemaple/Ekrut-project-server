@@ -315,10 +315,12 @@ public class MysqlController {
 				user.setDepartment(res.getString("department"));
 				user.setStatus(res.getString("userstatus"));
 			}
-			if(isLoggedIn(credentials) && userFound){
+
+			if (userFound)
 				setUserLogInStatus(credentials, "1");
+			if(isLoggedIn(credentials) && userFound)
 				return user;
-			}
+
 			return null;
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
