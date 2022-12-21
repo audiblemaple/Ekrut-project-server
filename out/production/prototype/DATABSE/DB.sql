@@ -82,7 +82,7 @@ CREATE TABLE `products` (
   `productid` varchar(50) NOT NULL,
   `name` varchar(45) NOT NULL,
   `price` float NOT NULL,
-  `discount` float DEFAULT NULL,
+  `discount` float DEFAULT '0',
   `amount` int DEFAULT NULL,
   `machineid` varchar(45) DEFAULT NULL,
   `description` varchar(45) DEFAULT NULL,
@@ -98,6 +98,30 @@ LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
 INSERT INTO `products` VALUES ('1','Snickers',5.5,0.1,13,'HA01','Snickers'),('2','SnickersPeanutButter',7,NULL,10,'HA01','Snickers creamy \\nwith peanut butter ');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `productsinmachines`
+--
+
+DROP TABLE IF EXISTS `productsinmachines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `productsinmachines` (
+  `machineid` varchar(20) NOT NULL,
+  `productid` varchar(45) NOT NULL,
+  `amount` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`machineid`,`productid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `productsinmachines`
+--
+
+LOCK TABLES `productsinmachines` WRITE;
+/*!40000 ALTER TABLE `productsinmachines` DISABLE KEYS */;
+/*!40000 ALTER TABLE `productsinmachines` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -130,7 +154,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('dsa','dsa','dsa','dsa','111111111','dsa',NULL,0,'not approved','customer_service'),('avi','123','avi','baguette','123515','0522321455','adsadsa@dsa.com',0,'approved','customer_service'),('fdsfsdf','dsa','dsa','dsa','222222222','dsa',NULL,0,'not approved','customer_service'),('lior','123','lior','jigalo','316109115','0528081434','audiblemaple@gmail.com',0,'approved','member');
+INSERT INTO `users` VALUES ('ravid','123','ravid','goldin','222222222','0548889990','dsad@dsad.com',1,'approved','ceo'),('lior','123','lior','jigalo','316109115','0528081434','audiblemaple@gmail.com',1,'approved','member'),('avi','123','avi','baguette','333333333','0252324412','sdad@ds.com',0,'approved','customer_service');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +167,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-20 17:57:20
+-- Dump completed on 2022-12-21 14:10:58

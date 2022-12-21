@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype_jar/prototype.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/Application/server/mysql-connector-java-8.0.13.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx-swt.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.base.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.controls.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.fxml.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.media.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.swing.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/javafx.web.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/prototype/prototype.jar"/>
+	<classpathentry kind="output" path="out/production/prototype"/>
+</classpath>

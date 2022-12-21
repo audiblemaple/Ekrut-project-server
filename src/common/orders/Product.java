@@ -3,7 +3,8 @@ package common.orders;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-    private float price;
+	private String productid;
+	private float price;
     private float discount;
     private String name;
     private int amount;
@@ -12,14 +13,23 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(float price, float discount, String name, int amount, String description) {
-        this.price = price;
+    public Product(String productid, float price, float discount, String name, int amount, String description) {
+        this.productid = productid;
+    	this.price = price;
         this.discount = discount;
         this.name = name;
         this.amount = amount;
         this.description = description;
     }
+    
+    public String getProductId() {
+        return productid;
+    }
 
+    public void setProductId(String id) {
+        this.productid = productid;
+    }
+    
     public float getPrice() {
         return price;
     }
