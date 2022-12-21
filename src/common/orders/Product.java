@@ -3,33 +3,29 @@ package common.orders;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-	private String productid;
-	private float price;
+    private float price;
     private float discount;
     private String name;
     private int amount;
     private String description;
+    private String type;
+    private String productId;
 
+    //TODO: add a file or byte array.
     public Product() {
     }
 
-    public Product(String productid, float price, float discount, String name, int amount, String description) {
-        this.productid = productid;
-    	this.price = price;
+    public Product(float price, float discount, String name, int amount, String description, String type, String productId) {
+        this.price = price;
         this.discount = discount;
         this.name = name;
         this.amount = amount;
         this.description = description;
-    }
-    
-    public String getProductId() {
-        return productid;
+        this.type = type;
+        this.productId = productId;
+
     }
 
-    public void setProductId(String id) {
-        this.productid = productid;
-    }
-    
     public float getPrice() {
         return price;
     }
@@ -68,5 +64,21 @@ public class Product implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

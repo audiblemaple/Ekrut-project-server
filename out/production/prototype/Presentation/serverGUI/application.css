@@ -1,0 +1,144 @@
+/* Server CSS Stylesheet*/
+.root{
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-color1: rgba(0, 247, 255, 0.2);
+    -fx-color2: rgba(255, 0, 183, 0.2);
+    -fx-color3: rgba(0, 255, 255, 0.7);
+    -fx-color4: rgba(255, 0, 111, 0.7);
+    -fx-color5: rgba(162, 162, 162, 0.9);
+    -fx-color6: rgba(178, 178, 178, 0.9);
+}
+
+#pane{
+    -fx-background-image: url("server.png");
+    -fx-background-color: transparent;
+    -fx-background-repeat: stretch;
+    -fx-background-size: 120%;
+    -fx-background-position: center center;
+}
+
+
+/*********************************buton style************************************************/
+.button{
+    -fx-background-color: linear-gradient(to top, -fx-color6,  -fx-color5);
+    -fx-font-size: 18px;
+}
+.button: hover{
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-scale-z: 1.03;
+    -fx-font-size: 19px;
+}
+/********************************************************************************************/
+
+
+/****************************text field style*************************************************/
+.text-field{
+    -fx-text-box-border: transparent;
+    -fx-background-color: linear-gradient(to left bottom, -fx-color5,  -fx-color6);
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: #707070;
+}
+.text-field: disabled{
+    -fx-opacity: 60%;
+}
+/********************************************************************************************/
+
+
+
+
+/****************************text area style*************************************************/
+.text-area {
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-base: transparent;
+    -fx-opacity: 60%;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-border-radius: 10px;
+    -fx-base-border-radius: 10px;
+}
+.text-area .content {
+    -fx-background-color: linear-gradient(to left top, -fx-color5,  -fx-color6);
+    -fx-cursor: default;
+}
+.text-area:focused .content {
+    -fx-background-color: linear-gradient(to left top, -fx-color5, -fx-color6);
+}
+.text-area .content {
+    -fx-padding: 10px;
+    -fx-text-fill: gray;
+    -fx-highlight-fill: #7ecfff;
+}
+/********************************************************************************************/
+
+
+
+/****************************tableview style*************************************************/
+
+
+.table-view{
+    -fx-background-color: transparent;
+    -fx-opacity: 80%;
+    -fx-border-radius: 10;
+}
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to left top, -fx-color6,  -fx-color5);
+    -fx-background-radius: 7px 7px 0px 0px;
+    /*-fx-background-insets: 0 11px 0 0;*/
+    -fx-padding: 0 0 5px 0;
+}
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 10px;
+}
+.table-row-cell: hover {
+    -fx-background-color: #93f9b911;
+    -fx-text-background-color: #02f8f8;
+}
+.table-row-cell: odd{
+    -fx-background-color:  rgba(165, 245, 205, 0.27);
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+.table-row-cell: even{
+    -fx-background-color: rgba(56, 77, 75, 0.27);
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+
+.table-view .virtual-flow .scroll-bar:vertical,
+.table-view .virtual-flow .scroll-bar:vertical .track,
+.table-view .virtual-flow .scroll-bar:vertical .track-background,
+.table-view .virtual-flow .scroll-bar:horizontal,
+.table-view .virtual-flow .scroll-bar:horizontal .track,
+.table-view .virtual-flow .scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+}
+.table-view .virtual-flow .scroll-bar .increment-button,
+.table-view .virtual-flow .scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 2;
+}
+.table-view .virtual-flow .scroll-bar:vertical .thumb{
+    -fx-background-color:  linear-gradient(to left top, -fx-color6, -fx-color5);
+}
+.table-view .virtual-flow .scroll-bar:horizontal .thumb {
+    -fx-background-color:  linear-gradient(to left top, -fx-color6,  -fx-color5);
+}
+.table-row-cell: highlighted {
+    -fx-background-color: #f602bc;
+    -fx-background-radius: 15px;
+}
+/**************************************************************************************************/
