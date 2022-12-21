@@ -113,13 +113,15 @@ public class MysqlController {
 			stmt = connection.prepareStatement(loginQuery);
 			stmt.setString(1, machineId);
 			res = stmt.executeQuery();
-			Product product = new Product();
 
 			while(res.next()){
+				Product product = new Product();
+				product.setProductId(res.getString("productid"));
 				product.setName(res.getString("name"));
 				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
 				product.setAmount(res.getInt("amount"));
+				product.setDescription(res.getString("description"));
 				productList.add(product);
 			}
 			return productList;
@@ -128,6 +130,7 @@ public class MysqlController {
 			return null;
 		}
 	}
+
 
 	/**
 	 * @return Arraylist of all products from all machines.
@@ -144,6 +147,7 @@ public class MysqlController {
 
 			while(res.next()){
 				Product product = new Product();
+				product.setProductId(res.getString("productid"));
 				product.setName(res.getString("name"));
 				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
