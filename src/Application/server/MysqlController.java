@@ -122,6 +122,7 @@ public class MysqlController {
 				product.setDiscount(res.getFloat("discount"));
 				product.setAmount(res.getInt("amount"));
 				product.setDescription(res.getString("description"));
+				product.setType(res.getString("type"));
 				productList.add(product);
 			}
 			return productList;
@@ -153,6 +154,8 @@ public class MysqlController {
 				product.setDiscount(res.getFloat("discount"));
 				product.setAmount(res.getInt("amount"));
 				product.setDescription(res.getString("description"));
+				product.setType(res.getString("type"));
+
 				productList.add(product);
 			}
 			return productList;
