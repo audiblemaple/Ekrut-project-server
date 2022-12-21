@@ -315,8 +315,8 @@ public class MysqlController {
 				user.setDepartment(res.getString("department"));
 				user.setStatus(res.getString("userstatus"));
 			}
-			setUserLogInStatus(credentials, "1");
 			if(isLoggedIn(credentials) && userFound){
+				setUserLogInStatus(credentials, "1");
 				return user;
 			}
 			return null;
