@@ -419,9 +419,9 @@ public class MysqlController {
 		PreparedStatement stmt;
 		ResultSet res;
 		boolean hasResult = false;
-		String loginQuery = "SELECT * FROM " + this.dataBasename + ".machines"; // TODO: add only machine id field
+		String query = "SELECT * FROM " + this.dataBasename + ".machines"; // TODO: add only machine id field
 		try{
-			stmt = connection.prepareStatement(loginQuery);
+			stmt = connection.prepareStatement(query);
 			res = stmt.executeQuery();
 
 			while(res.next()){
