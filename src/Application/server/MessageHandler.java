@@ -103,6 +103,15 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(machines, MessageFromServer.IMPORT_MACHINE_ID_SUCCESSFUL));
                 break;
 
+            case"REQUEST_WAREHOUSE_PRODUCTS":
+                productList = mysqlcontroller.getWarehouseProducts();
+                if(productList != null){
+                    sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_WAREHOUSE_PRODUCTS_SUCCESSFUL));
+                    break;
+                }
+                // TODO: here you need to handle the pictures same as above.
+                sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_WAREHOUSE_PRODUCTS));
+                break;
 
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));

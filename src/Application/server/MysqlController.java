@@ -109,6 +109,9 @@ public class MysqlController {
 		if (machineId == null)
 			throw new NullPointerException();
 
+		if (machineId == null)
+			throw new NullPointerException();
+
 		PreparedStatement stmt;
 		ResultSet res;
 		String query;
@@ -174,6 +177,73 @@ public class MysqlController {
 		}
 	}
 
+	public ArrayList<Product> getWarehouseProducts(){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<Product> productList = new ArrayList<Product>();
+		boolean resultFound = false;
+		// choose if we need all products or a specific machine
+
+		query = "SELECT * FROM " + this.dataBasename + ".warehouse"; // TODO: change
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+			ResultSet productRes = null;
+			File file = null;
+			while(res.next()){
+				resultFound = true;
+				Product product = new Product();
+				productRes = getProductData(res.getString("productid"));
+				// add product info from products in table
+				product.setProductId(res.getString("productid"));
+				product.setDiscount(res.getFloat("discount"));
+				product.setAmount(res.getInt("amount"));
+				product.setCriticalAmount(res.getInt("criticalamount"));
+				if (productRes == null){
+					System.out.println("product " + productRes + "is null");
+					continue;
+				}
+				while (productRes.next()){
+					// add specific  product info from products table
+					product.setName(productRes.getString("name"));
+					product.setPrice(productRes.getFloat("price"));
+					product.setDescription(productRes.getString("description"));
+					product.setType(productRes.getString("type"));
+
+					// create file and streams
+					Path path = Paths.get("src/Application/images/", productRes.getString("name") + ".png");
+					file = new File(path.toUri());
+					FileInputStream fis = null;
+					try {
+						fis = new FileInputStream(file);
+						byte[] outputFile = new byte[(int)file.length()];
+						BufferedInputStream bis = new BufferedInputStream(fis);
+						bis.read(outputFile,0,outputFile.length);
+						// add file to product object
+						product.setFile(outputFile);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+				productList.add(product);
+			}
+			if (resultFound)
+				return productList;
+			return null;
+
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+
+	/**
+	 * @param productId
+	 * @return
+	 */
 	private ResultSet getProductData(String productId){
 		if (productId == null)
 			throw new NullPointerException();
@@ -193,39 +263,6 @@ public class MysqlController {
 			return null;
 		}
 	}
-
-
-//	/**
-//	 * @return Arraylist of all products from all machines.
-//	 * This method finds all products from all machines.
-//	 */
-//	public ArrayList<Product> getAllProductsForAllMachines(){
-//		PreparedStatement stmt;
-//		ResultSet res;
-//		String loginQuery = "SELECT * FROM " + this.dataBasename + ".products";
-//		ArrayList<Product> productList = new ArrayList<Product>();
-//		try{
-//			stmt = connection.prepareStatement(loginQuery);
-//			res = stmt.executeQuery();
-//
-//			while(res.next()){
-//				Product product = new Product();
-//				product.setProductId(res.getString("productid"));
-//				product.setName(res.getString("name"));
-//				product.setPrice(res.getFloat("price"));
-//				product.setDiscount(res.getFloat("discount"));
-//				product.setAmount(res.getInt("amount"));
-//				product.setDescription(res.getString("description"));
-//				product.setType(res.getString("type"));
-//
-//				productList.add(product);
-//			}
-//			return productList;
-//		}catch (SQLException sqlException){
-//			sqlException.printStackTrace();
-//			return null;
-//		}
-//	}
 
 
 	/**
@@ -490,7 +527,10 @@ public class MysqlController {
 		PreparedStatement stmt;
 		ResultSet res;
 		boolean hasResult = false;
-		String query = "SELECT * FROM " + this.dataBasename + ".machines"; // TODO: add only machine id field
+		String query = "SELECT machineid FROM " + this.dataBasename + ".machines"; // TODO: add only machine id field
+		// DEPRECATED:
+		//String query = "SELECT * FROM " + this.dataBasename + ".machines";
+
 		try{
 			stmt = connection.prepareStatement(query);
 			res = stmt.executeQuery();
