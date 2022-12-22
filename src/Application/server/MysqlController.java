@@ -1,9 +1,14 @@
 package Application.server;
 
-import common.connectivity.Message;
 import common.connectivity.User;
 import common.orders.Product;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -101,31 +106,82 @@ public class MysqlController {
 	 * @return Arraylist of products in a specific machine.
 	 * This method finds all products that belong to a specific machine id.
 	 */
-	public ArrayList<Product> getAllProductsForMachine(String machineId){
+	public ArrayList<Product> getAllProductsForMachine(String machineId){ // TODO: adapt this method to the new database configuration
 		if (machineId == null)
 			throw new NullPointerException();
 
 		PreparedStatement stmt;
 		ResultSet res;
-		String loginQuery = "SELECT * FROM " + this.dataBasename + ".products WHERE machineid = ?";
+		String query = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
 		ArrayList<Product> productList = new ArrayList<Product>();
+		boolean resultFound = false;
 		try{
-			stmt = connection.prepareStatement(loginQuery);
+			stmt = connection.prepareStatement(query);
 			stmt.setString(1, machineId);
 			res = stmt.executeQuery();
-
+			ResultSet productRes = null;
+			File file = null;
 			while(res.next()){
+				resultFound = true;
 				Product product = new Product();
+				productRes = getProductData(res.getString("productid"));
+				// add product info from products in table
 				product.setProductId(res.getString("productid"));
-				product.setName(res.getString("name"));
-				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
 				product.setAmount(res.getInt("amount"));
-				product.setDescription(res.getString("description"));
-				product.setType(res.getString("type"));
+				product.setCriticalAmount(res.getInt("criticalamount"));
+				if (productRes == null){
+					System.out.println("product " + productRes + "is null");
+					continue;
+				}
+				while (productRes.next()){
+					// add specific  product info from products table
+					product.setName(productRes.getString("name"));
+					product.setPrice(productRes.getFloat("price"));
+					product.setDescription(productRes.getString("description"));
+					product.setType(productRes.getString("type"));
+
+					// create file and streams
+					Path path = Paths.get("src/Application/images/", productRes.getString("name") + ".png");
+					file = new File(path.toUri());
+					FileInputStream fis = null;
+					try {
+						fis = new FileInputStream(file);
+						byte[] outputFile = new byte[(int)file.length()];
+						BufferedInputStream bis = new BufferedInputStream(fis);
+						bis.read(outputFile,0,outputFile.length);
+						// add file to product object
+						product.setFile(outputFile);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
 				productList.add(product);
 			}
-			return productList;
+			if (resultFound)
+				return productList;
+			return null;
+
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	private ResultSet getProductData(String productId){
+		if (productId == null)
+			throw new NullPointerException();
+
+		PreparedStatement stmt;
+		ResultSet res;
+		String query = "SELECT * FROM " + this.dataBasename + ".products WHERE productid = ?";
+		boolean productfound = false;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, productId);
+			res = stmt.executeQuery();
+
+			return res;
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 			return null;
@@ -451,96 +507,39 @@ public class MysqlController {
 
 
 
-// OLD FUNCTIONS:
-//	public String getAllDB(){
-//		String query = "SELECT * FROM " + this.dataBasename + ".user";
-//		String database = "";
-//		try{
-//			Statement stmt = connection.createStatement();
-//			ResultSet res = stmt.executeQuery(query);
-//			while(res.next()){
-//				database += res.getString("firstname");
-//				database +=" ";
-//				database += res.getString("lastname");
-//				database +=" ";
-//				database += res.getString("id");
-//				database +=" ";
-//				database += res.getString("phonenumber");
-//				database +=" ";
-//				database += res.getString("emailaddress");
-//				database +=" ";
-//				database += res.getString("creditcardnumber");
-//				database +=" ";
-//				database += res.getString("subscribernumber");
-//				database +="\n";
-//			}
-//			return database;
-//		}catch (SQLException exception){
-//			exception.printStackTrace();
-//			return null;
-//		}
-//	}
-
-
-
-//	public boolean deleteUser(User user){
-//		PreparedStatement stmt;
-//		String query = "DELETE FROM " + this.dataBasename + ".user WHERE id=?";
-//		if(!checkUserExists(user))
-//			return false;
-//		try {
-//			stmt = connection.prepareStatement(query);
-//			stmt.setString(1, user.getId());
-//			stmt.executeUpdate();
-//			return true;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
-
-
-//	public boolean checkUserExists(User clientMessage){
+// BACKUP:
+//	/**
+//	 * @param machineId id of a specific machine in the database.
+//	 * @return Arraylist of products in a specific machine.
+//	 * This method finds all products that belong to a specific machine id.
+//	 */
+//	public ArrayList<Product> getAllProductsForMachine(String machineId){ // TODO: adapt this method to the new database configuration
+//		if (machineId == null)
+//			throw new NullPointerException();
+//
 //		PreparedStatement stmt;
 //		ResultSet res;
-//		String query = "SELECT * FROM " + this.dataBasename +".user WHERE (id) = (?)";
-//
+//		String loginQuery = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
+//		ArrayList<Product> productList = new ArrayList<Product>();
 //		try{
-//			stmt = connection.prepareStatement(query);
-//			stmt.setString(1,clientMessage.getId());
+//			stmt = connection.prepareStatement(loginQuery);
+//			stmt.setString(1, machineId);
 //			res = stmt.executeQuery();
-//			if (res.next()){
-//				if (res.getString("id").equals(clientMessage.getId())){
 //
-//					return true;
-//				}
+//			while(res.next()){
+//				Product product = new Product();
+//				product.setProductId(res.getString("productid"));
+//				product.setName(res.getString("name"));
+//				product.setPrice(res.getFloat("price"));
+//				product.setDiscount(res.getFloat("discount"));
+//				product.setAmount(res.getInt("amount"));
+//				product.setDescription(res.getString("description"));
+//				product.setType(res.getString("type"));
+//				productList.add(product);
 //			}
-//			stmt.close();
-//			res.close();
-//		}
-//		catch (SQLException e){
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
-
-
-
-
-//	public void updateUser(String id, String creditcardnumber, String subscribernumber){
-//		PreparedStatement stmt;
-//		String query = "UPDATE " + this.dataBasename + ".users SET creditcardnumber = ?, subscribernumber = ? WHERE id = ?";
-//		if(creditcardnumber == "null"){
-//			creditcardnumber = "";
-//		}
-//		try {
-//			stmt = connection.prepareStatement(query);
-//			stmt.setString(1, creditcardnumber);
-//			stmt.setString(2, subscribernumber);
-//			stmt.setString(3, id);
-//			stmt.executeUpdate();
-//			System.out.println("update done successfully");
-//		} catch (SQLException e) {
-//			e.printStackTrace();
+//			return productList;
+//		}catch (SQLException sqlException){
+//			sqlException.printStackTrace();
+//			return null;
 //		}
 //	}

@@ -1,7 +1,11 @@
 package common.orders;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
+/**
+ * @author Lior Jigalo, Nitsan Maman
+ */
 public class Product implements Serializable {
     private float price;
     private float discount;
@@ -10,12 +14,14 @@ public class Product implements Serializable {
     private String description;
     private String type;
     private String productId;
+    private int criticalAmount;
+    private byte[] file;
 
     //TODO: add a file or byte array.
     public Product() {
     }
 
-    public Product(float price, float discount, String name, int amount, String description, String type, String productId) {
+    public Product(float price, float discount, String name, int amount, String description, String type, String productId, byte[] file, int criticalAmount) {
         this.price = price;
         this.discount = discount;
         this.name = name;
@@ -23,7 +29,8 @@ public class Product implements Serializable {
         this.description = description;
         this.type = type;
         this.productId = productId;
-
+        this.file = file;
+        this.criticalAmount = criticalAmount;
     }
 
     public float getPrice() {
@@ -80,5 +87,36 @@ public class Product implements Serializable {
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
+    public int getCriticalAmount() {
+        return criticalAmount;
+    }
+
+    public void setCriticalAmount(int criticalAmount) {
+        this.criticalAmount = criticalAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "price=" + price +
+                ", discount=" + discount +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                ", type='" + type + '\'' +
+                ", productId='" + productId + '\'' +
+                ", criticalAmount=" + criticalAmount +
+                ", file=" + Arrays.toString(file) +
+                '}';
     }
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public enum MessageFromClient implements Serializable {
     REQUEST_ALL_MACHINE_PRODUCTS,   // V
+    REQUEST_WAREHOUSE_PRODUCTS,     // TODO
     REQUEST_DISCONNECT_CLIENT,      // TODO
     REQUEST_MACHINE_PRODUCTS,       // V
     REQUEST_ALL_PRODUCTS,           // TODO
