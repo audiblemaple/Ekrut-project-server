@@ -17,7 +17,6 @@ public class Product implements Serializable {
     private int criticalAmount;
     private byte[] file;
 
-    //TODO: add a file or byte array.
     public Product() {
     }
 
@@ -108,15 +107,15 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "Product{" +
-                "price=" + price +
-                ", discount=" + discount +
-                ", name='" + name + '\'' +
-                ", amount=" + amount +
-                ", description='" + description + '\'' +
-                ", type='" + type + '\'' +
-                ", productId='" + productId + '\'' +
-                ", criticalAmount=" + criticalAmount +
-                ", file=" + Arrays.toString(file) +
+                "price= " + price +
+                ", discount= " + discount +
+                ", name= '" + name + '\'' +
+                ", amount= " + amount +
+                ", description= '" + description + '\'' +
+                ", type= '" + type + '\'' +
+                ", productId= '" + productId + '\'' +
+                ", criticalAmount= " + criticalAmount +
+                ", file= " + Arrays.toString(file).substring(1, 5) +
                 '}';
     }
 }

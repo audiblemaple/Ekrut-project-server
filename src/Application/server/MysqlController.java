@@ -6,7 +6,6 @@ import common.orders.Product;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -106,18 +105,25 @@ public class MysqlController {
 	 * @return Arraylist of products in a specific machine.
 	 * This method finds all products that belong to a specific machine id.
 	 */
-	public ArrayList<Product> getAllProductsForMachine(String machineId){ // TODO: adapt this method to the new database configuration
+	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){
 		if (machineId == null)
 			throw new NullPointerException();
 
 		PreparedStatement stmt;
 		ResultSet res;
-		String query = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
+		String query;
 		ArrayList<Product> productList = new ArrayList<Product>();
 		boolean resultFound = false;
+		// choose if we need all products or a specific machine
+		if (needAll)
+			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
+		else
+			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
+
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, machineId);
+			if (!needAll)
+				stmt.setString(1, machineId);
 			res = stmt.executeQuery();
 			ResultSet productRes = null;
 			File file = null;
@@ -189,37 +195,37 @@ public class MysqlController {
 	}
 
 
-	/**
-	 * @return Arraylist of all products from all machines.
-	 * This method finds all products from all machines.
-	 */
-	public ArrayList<Product> getAllProductsForAllMachines(){
-		PreparedStatement stmt;
-		ResultSet res;
-		String loginQuery = "SELECT * FROM " + this.dataBasename + ".products";
-		ArrayList<Product> productList = new ArrayList<Product>();
-		try{
-			stmt = connection.prepareStatement(loginQuery);
-			res = stmt.executeQuery();
-
-			while(res.next()){
-				Product product = new Product();
-				product.setProductId(res.getString("productid"));
-				product.setName(res.getString("name"));
-				product.setPrice(res.getFloat("price"));
-				product.setDiscount(res.getFloat("discount"));
-				product.setAmount(res.getInt("amount"));
-				product.setDescription(res.getString("description"));
-				product.setType(res.getString("type"));
-
-				productList.add(product);
-			}
-			return productList;
-		}catch (SQLException sqlException){
-			sqlException.printStackTrace();
-			return null;
-		}
-	}
+//	/**
+//	 * @return Arraylist of all products from all machines.
+//	 * This method finds all products from all machines.
+//	 */
+//	public ArrayList<Product> getAllProductsForAllMachines(){
+//		PreparedStatement stmt;
+//		ResultSet res;
+//		String loginQuery = "SELECT * FROM " + this.dataBasename + ".products";
+//		ArrayList<Product> productList = new ArrayList<Product>();
+//		try{
+//			stmt = connection.prepareStatement(loginQuery);
+//			res = stmt.executeQuery();
+//
+//			while(res.next()){
+//				Product product = new Product();
+//				product.setProductId(res.getString("productid"));
+//				product.setName(res.getString("name"));
+//				product.setPrice(res.getFloat("price"));
+//				product.setDiscount(res.getFloat("discount"));
+//				product.setAmount(res.getInt("amount"));
+//				product.setDescription(res.getString("description"));
+//				product.setType(res.getString("type"));
+//
+//				productList.add(product);
+//			}
+//			return productList;
+//		}catch (SQLException sqlException){
+//			sqlException.printStackTrace();
+//			return null;
+//		}
+//	}
 
 
 	/**

@@ -56,7 +56,7 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_MACHINE_PRODUCTS":
-                productList = mysqlcontroller.getAllProductsForMachine((String)message.getData());
+                productList = mysqlcontroller.getMachineProducts((String)message.getData(), false);
                 if(productList != null){
                     sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
                     break;
@@ -65,7 +65,7 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_ALL_MACHINE_PRODUCTS":
-                productList = mysqlcontroller.getAllProductsForAllMachines();
+                productList = mysqlcontroller.getMachineProducts("we need all machines products, hence true -->", true);
                 if(productList != null){
                     sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
                     break;
