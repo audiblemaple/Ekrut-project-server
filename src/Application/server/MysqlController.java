@@ -134,6 +134,7 @@ public class MysqlController {
 				resultFound = true;
 				Product product = new Product();
 				productRes = getProductData(res.getString("productid"));
+
 				// add product info from products in table
 				product.setProductId(res.getString("productid"));
 				product.setDiscount(res.getFloat("discount"));
@@ -170,7 +171,6 @@ public class MysqlController {
 			if (resultFound)
 				return productList;
 			return null;
-
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 			return null;

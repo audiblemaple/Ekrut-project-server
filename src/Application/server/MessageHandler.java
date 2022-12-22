@@ -55,6 +55,7 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(null, MessageFromServer.LOGOUT_FAILED_NOT_LOGGED_IN));
                 break;
 
+            case "REQUEST_MACHINE_INVENTORY_REPORT":
             case "REQUEST_MACHINE_PRODUCTS":
                 productList = mysqlcontroller.getMachineProducts((String)message.getData(), false);
                 if(productList != null){
@@ -94,7 +95,7 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_DELETING_USER));
                 break;
 
-            case"REQUEST_MACHINE_IDS":
+            case "REQUEST_MACHINE_IDS":
                 ArrayList<String> machines = mysqlcontroller.getMachineIds();
                 if (machines == null){
                     sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_IMPORTING_MACHINE_IDS));
@@ -103,15 +104,16 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(machines, MessageFromServer.IMPORT_MACHINE_ID_SUCCESSFUL));
                 break;
 
-            case"REQUEST_WAREHOUSE_PRODUCTS":
+            case "REQUEST_WAREHOUSE_PRODUCTS":
                 productList = mysqlcontroller.getWarehouseProducts();
                 if(productList != null){
                     sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_WAREHOUSE_PRODUCTS_SUCCESSFUL));
                     break;
                 }
-                // TODO: here you need to handle the pictures same as above.
                 sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_WAREHOUSE_PRODUCTS));
                 break;
+
+
 
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
