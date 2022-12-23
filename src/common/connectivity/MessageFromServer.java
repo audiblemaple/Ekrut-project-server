@@ -2,11 +2,16 @@ package common.connectivity;
 
 import java.io.Serializable;
 
+/**
+ * @author Lior Jigalo
+ */
 public enum MessageFromServer implements Serializable {
     ERROR_IMPORTING_ALL_MACHINE_PRODUCTS,   // V
     IMPORT_WAREHOUSE_PRODUCTS_SUCCESSFUL,   // V
+    IMPORT_MACHINE_LOCATIONS_SUCCESSFUL,    // V
     IMPORT_MACHINE_PRODUCTS_SUCCESSFUL,     // V
     ERROR_IMPORTING_WAREHOUSE_PRODUCTS,     // V
+    ERROR_IMPORTING_MACHINE_LOCATIONS,      // V
     LOG_IN_ERROR_USER_DOES_NOT_EXIST,       // V
     ERROR_IMPORTING_MACHINE_PRODUCTS,       // V
     IMPORT_ORDER_TABLE_UNSUCCESSFUL,        // TODO

@@ -152,7 +152,7 @@ public class MysqlController {
 					product.setType(productRes.getString("type"));
 
 					// create file and streams
-					Path path = Paths.get("src/Application/images/", productRes.getString("name") + ".png");
+					Path path = Paths.get("src/Application/images/" + productRes.getString("name") + ".png"); //TODO: check that i didnt break anything
 					file = new File(path.toUri());
 					FileInputStream fis = null;
 					try {
@@ -522,17 +522,21 @@ public class MysqlController {
 	 * @return Arraylist of all machine ids.
 	 * This method gets all machine ids from machines table.
 	 */
-	public ArrayList<String> getMachineIds(){
+	public ArrayList<String> getMachineIds(String location){
 		ArrayList<String> machines = new ArrayList<String>();
 		PreparedStatement stmt;
 		ResultSet res;
 		boolean hasResult = false;
-		String query = "SELECT machineid FROM " + this.dataBasename + ".machines"; // TODO: add only machine id field
-		// DEPRECATED:
-		//String query = "SELECT * FROM " + this.dataBasename + ".machines";
+		String query = "";
+		if (location == null)
+			query = "SELECT machineid FROM " + this.dataBasename + ".machines";
+		else
+			query = "SELECT machineid FROM " + this.dataBasename + ".machines WHERE machinelocation=?";
 
 		try{
 			stmt = connection.prepareStatement(query);
+			if (!(location == null))
+				stmt.setString(1, location);
 			res = stmt.executeQuery();
 
 			while(res.next()){
@@ -541,6 +545,31 @@ public class MysqlController {
 			}
 			if (hasResult)
 				return machines;
+
+			return null;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	public ArrayList<String> getAllMachineLocations() {
+		ArrayList<String> locations = new ArrayList<String>();
+		PreparedStatement stmt;
+		ResultSet res;
+		boolean hasResult = false;
+		String query = "SELECT machinelocation FROM " + this.dataBasename + ".machines";
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+
+			while(res.next()){
+				hasResult = true;
+				locations.add(res.getString("machinelocation"));
+			}
+			if (hasResult)
+				return locations;
 
 			return null;
 		}catch (SQLException sqlException){

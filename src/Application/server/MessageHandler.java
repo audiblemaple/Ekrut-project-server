@@ -32,6 +32,7 @@ public class MessageHandler {
         Message message = (Message) clientMessage;
         System.out.println(message);
         ArrayList<Product> productList = null;
+        ArrayList<String> machines = null;
         switch(message.getTask().name()){ // TODO: add disconnect message to set client connection status to disconnected
             case "REQUEST_LOGIN":
                 userLogInCredentials = (ArrayList<String>)message.getData();
@@ -96,7 +97,7 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_MACHINE_IDS":
-                ArrayList<String> machines = mysqlcontroller.getMachineIds();
+                machines = mysqlcontroller.getMachineIds((String)message.getData());
                 if (machines == null){
                     sendMessageToClient(client, new Message(null, MessageFromServer.ERROR_IMPORTING_MACHINE_IDS));
                     break;
@@ -111,6 +112,15 @@ public class MessageHandler {
                     break;
                 }
                 sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_WAREHOUSE_PRODUCTS));
+                break;
+
+            case "REQUEST_ALL_MACHINE_LOCATIONS":
+                ArrayList<String> locations = mysqlcontroller.getAllMachineLocations();
+                if(locations != null){
+                    sendMessageToClient(client, new Message(locations, MessageFromServer.IMPORT_MACHINE_LOCATIONS_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error importing machine locations", MessageFromServer.ERROR_IMPORTING_MACHINE_LOCATIONS));
                 break;
 
 
