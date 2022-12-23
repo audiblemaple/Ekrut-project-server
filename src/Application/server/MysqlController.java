@@ -558,7 +558,7 @@ public class MysqlController {
 		PreparedStatement stmt;
 		ResultSet res;
 		boolean hasResult = false;
-		String query = "SELECT machinelocation FROM " + this.dataBasename + ".machines";
+		String query = "SELECT DISTINCT machinelocation FROM " + this.dataBasename + ".machines";
 
 		try{
 			stmt = connection.prepareStatement(query);
