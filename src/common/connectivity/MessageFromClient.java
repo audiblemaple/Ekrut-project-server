@@ -6,8 +6,8 @@ import java.io.Serializable;
  * @author Lior Jigalo
  */
 public enum MessageFromClient implements Serializable {
+    REQUEST_MACHINE_MONTHLY_INVENTORY_REPORT,   // V
     REQUEST_MACHINE_INVENTORY_REPORT,   // V
-    REQUEST_MONTHLY_INVENTORY_REPORT,   // V
     REQUEST_ALL_MACHINE_LOCATIONS,      // V
     REQUEST_ALL_MACHINE_PRODUCTS,       // V
     REQUEST_WAREHOUSE_PRODUCTS,         // V

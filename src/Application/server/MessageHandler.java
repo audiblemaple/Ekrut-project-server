@@ -124,7 +124,7 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("Error importing machine locations", MessageFromServer.ERROR_IMPORTING_MACHINE_LOCATIONS));
                 break;
 
-            case "REQUEST_MONTHLY_INVENTORY_REPORT":
+            case "REQUEST_MACHINE_MONTHLY_INVENTORY_REPORT":
                 ArrayList<String> monthAndYear = (ArrayList<String>) message.getData();
                 InventoryReport report =  mysqlcontroller.getMonthlyInventoryReport(monthAndYear);
                 if(report != null){

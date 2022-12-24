@@ -81,24 +81,25 @@ public class MysqlController {
 		}
 	}
 
-	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthAndYear){ // TODO: add option to sum price
-		if (monthAndYear == null)
+	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthYearMachine){ // TODO: add option to sum price
+		if (monthYearMachine == null)
 			throw new NullPointerException();
 
 		PreparedStatement stmt;
 		ResultSet res;
 		ArrayList<Product> products = new ArrayList<Product>();
-		String query = "SELECT * FROM " + this.dataBasename + ".inventoryreports WHERE month = ? AND year = ?";
+		String query = "SELECT * FROM " + this.dataBasename + ".inventoryreports WHERE month = ? AND year = ? AND machineid = ?";
 		InventoryReport report = new InventoryReport();
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, monthAndYear.get(0));
-			stmt.setString(2, monthAndYear.get(1));
+			stmt.setString(1, monthYearMachine.get(0));
+			stmt.setString(2, monthYearMachine.get(1));
+			stmt.setString(3, monthYearMachine.get(2));
 			res = stmt.executeQuery();
 			if (res.next()){
 				report.setReportID(res.getString("reportid"));
 				report.setArea(res.getString("area"));
-				report.setMachineID("machineid");
+				report.setMachineID(res.getString("machineid"));
 				products = setProducts(res.getString("details"));
 				if (products == null)
 					return null;
@@ -115,14 +116,14 @@ public class MysqlController {
 		}
 	}
 
-	public ArrayList <Product> setProducts(String details){ // TODO rework this!!!!!!!!
+	public ArrayList <Product> setProducts(String details){
 		String[] splittedDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
 		for (int i = 0; i < (splittedDetails.length / 2) + 1; i+=2){
 			Product product = new Product();
 			product.setDescription(splittedDetails[i]);
 			product.setAmount(Integer.parseInt(splittedDetails[i+1]));
-			products.add(product); // TODO: debug this
+			products.add(product);
 		}
 		return products;
 	}
