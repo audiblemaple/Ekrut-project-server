@@ -144,9 +144,9 @@ public class MysqlController {
 		return products;
 	}
 
-	public boolean generateMonthlyInventoryReport(String area, String machineID, String month, String year){
+	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){
 		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
-		ArrayList<Product> products = getMachineProducts(machineID, false);
+		ArrayList<Product> products = getMachineProducts(areaMachineMonthYear.get(1), false);
 		String reportDetails = "";
 		float overallPrice = 0;
 
@@ -169,19 +169,19 @@ public class MysqlController {
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1,reportID);
-			stmt.setString(2,area);
-			stmt.setString(3,machineID);
+			stmt.setString(2,areaMachineMonthYear.get(0));
+			stmt.setString(3,areaMachineMonthYear.get(1));
 			stmt.setString(4,reportDetails);
-			stmt.setString(5,month);
-			stmt.setString(6,year);
+			stmt.setString(5,areaMachineMonthYear.get(2));
+			stmt.setString(6,areaMachineMonthYear.get(3));
 			stmt.setFloat(7,overallPrice);
 			stmt.executeUpdate();
 
 			// check report added successfully.
 			ArrayList<String> monthYearMachine = new ArrayList<String>();
-			monthYearMachine.add(month);
-			monthYearMachine.add(year);
-			monthYearMachine.add(machineID);
+			monthYearMachine.add(areaMachineMonthYear.get(2));
+			monthYearMachine.add(areaMachineMonthYear.get(3));
+			monthYearMachine.add(areaMachineMonthYear.get(1));
 			return getMonthlyInventoryReport(monthYearMachine) != null;
 		}
 		catch (SQLException e){
