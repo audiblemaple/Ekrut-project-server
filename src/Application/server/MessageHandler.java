@@ -124,6 +124,9 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_MACHINE_MONTHLY_INVENTORY_REPORT":
+                mysqlcontroller.generateMonthlyInventoryReport("tel aviv", "TA01", "01", "2021");
+
+
                 ArrayList<String> monthYearMachine = (ArrayList<String>) message.getData();
                 InventoryReport report =  mysqlcontroller.getMonthlyInventoryReport(monthYearMachine);
                 if(report != null){

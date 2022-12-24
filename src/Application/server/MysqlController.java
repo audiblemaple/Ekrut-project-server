@@ -101,7 +101,7 @@ public class MysqlController {
 				report.setReportID(res.getString("reportid"));
 				report.setArea(res.getString("area"));
 				report.setMachineID(res.getString("machineid"));
-				products = productDetailsToList(res.getString("details"));
+				products = productDetailsToListExpanded(res.getString("details"));
 				if (products == null)
 					return null;
 				report.setProducts(products);
@@ -120,10 +120,25 @@ public class MysqlController {
 	public ArrayList <Product> productDetailsToList(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
-		for (int i = 0; i < splitDetails.length; i+=2){ // TODO: check this one out
+		for (int i = 0; i < splitDetails.length; i+=2){ // TODO: check this one out!!!!!!!!!!!!!!!!
 			Product product = new Product();
 			product.setDescription(splitDetails[i]);
 			product.setAmount(Integer.parseInt(splitDetails[i+1]));
+			products.add(product);
+		}
+		return products;
+	}
+
+	public ArrayList <Product> productDetailsToListExpanded(String details){
+		String[] splitDetails = details.split(" , ");
+		ArrayList<Product> products = new ArrayList<Product>();
+		for (int i = 0; i < splitDetails.length; i+=5){ // TODO: check this one out!!!!!!!!!!!!!!!!!!
+			Product product = new Product();
+			product.setProductId(splitDetails[i]);
+			product.setDescription(splitDetails[i+1]);
+			product.setAmount(Integer.parseInt(splitDetails[i+2]));
+			product.setPrice(Float.parseFloat(splitDetails[i+3]));
+			product.setType(splitDetails[i+4]);
 			products.add(product);
 		}
 		return products;
@@ -136,8 +151,17 @@ public class MysqlController {
 		float overallPrice = 0;
 
 		for (Product prod : products){
-			reportDetails += prod.getDescription() + " , " + prod.getAmount() + " , ";
-			overallPrice += prod.getPrice() * prod.getAmount();
+			reportDetails += prod.getProductId();
+			reportDetails += " , ";
+			reportDetails += prod.getDescription();
+			reportDetails += " , ";
+			reportDetails += prod.getAmount();
+			reportDetails += " , ";
+			reportDetails += (prod.getPrice() - (prod.getPrice() * prod.getDiscount()));
+			reportDetails += " , ";
+			reportDetails += prod.getType();
+			reportDetails += " , ";
+			overallPrice += (prod.getPrice() - (prod.getPrice() * prod.getDiscount())) * prod.getAmount();
 		}
 
 		String query = "INSERT INTO " +  this.dataBasename + ".inventoryreports(reportid, area, machineid, details, month, year, overallcost) VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -154,10 +178,11 @@ public class MysqlController {
 			stmt.executeUpdate();
 
 			// check report added successfully.
-			ArrayList<String> monthAndYear = new ArrayList<String>();
-			monthAndYear.add(month);
-			monthAndYear.add(year);
-			return getMonthlyInventoryReport(monthAndYear) != null;
+			ArrayList<String> monthYearMachine = new ArrayList<String>();
+			monthYearMachine.add(month);
+			monthYearMachine.add(year);
+			monthYearMachine.add(machineID);
+			return getMonthlyInventoryReport(monthYearMachine) != null;
 		}
 		catch (SQLException e){
 			e.printStackTrace();
@@ -677,10 +702,8 @@ public class MysqlController {
 
 			customerAndOrderID.add(orderID);
 			customerAndOrderID.add(order.getCustomerID());
-			if(getOrderByOrderIdAndCustomerID(customerAndOrderID) != null){
-				return true;
-			}
-			return false;
+
+			return getOrderByOrderIdAndCustomerID(customerAndOrderID) != null;
 		}
 		catch (SQLException e){
 			e.printStackTrace();
@@ -778,5 +801,44 @@ public class MysqlController {
 //		}catch (SQLException sqlException){
 //			sqlException.printStackTrace();
 //			return null;
+//		}
+//	}
+
+
+
+// just with description
+//	public boolean generateMonthlyInventoryReport(String area, String machineID, String month, String year){
+//		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
+//		ArrayList<Product> products = getMachineProducts(machineID, false);
+//		String reportDetails = "";
+//		float overallPrice = 0;
+//
+//		for (Product prod : products){
+//			reportDetails += prod.getDescription() + " , " + prod.getAmount() + " , ";
+//			overallPrice += prod.getPrice() * prod.getAmount();
+//		}
+//
+//		String query = "INSERT INTO " +  this.dataBasename + ".inventoryreports(reportid, area, machineid, details, month, year, overallcost) VALUES(?, ?, ?, ?, ?, ?, ?)";
+//		PreparedStatement stmt;
+//		try{
+//			stmt = connection.prepareStatement(query);
+//			stmt.setString(1,reportID);
+//			stmt.setString(2,area);
+//			stmt.setString(3,machineID);
+//			stmt.setString(4,reportDetails);
+//			stmt.setString(5,month);
+//			stmt.setString(6,year);
+//			stmt.setFloat(7,overallPrice);
+//			stmt.executeUpdate();
+//
+//			// check report added successfully.
+//			ArrayList<String> monthAndYear = new ArrayList<String>();
+//			monthAndYear.add(month);
+//			monthAndYear.add(year);
+//			return getMonthlyInventoryReport(monthAndYear) != null;
+//		}
+//		catch (SQLException e){
+//			e.printStackTrace();
+//			return false;
 //		}
 //	}
