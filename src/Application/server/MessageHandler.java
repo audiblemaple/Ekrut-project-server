@@ -5,6 +5,7 @@ import common.Reports.InventoryReport;
 import common.connectivity.Message;
 import common.connectivity.MessageFromServer;
 import common.connectivity.User;
+import common.orders.Order;
 import common.orders.Product;
 
 import java.io.IOException;
@@ -16,8 +17,6 @@ import java.util.ArrayList;
  */
 public class MessageHandler {
     private static MysqlController mysqlcontroller = MysqlController.getSQLInstance();
-    private static ArrayList<String> userLogInCredentials;
-    private static User userData;
 
     /**
      * @param clientMessage message from the client.
@@ -36,12 +35,12 @@ public class MessageHandler {
         ArrayList<String> machines = null;
         switch(message.getTask().name()){ // TODO: add disconnect message to set client connection status to disconnected
             case "REQUEST_LOGIN":
-                userLogInCredentials = (ArrayList<String>)message.getData();
+                ArrayList<String> userLogInCredentials = (ArrayList<String>) message.getData();
                 if (mysqlcontroller.isLoggedIn(userLogInCredentials)){
                     sendMessageToClient(client, new Message(null, MessageFromServer.LOGIN_FAILED_ALREADY_LOGGED_IN));
                     break;
                 }
-                userData = mysqlcontroller.logUserIn(userLogInCredentials);
+                User userData = mysqlcontroller.logUserIn(userLogInCredentials);
                 if (userData == null){
                     sendMessageToClient(client, new Message(null, MessageFromServer.LOG_IN_ERROR_USER_DOES_NOT_EXIST));
                     break;
@@ -125,8 +124,8 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_MACHINE_MONTHLY_INVENTORY_REPORT":
-                ArrayList<String> monthAndYear = (ArrayList<String>) message.getData();
-                InventoryReport report =  mysqlcontroller.getMonthlyInventoryReport(monthAndYear);
+                ArrayList<String> monthYearMachine = (ArrayList<String>) message.getData();
+                InventoryReport report =  mysqlcontroller.getMonthlyInventoryReport(monthYearMachine);
                 if(report != null){
                     sendMessageToClient(client, new Message(report, MessageFromServer.IMPORT_INVENTORY_REPORT_SUCCESSFUL));
                     break;
@@ -134,6 +133,16 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("Error importing inventory report", MessageFromServer.ERROR_IMPORTING_INVENTORY_REPORT));
                 break;
 
+            case "REQUEST_ADD_NEW_ORDER":
+                if (mysqlcontroller.AddNewOrder((Order) message.getData()))
+                    sendMessageToClient(client, new Message("Error adding your order", MessageFromServer.ERROR_ADDING_NEW_ORDER));
+                sendMessageToClient(client, new Message("Order added successfully", MessageFromServer.ADD_NEW_ORDER_SUCCESSFUL));
+
+            case "REQUEST_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID":
+                Order order = mysqlcontroller.getOrderByOrderIdAndCustomerID((ArrayList<String>) message.getData());
+                if (order == null)
+                    sendMessageToClient(client, new Message("Error importing your order", MessageFromServer.ERROR_IMPORTING_ORDER));
+                sendMessageToClient(client, new Message(order, MessageFromServer.IMPORT_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID_SUCCESSFUL));
 
 
 

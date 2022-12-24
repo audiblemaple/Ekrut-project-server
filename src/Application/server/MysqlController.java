@@ -2,6 +2,7 @@ package Application.server;
 
 import common.Reports.InventoryReport;
 import common.connectivity.User;
+import common.orders.Order;
 import common.orders.Product;
 
 import java.io.BufferedInputStream;
@@ -100,7 +101,7 @@ public class MysqlController {
 				report.setReportID(res.getString("reportid"));
 				report.setArea(res.getString("area"));
 				report.setMachineID(res.getString("machineid"));
-				products = setProducts(res.getString("details"));
+				products = productDetailsToList(res.getString("details"));
 				if (products == null)
 					return null;
 				report.setProducts(products);
@@ -116,13 +117,13 @@ public class MysqlController {
 		}
 	}
 
-	public ArrayList <Product> setProducts(String details){
-		String[] splittedDetails = details.split(" , ");
+	public ArrayList <Product> productDetailsToList(String details){
+		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
-		for (int i = 0; i < (splittedDetails.length / 2) + 1; i+=2){
+		for (int i = 0; i < splitDetails.length; i+=2){ // TODO: check this one out
 			Product product = new Product();
-			product.setDescription(splittedDetails[i]);
-			product.setAmount(Integer.parseInt(splittedDetails[i+1]));
+			product.setDescription(splitDetails[i]);
+			product.setAmount(Integer.parseInt(splitDetails[i+1]));
 			products.add(product);
 		}
 		return products;
@@ -132,7 +133,7 @@ public class MysqlController {
 		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
 		ArrayList<Product> products = getMachineProducts(machineID, false);
 		String reportDetails = "";
-		Float overallPrice = (float) 0;
+		float overallPrice = 0;
 
 		for (Product prod : products){
 			reportDetails += prod.getDescription() + " , " + prod.getAmount() + " , ";
@@ -149,7 +150,7 @@ public class MysqlController {
 			stmt.setString(4,reportDetails);
 			stmt.setString(5,month);
 			stmt.setString(6,year);
-			stmt.setString(7,overallPrice.toString());
+			stmt.setFloat(7,overallPrice);
 			stmt.executeUpdate();
 
 			// check report added successfully.
@@ -177,10 +178,6 @@ public class MysqlController {
 		}
 		return 0;
 	}
-
-
-
-
 
 
 	/**
@@ -655,6 +652,92 @@ public class MysqlController {
 			sqlException.printStackTrace();
 			return null;
 		}
+	}
+
+
+	public boolean AddNewOrder(Order order) {
+		ArrayList<String> customerAndOrderID = new ArrayList<String>();
+		String orderID = "ORD" + (getNumOfEntriesInTable("orders") + 1);
+
+		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
+				"(orderid, price, products, machineid, orderdate, customerid, supplymethod, paidwith)" +
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,  orderID);
+			stmt.setFloat (2,  order.getOverallPrice());
+			stmt.setString(3,  productListToString(order.getProducts()));
+			stmt.setString(4,  order.getMachineID());
+			stmt.setString(5,  order.getOrderDate());
+			stmt.setString(6,  order.getCustomerID());
+			stmt.setString(7,  order.getSupplyMethod());
+			stmt.setString(8,  order.getPaidWith());
+			stmt.executeUpdate();
+
+			customerAndOrderID.add(orderID);
+			customerAndOrderID.add(order.getCustomerID());
+			if(getOrderByOrderIdAndCustomerID(customerAndOrderID) != null){
+				return true;
+			}
+			return false;
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+	public Order getOrderByOrderIdAndCustomerID(ArrayList<String> customerAndOrderID){
+		PreparedStatement stmt;
+		ResultSet res;
+		boolean hasResult = false;
+		String query = "SELECT * FROM " + this.dataBasename + ".orders WHERE orderid = ? AND customerid = ?";
+		Order order = new Order();
+		//ArrayList<Order> orderList = new ArrayList<Order>(); // left it in case i will need to return a list
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString( 1,  customerAndOrderID.get(0));
+			stmt.setString (2,  customerAndOrderID.get(1));
+			res = stmt.executeQuery();
+
+			while(res.next()){
+
+				hasResult = true;
+				order.setOrderID(res.getString("orderid"));
+				order.setOverallPrice(res.getFloat("price"));
+
+				// convert product details from tuple to array list of product objects
+				ArrayList<Product> products = productDetailsToList(res.getString("products"));
+				order.setProducts(products);
+
+				order.setMachineID(res.getString("machineid"));
+				order.setOrderDate(res.getString("orderdate"));
+				order.setEstimatedDeliveryTime(res.getString("estimateddeliverydate"));
+				order.setConfirmationDate(res.getString("confirmationdate"));
+				order.setOrderStatus(res.getString("orderstatus"));
+				order.setCustomerID(res.getString("customerid"));
+				order.setSupplyMethod(res.getString("supplymethod"));
+				order.setPaidWith(res.getString("paidwith"));
+				//orderList.add(order); // left it in case i will need to return a list
+			}
+			if (hasResult)
+				return order;
+
+			return null;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	private String productListToString(ArrayList<Product> products){
+		String details = "";
+		for (Product prod : products){
+			details += prod.getDescription() + " , " + prod.getAmount() + " , ";
+		}
+		return details;
 	}
 }
 

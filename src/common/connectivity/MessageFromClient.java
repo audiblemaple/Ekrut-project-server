@@ -6,6 +6,7 @@ import java.io.Serializable;
  * @author Lior Jigalo
  */
 public enum MessageFromClient implements Serializable {
+    REQUEST_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID, // V
     REQUEST_MACHINE_MONTHLY_INVENTORY_REPORT,   // V
     REQUEST_MACHINE_INVENTORY_REPORT,   // V
     REQUEST_ALL_MACHINE_LOCATIONS,      // V
@@ -13,6 +14,7 @@ public enum MessageFromClient implements Serializable {
     REQUEST_WAREHOUSE_PRODUCTS,         // V
     REQUEST_DISCONNECT_CLIENT,          // V
     REQUEST_MACHINE_PRODUCTS,           // V
+    REQUEST_ADD_NEW_ORDER,              // V
     REQUEST_ALL_PRODUCTS,               // V
     REQUEST_UPDATE_USER,                // TODO
     REQUEST_TABLE_ORDER,                // TODO
