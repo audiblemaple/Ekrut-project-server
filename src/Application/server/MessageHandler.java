@@ -1,6 +1,7 @@
 package Application.server;
 
 import OCSF.ConnectionToClient;
+import common.Reports.InventoryReport;
 import common.connectivity.Message;
 import common.connectivity.MessageFromServer;
 import common.connectivity.User;
@@ -122,6 +123,17 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message("Error importing machine locations", MessageFromServer.ERROR_IMPORTING_MACHINE_LOCATIONS));
                 break;
+
+            case "REQUEST_MONTHLY_INVENTORY_REPORT":
+                ArrayList<String> monthAndYear = (ArrayList<String>) message.getData();
+                InventoryReport report =  mysqlcontroller.getMonthlyInventoryReport(monthAndYear);
+                if(report != null){
+                    sendMessageToClient(client, new Message(report, MessageFromServer.IMPORT_INVENTORY_REPORT_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error importing inventory report", MessageFromServer.ERROR_IMPORTING_INVENTORY_REPORT));
+                break;
+
 
 
 

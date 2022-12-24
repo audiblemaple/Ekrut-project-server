@@ -1,5 +1,6 @@
 package Application.server;
 
+import common.Reports.InventoryReport;
 import common.connectivity.User;
 import common.orders.Product;
 
@@ -33,7 +34,6 @@ public class MysqlController {
 			sqlInstance = new MysqlController();
 		return sqlInstance;
 	}
-
 
 	public void setDataBaseName(String name) {
 		this.dataBasename = name;
@@ -81,12 +81,90 @@ public class MysqlController {
 		}
 	}
 
-	/**
-	 * @return number of users in the database.
-	 * This method counts the number of users in the users table and returns it.
-	 */
-	private int getUserNum(){
-		String query = "SELECT COUNT(*) FROM " + this.dataBasename + ".user";
+	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthAndYear){ // TODO: add option to sum price
+		if (monthAndYear == null)
+			throw new NullPointerException();
+
+		PreparedStatement stmt;
+		ResultSet res;
+		ArrayList<Product> products = new ArrayList<Product>();
+		String query = "SELECT * FROM " + this.dataBasename + ".inventoryreports WHERE month = ? AND year = ?";
+		InventoryReport report = new InventoryReport();
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, monthAndYear.get(0));
+			stmt.setString(2, monthAndYear.get(1));
+			res = stmt.executeQuery();
+			if (res.next()){
+				report.setReportID(res.getString("reportid"));
+				report.setArea(res.getString("area"));
+				report.setMachineID("machineid");
+				products = setProducts(res.getString("details"));
+				if (products == null)
+					return null;
+				report.setProducts(products);
+				report.setMonth(res.getString("month"));
+				report.setYear(res.getString("year"));
+				report.setTotalValue(res.getInt("overallcost"));
+				return report;
+			}
+			return null;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	public ArrayList <Product> setProducts(String details){ // TODO rework this!!!!!!!!
+		String[] splittedDetails = details.split(" , ");
+		ArrayList<Product> products = new ArrayList<Product>();
+		for (int i = 0; i < (splittedDetails.length / 2) + 1; i+=2){
+			Product product = new Product();
+			product.setDescription(splittedDetails[i]);
+			product.setAmount(Integer.parseInt(splittedDetails[i+1]));
+			products.add(product); // TODO: debug this
+		}
+		return products;
+	}
+
+	public boolean generateMonthlyInventoryReport(String area, String machineID, String month, String year){
+		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
+		ArrayList<Product> products = getMachineProducts(machineID, false);
+		String reportDetails = "";
+		Float overallPrice = (float) 0;
+
+		for (Product prod : products){
+			reportDetails += prod.getDescription() + " , " + prod.getAmount() + " , ";
+			overallPrice += prod.getPrice() * prod.getAmount();
+		}
+
+		String query = "INSERT INTO " +  this.dataBasename + ".inventoryreports(reportid, area, machineid, details, month, year, overallcost) VALUES(?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,reportID);
+			stmt.setString(2,area);
+			stmt.setString(3,machineID);
+			stmt.setString(4,reportDetails);
+			stmt.setString(5,month);
+			stmt.setString(6,year);
+			stmt.setString(7,overallPrice.toString());
+			stmt.executeUpdate();
+
+			// check report added successfully.
+			ArrayList<String> monthAndYear = new ArrayList<String>();
+			monthAndYear.add(month);
+			monthAndYear.add(year);
+			return getMonthlyInventoryReport(monthAndYear) != null;
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private int getNumOfEntriesInTable(String tableName){
+		String query = "SELECT COUNT(*) FROM " + this.dataBasename + "." + tableName;
 		try{
 			Statement stmt = connection.createStatement();
 			ResultSet res = stmt.executeQuery(query);
@@ -100,15 +178,16 @@ public class MysqlController {
 	}
 
 
+
+
+
+
 	/**
 	 * @param machineId id of a specific machine in the database.
 	 * @return Arraylist of products in a specific machine.
 	 * This method finds all products that belong to a specific machine id.
 	 */
 	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){
-		if (machineId == null)
-			throw new NullPointerException();
-
 		if (machineId == null)
 			throw new NullPointerException();
 
@@ -251,7 +330,6 @@ public class MysqlController {
 		PreparedStatement stmt;
 		ResultSet res;
 		String query = "SELECT * FROM " + this.dataBasename + ".products WHERE productid = ?";
-		boolean productfound = false;
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1, productId);
