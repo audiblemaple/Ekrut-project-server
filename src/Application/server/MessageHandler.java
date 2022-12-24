@@ -63,7 +63,7 @@ public class MessageHandler {
                     sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
                     break;
                 }
-                sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
+                sendMessageToClient(client, new Message("error importing machines products", MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
                 break;
 
             case "REQUEST_ALL_MACHINE_PRODUCTS":
@@ -72,7 +72,7 @@ public class MessageHandler {
                     sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
                     break;
                 }
-                sendMessageToClient(client, new Message(productList, MessageFromServer.ERROR_IMPORTING_ALL_MACHINE_PRODUCTS));
+                sendMessageToClient(client, new Message("error importing all machines products", MessageFromServer.ERROR_IMPORTING_ALL_MACHINE_PRODUCTS));
                 break;
 
             case "REQUEST_ADD_USER":
