@@ -1,6 +1,7 @@
 package Application.server;
 
 import common.Reports.InventoryReport;
+import common.Reports.OrderReport;
 import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -120,7 +122,7 @@ public class MysqlController {
 	public ArrayList <Product> productDetailsToList(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
-		for (int i = 0; i < splitDetails.length; i+=2){ // TODO: check this one out!!!!!!!!!!!!!!!!
+		for (int i = 0; i < splitDetails.length; i+=2){
 			Product product = new Product();
 			product.setDescription(splitDetails[i]);
 			product.setAmount(Integer.parseInt(splitDetails[i+1]));
@@ -132,7 +134,7 @@ public class MysqlController {
 	public ArrayList <Product> productDetailsToListExpanded(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
-		for (int i = 0; i < splitDetails.length; i+=5){ // TODO: check this one out!!!!!!!!!!!!!!!!!!
+		for (int i = 0; i < splitDetails.length; i+=5){
 			Product product = new Product();
 			product.setProductId(splitDetails[i]);
 			product.setDescription(splitDetails[i+1]);
@@ -755,6 +757,43 @@ public class MysqlController {
 		}
 	}
 
+	public OrderReport getOrderReportFromAllMachines(ArrayList<String> monthAndYear){
+		HashMap<String, Integer> machinesAndAmounts = new HashMap<>();
+		ArrayList<String> locations = new ArrayList<>();
+		OrderReport ordereport = new OrderReport();
+		PreparedStatement stmt;
+		ResultSet res;
+		boolean hasResults = false;
+		String query = "SELECT m.machineid, m.machinelocation, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year' " +
+				"FROM " + this.dataBasename + ".machines m " +
+				"JOIN " + this.dataBasename + ".orders o " +
+				"ON m.machineid = o.machineid " +
+				"GROUP BY m.machineid, m.machinelocation, MONTH(o.orderdate), YEAR(o.orderdate) " +
+				"ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);";
+		try {
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+			while (res.next()){
+				if (res.getString("month").equals(monthAndYear.get(0)) && res.getString("year").equals(monthAndYear.get(1))){
+					hasResults = true;
+					if (!locations.contains(res.getString("machinelocation")))
+						locations.add(res.getString("machinelocation"));
+					machinesAndAmounts.put(res.getString("machineid"), res.getInt("number_of_orders"));
+				}
+			}
+			if (hasResults){
+				ordereport.setLocations(locations);
+				ordereport.setMachineAndAmount(machinesAndAmounts);
+				return ordereport;
+			}
+			return null;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	private String productListToString(ArrayList<Product> products){
 		String details = "";
 		for (Product prod : products){
@@ -763,6 +802,67 @@ public class MysqlController {
 		return details;
 	}
 }
+
+
+
+
+//SPARE:
+//String query = "SELECT m.machineid, m.machinelocation, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year'\n" +
+//		"FROM " + this.dataBasename + ".machines m" +
+//		"JOIN " + this.dataBasename + ".orders o ON m.machineid = o.machineid" +
+//		"GROUP BY m.machineid, m.machinelocation, MONTH(o.orderdate), YEAR(o.orderdate)" +
+//		"ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);";
+
+// USE THIS!!!!
+//	SELECT m.machineid, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year'
+//		FROM machines m
+//		JOIN orders o ON m.machineid = o.machineid
+//		GROUP BY m.machineid, MONTH(o.orderdate), YEAR(o.orderdate)
+//		ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);
+
+
+
+
+
+
+// get number of orders by month:
+//SELECT m.machineid, COUNT(o.machineid) as 'number_of_orders', MONTHNAME(o.orderdate) as 'month'
+//		FROM machines m
+//		JOIN orders o ON m.machineid = o.machineid
+//		GROUP BY m.machineid, MONTHNAME(o.orderdate)
+//		ORDER BY MONTH(o.orderdate);
+
+
+// TODO: CODE TO GENERATE REPORT EVERY HALF AN HOUR (can later run it to make daily reports):
+//  import java.util.ArrayList;
+//	import java.util.concurrent.Executors;
+//	import java.util.concurrent.ScheduledExecutorService;
+//	import java.util.concurrent.TimeUnit;
+//
+//
+//public static void main(String[] args) {
+//	ArrayList<String> areaMachineMonthYear = new ArrayList<>();
+//	// add the necessary values to the areaMachineMonthYear list
+//
+//	ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+//	executorService.scheduleAtFixedRate(new Runnable() {
+//		@Override
+//		public void run() {
+//			generateMonthlyInventoryReport(areaMachineMonthYear);
+//		}
+//	}, 0, 30, TimeUnit.MINUTES);
+//}
+//
+//public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear) {
+//	// method implementation as shown in the question
+//}
+
+
+
+
+
+
+
 
 
 
