@@ -212,7 +212,7 @@ public class MysqlController {
 	 * @return Arraylist of products in a specific machine.
 	 * This method finds all products that belong to a specific machine id.
 	 */
-	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){
+	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){ // TODO: how i can improve this query to make the code more simple
 		if (machineId == null)
 			throw new NullPointerException();
 
@@ -281,55 +281,44 @@ public class MysqlController {
 		}
 	}
 
+
 	public ArrayList<Product> getWarehouseProducts(){
 		PreparedStatement stmt;
 		ResultSet res;
-		String query;
 		ArrayList<Product> productList = new ArrayList<Product>();
 		boolean resultFound = false;
 		// choose if we need all products or a specific machine
 
-		query = "SELECT * FROM " + this.dataBasename + ".warehouse"; // TODO: change
+		String query = "SELECT * FROM " + this.dataBasename + ".products p INNER JOIN " + this.dataBasename + ".warehouse w ON p.productid = w.productid";
 
-		try{
+		try {
 			stmt = connection.prepareStatement(query);
 			res = stmt.executeQuery();
-			ResultSet productRes = null;
-			File file = null;
-			while(res.next()){
+			while (res.next()){
 				resultFound = true;
 				Product product = new Product();
-				productRes = getProductData(res.getString("productid"));
-				// add product info from products in table
-				product.setProductId(res.getString("productid"));
+				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
+				product.setName(res.getString("name"));
 				product.setAmount(res.getInt("amount"));
+				product.setDescription(res.getString("description"));
+				product.setType(res.getString("type"));
+				product.setProductId(res.getString("productid"));
 				product.setCriticalAmount(res.getInt("criticalamount"));
-				if (productRes == null){
-					System.out.println("product " + productRes + "is null");
-					continue;
-				}
-				while (productRes.next()){
-					// add specific  product info from products table
-					product.setName(productRes.getString("name"));
-					product.setPrice(productRes.getFloat("price"));
-					product.setDescription(productRes.getString("description"));
-					product.setType(productRes.getString("type"));
 
-					// create file and streams
-					Path path = Paths.get("src/Application/images/", productRes.getString("name") + ".png");
-					file = new File(path.toUri());
-					FileInputStream fis = null;
-					try {
-						fis = new FileInputStream(file);
-						byte[] outputFile = new byte[(int)file.length()];
-						BufferedInputStream bis = new BufferedInputStream(fis);
-						bis.read(outputFile,0,outputFile.length);
-						// add file to product object
-						product.setFile(outputFile);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
+				// create file and streams
+				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
+				File file = new File(path.toUri());
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+					byte[] outputFile = new byte[(int)file.length()];
+					BufferedInputStream bis = new BufferedInputStream(fis);
+					bis.read(outputFile,0,outputFile.length);
+					// add file to product object
+					product.setFile(outputFile);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
 				productList.add(product);
 			}
@@ -337,8 +326,8 @@ public class MysqlController {
 				return productList;
 			return null;
 
-		}catch (SQLException sqlException){
-			sqlException.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
