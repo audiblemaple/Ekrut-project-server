@@ -57,23 +57,15 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(null, MessageFromServer.LOGOUT_FAILED_NOT_LOGGED_IN));
                 break;
 
-            case "REQUEST_MACHINE_INVENTORY_REPORT":
-            case "REQUEST_MACHINE_PRODUCTS":
-                productList = mysqlcontroller.getMachineProducts((String)message.getData(), false);
-                if(productList != null){
-                    sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
-                    break;
-                }
-                sendMessageToClient(client, new Message("error importing machines products", MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
-                break;
-
+            case "REQUEST_LOCATION_PRODUCTS":
             case "REQUEST_ALL_MACHINE_PRODUCTS":
-                productList = mysqlcontroller.getMachineProducts("we need all machines products, hence true -->", true);
+            case "REQUEST_MACHINE_PRODUCTS":
+                productList = mysqlcontroller.getMachineProducts((ArrayList<String>) message.getData());
                 if(productList != null){
                     sendMessageToClient(client, new Message(productList, MessageFromServer.IMPORT_MACHINE_PRODUCTS_SUCCESSFUL));
                     break;
                 }
-                sendMessageToClient(client, new Message("error importing all machines products", MessageFromServer.ERROR_IMPORTING_ALL_MACHINE_PRODUCTS));
+                sendMessageToClient(client, new Message("error importing products", MessageFromServer.ERROR_IMPORTING_MACHINE_PRODUCTS));
                 break;
 
             case "REQUEST_ADD_USER":

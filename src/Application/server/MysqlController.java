@@ -84,7 +84,7 @@ public class MysqlController {
 		}
 	}
 
-	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthYearMachine){ // TODO: add option to sum price
+	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthYearMachine){
 		if (monthYearMachine == null)
 			throw new NullPointerException();
 
@@ -146,9 +146,12 @@ public class MysqlController {
 		return products;
 	}
 
-	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){
+	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){ // TODO: uncomment this!!!
 		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
-		ArrayList<Product> products = getMachineProducts(areaMachineMonthYear.get(1), false);
+		ArrayList<String> mID = new ArrayList<>();
+		mID.add(areaMachineMonthYear.get(1));
+		mID.add("0");
+		ArrayList<Product> products = getMachineProducts(mID);
 		String reportDetails = "";
 		float overallPrice = 0;
 
@@ -208,71 +211,56 @@ public class MysqlController {
 
 
 	/**
-	 * @param machineId id of a specific machine in the database.
+	 * @param mIdLocation id or location of machine/s in the database.
 	 * @return Arraylist of products in a specific machine.
 	 * This method finds all products that belong to a specific machine id.
 	 */
-	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){ // TODO: how i can improve this query to make the code more simple
-		if (machineId == null)
-			throw new NullPointerException();
-
+	public ArrayList<Product> getMachineProducts(ArrayList<String> mIdLocation){ // TODO: how i can improve this query to make the code more simple
 		PreparedStatement stmt;
 		ResultSet res;
 		String query;
 		ArrayList<Product> productList = new ArrayList<Product>();
-		boolean resultFound = false;
 		// choose if we need all products or a specific machine
-		if (needAll)
-			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
+		if (mIdLocation == null)
+			query = "SELECT * FROM " + this.dataBasename + ".products p JOIN " + this.dataBasename + ".productsinmachines pm ON p.productid = pm.productid";
+		else if (mIdLocation.get(0) != null && mIdLocation.get(1).equals("0"))
+			query = "SELECT *FROM " + this.dataBasename + ".products p JOIN " + this.dataBasename + ".productsinmachines pm ON p.productid = pm.productid WHERE pm.machineid = ?";
 		else
-			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
+			query = "SELECT * FROM " + this.dataBasename + ".products p JOIN " + this.dataBasename + ".productsinmachines pm ON p.productid = pm.productid JOIN " + this.dataBasename + ".machines m ON pm.machineid = m.machineid WHERE m.machinelocation = ?";
 
 		try{
 			stmt = connection.prepareStatement(query);
-			if (!needAll)
-				stmt.setString(1, machineId);
+			if (mIdLocation != null)
+				stmt.setString(1, mIdLocation.get(0));
 			res = stmt.executeQuery();
-			ResultSet productRes = null;
 			File file = null;
-			while(res.next()){
-				resultFound = true;
+			while (res.next()){
 				Product product = new Product();
-				productRes = getProductData(res.getString("productid"));
-
-				// add product info from products in table
-				product.setProductId(res.getString("productid"));
+				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
+				product.setName(res.getString("name"));
 				product.setAmount(res.getInt("amount"));
-				product.setCriticalAmount(res.getInt("criticalamount"));
-				if (productRes == null){
-					System.out.println("product " + productRes + "is null");
-					continue;
-				}
-				while (productRes.next()){
-					// add specific  product info from products table
-					product.setName(productRes.getString("name"));
-					product.setPrice(productRes.getFloat("price"));
-					product.setDescription(productRes.getString("description"));
-					product.setType(productRes.getString("type"));
-
-					// create file and streams
-					Path path = Paths.get("src/Application/images/" + productRes.getString("name") + ".png"); //TODO: check that i didnt break anything
-					file = new File(path.toUri());
-					FileInputStream fis = null;
-					try {
-						fis = new FileInputStream(file);
-						byte[] outputFile = new byte[(int)file.length()];
-						BufferedInputStream bis = new BufferedInputStream(fis);
-						bis.read(outputFile,0,outputFile.length);
-						// add file to product object
-						product.setFile(outputFile);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
+				product.setDescription(res.getString("description"));
+				product.setType(res.getString("type"));
+				product.setProductId(res.getString("productid"));
+				// create file and streams
+				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
+				file = new File(path.toUri());
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+					byte[] outputFile = new byte[(int)file.length()];
+					BufferedInputStream bis = new BufferedInputStream(fis);
+					bis.read(outputFile,0,outputFile.length);
+					// add file to product object
+					product.setFile(outputFile);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return null;
 				}
 				productList.add(product);
 			}
-			if (resultFound)
+			if (!productList.isEmpty())
 				return productList;
 			return null;
 		}catch (SQLException sqlException){
@@ -852,41 +840,75 @@ public class MysqlController {
 
 
 
-
-
-
-
-// BACKUP:
+// backup:
 //	/**
 //	 * @param machineId id of a specific machine in the database.
 //	 * @return Arraylist of products in a specific machine.
 //	 * This method finds all products that belong to a specific machine id.
 //	 */
-//	public ArrayList<Product> getAllProductsForMachine(String machineId){ // TODO: adapt this method to the new database configuration
+//	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){ // TODO: how i can improve this query to make the code more simple
 //		if (machineId == null)
 //			throw new NullPointerException();
 //
 //		PreparedStatement stmt;
 //		ResultSet res;
-//		String loginQuery = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
+//		String query;
 //		ArrayList<Product> productList = new ArrayList<Product>();
-//		try{
-//			stmt = connection.prepareStatement(loginQuery);
-//			stmt.setString(1, machineId);
-//			res = stmt.executeQuery();
+//		boolean resultFound = false;
+//		// choose if we need all products or a specific machine
+//		if (needAll)
+//			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
+//		else
+//			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
 //
+//		try{
+//			stmt = connection.prepareStatement(query);
+//			if (!needAll)
+//				stmt.setString(1, machineId);
+//			res = stmt.executeQuery();
+//			ResultSet productRes = null;
+//			File file = null;
 //			while(res.next()){
+//				resultFound = true;
 //				Product product = new Product();
+//				productRes = getProductData(res.getString("productid"));
+//
+//				// add product info from products in table
 //				product.setProductId(res.getString("productid"));
-//				product.setName(res.getString("name"));
-//				product.setPrice(res.getFloat("price"));
 //				product.setDiscount(res.getFloat("discount"));
 //				product.setAmount(res.getInt("amount"));
-//				product.setDescription(res.getString("description"));
-//				product.setType(res.getString("type"));
+//				product.setCriticalAmount(res.getInt("criticalamount"));
+//				if (productRes == null){
+//					System.out.println("product " + productRes + "is null");
+//					continue;
+//				}
+//				while (productRes.next()){
+//					// add specific  product info from products table
+//					product.setName(productRes.getString("name"));
+//					product.setPrice(productRes.getFloat("price"));
+//					product.setDescription(productRes.getString("description"));
+//					product.setType(productRes.getString("type"));
+//
+//					// create file and streams
+//					Path path = Paths.get("src/Application/images/" + productRes.getString("name") + ".png"); //TODO: check that i didnt break anything
+//					file = new File(path.toUri());
+//					FileInputStream fis = null;
+//					try {
+//						fis = new FileInputStream(file);
+//						byte[] outputFile = new byte[(int)file.length()];
+//						BufferedInputStream bis = new BufferedInputStream(fis);
+//						bis.read(outputFile,0,outputFile.length);
+//						// add file to product object
+//						product.setFile(outputFile);
+//					} catch (Exception e) {
+//						throw new RuntimeException(e);
+//					}
+//				}
 //				productList.add(product);
 //			}
-//			return productList;
+//			if (resultFound)
+//				return productList;
+//			return null;
 //		}catch (SQLException sqlException){
 //			sqlException.printStackTrace();
 //			return null;
@@ -895,39 +917,3 @@ public class MysqlController {
 
 
 
-// just with description
-//	public boolean generateMonthlyInventoryReport(String area, String machineID, String month, String year){
-//		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
-//		ArrayList<Product> products = getMachineProducts(machineID, false);
-//		String reportDetails = "";
-//		float overallPrice = 0;
-//
-//		for (Product prod : products){
-//			reportDetails += prod.getDescription() + " , " + prod.getAmount() + " , ";
-//			overallPrice += prod.getPrice() * prod.getAmount();
-//		}
-//
-//		String query = "INSERT INTO " +  this.dataBasename + ".inventoryreports(reportid, area, machineid, details, month, year, overallcost) VALUES(?, ?, ?, ?, ?, ?, ?)";
-//		PreparedStatement stmt;
-//		try{
-//			stmt = connection.prepareStatement(query);
-//			stmt.setString(1,reportID);
-//			stmt.setString(2,area);
-//			stmt.setString(3,machineID);
-//			stmt.setString(4,reportDetails);
-//			stmt.setString(5,month);
-//			stmt.setString(6,year);
-//			stmt.setFloat(7,overallPrice);
-//			stmt.executeUpdate();
-//
-//			// check report added successfully.
-//			ArrayList<String> monthAndYear = new ArrayList<String>();
-//			monthAndYear.add(month);
-//			monthAndYear.add(year);
-//			return getMonthlyInventoryReport(monthAndYear) != null;
-//		}
-//		catch (SQLException e){
-//			e.printStackTrace();
-//			return false;
-//		}
-//	}
