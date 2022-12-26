@@ -734,40 +734,91 @@ public class MysqlController {
 		}
 	}
 
-	public OrderReport getOrderReportFromAllMachines(ArrayList<String> monthAndYear){
-		HashMap<String, Integer> machinesAndAmounts = new HashMap<>();
-		ArrayList<String> locations = new ArrayList<>();
-		OrderReport ordereport = new OrderReport();
+	public ArrayList<OrderReport> getOrderData(ArrayList<String> monthAndYear){
+		ArrayList<OrderReport> machinereports = new ArrayList<>();
 		PreparedStatement stmt;
 		ResultSet res;
-		boolean hasResults = false;
 		String query = "SELECT m.machineid, m.machinelocation, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year' " +
 				"FROM " + this.dataBasename + ".machines m " +
 				"JOIN " + this.dataBasename + ".orders o " +
-				"ON m.machineid = o.machineid " +
+				"ON m.machineid = o.machineid AND MONTH(o.orderdate) = ? AND YEAR(o.orderdate) = ?" +
 				"GROUP BY m.machineid, m.machinelocation, MONTH(o.orderdate), YEAR(o.orderdate) " +
 				"ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);";
 		try {
 			stmt = connection.prepareStatement(query);
+			stmt.setString(1, monthAndYear.get(0));
+			stmt.setString(2, monthAndYear.get(1));
 			res = stmt.executeQuery();
 			while (res.next()){
-				if (res.getString("month").equals(monthAndYear.get(0)) && res.getString("year").equals(monthAndYear.get(1))){
-					hasResults = true;
-					if (!locations.contains(res.getString("machinelocation")))
-						locations.add(res.getString("machinelocation"));
-					machinesAndAmounts.put(res.getString("machineid"), res.getInt("number_of_orders"));
-				}
+				OrderReport ordereport = new OrderReport();
+				ordereport.setMachineid(res.getString("machineid"));
+				ordereport.setMachineLocation(res.getString("machinelocation"));
+				ordereport.setNumberOfOrders(res.getInt("number_of_orders"));
+				ordereport.setMonth(res.getString("month"));
+				ordereport.setYear(res.getString("year"));
+				machinereports.add(ordereport);
 			}
-			if (hasResults){
-				ordereport.setLocations(locations);
-				ordereport.setMachineAndAmount(machinesAndAmounts);
-				return ordereport;
-			}
+			if (!machinereports.isEmpty())
+				return machinereports;
 			return null;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	// TODO: use this to later generate monthly reports.
+	public void generateOrderReport(ArrayList<String> monthAndYear){
+		String query = "INSERT INTO " +  this.dataBasename + ".orderreports(reportid, location, month, year, machineid, orderamount) VALUES(?, ?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		ArrayList<OrderReport> orderReports = getOrderData(monthAndYear);
+		try {
+			stmt = connection.prepareStatement(query);
+			for (OrderReport ord : orderReports){
+				String reportID = "REP" + (getNumOfEntriesInTable("orderreports") + 1);
+				stmt.setString(1, reportID);
+				stmt.setString(2, ord.getMachineLocation());
+				stmt.setString(3, ord.getMonth());
+				stmt.setString(4, ord.getYear());
+				stmt.setString(5, ord.getMachineid());
+				stmt.setInt(6, ord.getNumberOfOrders());
+				stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	public ArrayList<OrderReport> getOrderReport(ArrayList<String> monthAndYear){
+		ArrayList<OrderReport> orderReports = new ArrayList<>();
+		PreparedStatement stmt;
+		ResultSet res;
+		String query = "SELECT * FROM " + this.dataBasename + ".orderreports WHERE month = ? AND year = ?";
+
+		try {
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, monthAndYear.get(0));
+			stmt.setString(2, monthAndYear.get(1));
+
+			res = stmt.executeQuery();
+			while (res.next()){
+				OrderReport orderReport = new OrderReport();
+				orderReport.setMachineid(res.getString("machineid"));
+				orderReport.setMachineLocation(res.getString("location"));
+				orderReport.setNumberOfOrders(res.getInt("orderamount"));
+				orderReport.setMonth(res.getString("month"));
+				orderReport.setYear(res.getString("year"));
+				orderReports.add(orderReport);
+			}
+			if (!orderReports.isEmpty()){
+				return orderReports;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

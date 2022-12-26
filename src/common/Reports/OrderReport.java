@@ -7,32 +7,63 @@ import java.util.HashMap;
 public class OrderReport implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    HashMap<String, Integer> machineAndAmount;
-    ArrayList<String> locations;
+    String machineid;
+    String machineLocation;
+    int numberOfOrders;
+    String month;
+    String year;
 
     public OrderReport() {
     }
 
-    public HashMap<String, Integer> getMachineAndAmount() {
-        return machineAndAmount;
+    public String getMachineid() {
+        return machineid;
     }
 
-    public void setMachineAndAmount(HashMap<String, Integer> machineAndAmount) {
-        this.machineAndAmount = machineAndAmount;
+    public void setMachineid(String machineid) {
+        this.machineid = machineid;
     }
 
-    public ArrayList<String> getLocations() {
-        return locations;
+    public String getMachineLocation() {
+        return machineLocation;
     }
 
-    public void setLocations(ArrayList<String> locations) {
-        this.locations = locations;
+    public void setMachineLocation(String machineLocation) {
+        this.machineLocation = machineLocation;
+    }
+
+    public int getNumberOfOrders() {
+        return numberOfOrders;
+    }
+
+    public void setNumberOfOrders(int numberOfOrders) {
+        this.numberOfOrders = numberOfOrders;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 
     @Override
     public String toString() {
-        return "OrderReport" +
-                "machineAndAmount: " + machineAndAmount +
-                ", locations: " + locations;
+        return "OrderReport{" +
+                "machineid='" + machineid + '\'' +
+                ", machineLocation='" + machineLocation + '\'' +
+                ", numberOfOrders=" + numberOfOrders +
+                ", month='" + month + '\'' +
+                ", year='" + year + '\'' +
+                '}';
     }
 }
