@@ -242,6 +242,7 @@ public class MysqlController {
 				product.setAmount(res.getInt("amount"));
 				product.setDescription(res.getString("description"));
 				product.setType(res.getString("type"));
+				product.setMachineID(res.getString("machineid"));
 				product.setProductId(res.getString("productid"));
 				// create file and streams
 				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
@@ -820,6 +821,13 @@ public class MysqlController {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+
+	public boolean setCriticalAmount(String whatToUpdate){
+
+
+
+		return false;
 	}
 
 	private String productListToString(ArrayList<Product> products){

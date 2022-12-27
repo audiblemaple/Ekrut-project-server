@@ -15,6 +15,7 @@ public class Product implements Serializable {
     private String type;
     private String productId;
     private int criticalAmount;
+    private String machineID;
     private byte[] file;
 
     public Product() {
@@ -27,6 +28,7 @@ public class Product implements Serializable {
         this.productId = null;
         this.file = null;
         this.criticalAmount = 0;
+        this.machineID = null;
     }
 
     public Product(float price, float discount, String name, int amount, String description, String type, String productId, byte[] file, int criticalAmount) {
@@ -113,6 +115,14 @@ public class Product implements Serializable {
         this.criticalAmount = criticalAmount;
     }
 
+    public String getMachineID() {
+        return machineID;
+    }
+
+    public void setMachineID(String machineID) {
+        this.machineID = machineID;
+    }
+
     @Override
     public String toString() {
         String f = "no file";
@@ -127,6 +137,7 @@ public class Product implements Serializable {
                 ", type= '" + type + '\'' +
                 ", productId= '" + productId + '\'' +
                 ", criticalAmount= " + criticalAmount +
+                ", machine id= " + machineID +
                 ", file= " + f +
                 '}';
     }
