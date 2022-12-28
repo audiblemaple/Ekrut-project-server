@@ -9,11 +9,11 @@ import common.orders.Product;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.invoke.SwitchPoint;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -244,6 +244,7 @@ public class MysqlController {
 				product.setType(res.getString("type"));
 				product.setMachineID(res.getString("machineid"));
 				product.setProductId(res.getString("productid"));
+				product.setCriticalAmount(res.getInt("criticalamount"));
 				// create file and streams
 				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
 				file = new File(path.toUri());
@@ -823,13 +824,6 @@ public class MysqlController {
 		}
 	}
 
-	public boolean setCriticalAmount(String whatToUpdate){
-
-
-
-		return false;
-	}
-
 	private String productListToString(ArrayList<Product> products){
 		String details = "";
 		for (Product prod : products){
@@ -837,142 +831,135 @@ public class MysqlController {
 		}
 		return details;
 	}
+
+
+	public boolean updateWarehouseProduct(Product product){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query = "UPDATE ekrutdatabase.warehouse SET discount = ?, amount = ?, criticalamount = ? WHERE productid = ?;";
+		try {
+			stmt = connection.prepareStatement(query);
+			stmt.setFloat(1, product.getDiscount());
+			stmt.setInt(2, product.getAmount());
+			stmt.setInt(3, product.getCriticalAmount());
+			stmt.setString(4, product.getProductId());
+
+			stmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean updateMachineProduct(Product product) {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query = "UPDATE ekrutdatabase.productsinmachines SET discount = ?, amount = ?, criticalamount = ? WHERE productid = ? AND machineid = ?;";
+		try {
+			stmt = connection.prepareStatement(query);
+			stmt.setFloat(1, product.getDiscount());
+			stmt.setInt(2, product.getAmount());
+			stmt.setInt(3, product.getCriticalAmount());
+			stmt.setString(4, product.getProductId());
+			stmt.setString(5, product.getMachineID());
+
+			stmt.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean addNewProductToProductTable(Product product) {
+		String query = "INSERT INTO " +  this.dataBasename + ".products(productid, name, price, description, type) VALUES(?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,product.getProductId());
+			stmt.setString(2,product.getName());
+			stmt.setFloat(3,product.getPrice());
+			stmt.setString(4,product.getDescription());
+			stmt.setString(5,product.getType());
+
+			stmt.executeUpdate();
+			return checkProductExistsInGivenTable(product, "");
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean addNewProductToWarehouse(Product product) {
+		String query = "INSERT INTO " +  this.dataBasename + ".warehouse(productid, discount, amount, criticalamount) VALUES(?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,product.getProductId());
+			stmt.setFloat(2,product.getDiscount());
+			stmt.setInt(3,product.getAmount());
+			stmt.setInt(4,product.getCriticalAmount());
+
+			stmt.executeUpdate();
+			return checkProductExistsInGivenTable(product, "warehouse");
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean checkProductExistsInGivenTable(Product product, String whereToCheck){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		switch (whereToCheck){
+			case "warehouse":
+				query = "SELECT productid FROM " + this.dataBasename + ".warehouse WHERE productid = ?";
+				break;
+			case "machine":
+				query = "SELECT productid FROM " + this.dataBasename + ".productsinmachines WHERE productid = ? AND machineid = ?";
+				break;
+			default:
+				query = "SELECT productid FROM " + this.dataBasename + ".products WHERE productid = ?";
+		}
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, product.getProductId());
+			if (whereToCheck.equals("machine"))
+				stmt.setString(2, product.getMachineID());
+
+			res = stmt.executeQuery();
+			if (res.next()){
+				return res.getString("productid").equals(product.getProductId());
+			}
+			return false;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean addNewProductToMachine(Product product) {
+		String query = "INSERT INTO " +  this.dataBasename + ".productsinmachines(productid, machineid, discount, amount, criticalamount) VALUES(?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,product.getProductId());
+			stmt.setString(2,product.getMachineID());
+			stmt.setFloat(3,product.getDiscount());
+			stmt.setInt(4,product.getAmount());
+			stmt.setInt(5, product.getCriticalAmount());
+
+			stmt.executeUpdate();
+			return checkProductExistsInGivenTable(product, "machine");
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
-
-
-
-
-//SPARE:
-//String query = "SELECT m.machineid, m.machinelocation, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year'\n" +
-//		"FROM " + this.dataBasename + ".machines m" +
-//		"JOIN " + this.dataBasename + ".orders o ON m.machineid = o.machineid" +
-//		"GROUP BY m.machineid, m.machinelocation, MONTH(o.orderdate), YEAR(o.orderdate)" +
-//		"ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);";
-
-// USE THIS!!!!
-//	SELECT m.machineid, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year'
-//		FROM machines m
-//		JOIN orders o ON m.machineid = o.machineid
-//		GROUP BY m.machineid, MONTH(o.orderdate), YEAR(o.orderdate)
-//		ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);
-
-
-
-
-
-
-// get number of orders by month:
-//SELECT m.machineid, COUNT(o.machineid) as 'number_of_orders', MONTHNAME(o.orderdate) as 'month'
-//		FROM machines m
-//		JOIN orders o ON m.machineid = o.machineid
-//		GROUP BY m.machineid, MONTHNAME(o.orderdate)
-//		ORDER BY MONTH(o.orderdate);
-
-
-// TODO: CODE TO GENERATE REPORT EVERY HALF AN HOUR (can later run it to make daily reports):
-//  import java.util.ArrayList;
-//	import java.util.concurrent.Executors;
-//	import java.util.concurrent.ScheduledExecutorService;
-//	import java.util.concurrent.TimeUnit;
-//
-//
-//public static void main(String[] args) {
-//	ArrayList<String> areaMachineMonthYear = new ArrayList<>();
-//	// add the necessary values to the areaMachineMonthYear list
-//
-//	ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-//	executorService.scheduleAtFixedRate(new Runnable() {
-//		@Override
-//		public void run() {
-//			generateMonthlyInventoryReport(areaMachineMonthYear);
-//		}
-//	}, 0, 30, TimeUnit.MINUTES);
-//}
-//
-//public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear) {
-//	// method implementation as shown in the question
-//}
-
-
-
-
-
-
-
-// backup:
-//	/**
-//	 * @param machineId id of a specific machine in the database.
-//	 * @return Arraylist of products in a specific machine.
-//	 * This method finds all products that belong to a specific machine id.
-//	 */
-//	public ArrayList<Product> getMachineProducts(String machineId, boolean needAll){ // TODO: how i can improve this query to make the code more simple
-//		if (machineId == null)
-//			throw new NullPointerException();
-//
-//		PreparedStatement stmt;
-//		ResultSet res;
-//		String query;
-//		ArrayList<Product> productList = new ArrayList<Product>();
-//		boolean resultFound = false;
-//		// choose if we need all products or a specific machine
-//		if (needAll)
-//			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
-//		else
-//			query = "SELECT * FROM " + this.dataBasename + ".productsinmachines WHERE machineid = ?";
-//
-//		try{
-//			stmt = connection.prepareStatement(query);
-//			if (!needAll)
-//				stmt.setString(1, machineId);
-//			res = stmt.executeQuery();
-//			ResultSet productRes = null;
-//			File file = null;
-//			while(res.next()){
-//				resultFound = true;
-//				Product product = new Product();
-//				productRes = getProductData(res.getString("productid"));
-//
-//				// add product info from products in table
-//				product.setProductId(res.getString("productid"));
-//				product.setDiscount(res.getFloat("discount"));
-//				product.setAmount(res.getInt("amount"));
-//				product.setCriticalAmount(res.getInt("criticalamount"));
-//				if (productRes == null){
-//					System.out.println("product " + productRes + "is null");
-//					continue;
-//				}
-//				while (productRes.next()){
-//					// add specific  product info from products table
-//					product.setName(productRes.getString("name"));
-//					product.setPrice(productRes.getFloat("price"));
-//					product.setDescription(productRes.getString("description"));
-//					product.setType(productRes.getString("type"));
-//
-//					// create file and streams
-//					Path path = Paths.get("src/Application/images/" + productRes.getString("name") + ".png"); //TODO: check that i didnt break anything
-//					file = new File(path.toUri());
-//					FileInputStream fis = null;
-//					try {
-//						fis = new FileInputStream(file);
-//						byte[] outputFile = new byte[(int)file.length()];
-//						BufferedInputStream bis = new BufferedInputStream(fis);
-//						bis.read(outputFile,0,outputFile.length);
-//						// add file to product object
-//						product.setFile(outputFile);
-//					} catch (Exception e) {
-//						throw new RuntimeException(e);
-//					}
-//				}
-//				productList.add(product);
-//			}
-//			if (resultFound)
-//				return productList;
-//			return null;
-//		}catch (SQLException sqlException){
-//			sqlException.printStackTrace();
-//			return null;
-//		}
-//	}
-
-
-

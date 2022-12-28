@@ -152,6 +152,59 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(orderReports, MessageFromServer.IMPORT_ALL_MACHINES_MONTHLY_REPORT_SUCCESSFUL));
                 break;
 
+            case "REQUEST_UPDATE_WAREHOUSE_PRODUCTS":
+                if (mysqlcontroller.updateWarehouseProduct((Product) message.getData())){
+                    sendMessageToClient(client, new Message("data updated successfully!", MessageFromServer.WAREHOUSE_PRODUCTS_UPDATED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("failed to update warehouse product", MessageFromServer.ERROR_UPDATING_WAREHOUSE_PRODUCT));
+
+
+            case"REQUEST_UPDATE_MACHINE_PRODUCTS":
+                if (mysqlcontroller.updateMachineProduct((Product) message.getData())){
+                    sendMessageToClient(client, new Message("data updated successfully!", MessageFromServer.MACHINE_PRODUCT_UPDATED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("failed to update machine product", MessageFromServer.ERROR_UPDATING_MACHINE_PRODUCT));
+                break;
+
+            case "REQUEST_ADD_NEW_PRODUCT_TO_PRODUCT_TABLE":
+                if (mysqlcontroller.checkProductExistsInGivenTable((Product) message.getData(), "")){
+                    sendMessageToClient(client, new Message("product already exists", MessageFromServer.ERROR_ADDING_PRODUCT));
+                    break;
+                }
+                if (mysqlcontroller.addNewProductToProductTable((Product) message.getData())){
+                    sendMessageToClient(client, new Message("New product added successfully", MessageFromServer.PRODUCT_ADDED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("failed to add new product to product table", MessageFromServer.ERROR_ADDING_PRODUCT));
+                break;
+
+            case "REQUEST_ADD_NEW_PRODUCT_TO_WAREHOUSE":
+                if (mysqlcontroller.checkProductExistsInGivenTable((Product) message.getData(), "warehouse")){
+                    sendMessageToClient(client, new Message("product already exists", MessageFromServer.ERROR_ADDING_PRODUCT));
+                    break;
+                }
+                if (mysqlcontroller.addNewProductToWarehouse((Product) message.getData())){
+                    sendMessageToClient(client, new Message("successfully added product to warehouse", MessageFromServer.PRODUCT_ADDED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("failed to add product to warehouse", MessageFromServer.ERROR_ADDING_PRODUCT));
+                break;
+
+            case "REQUEST_ADD_NEW_PRODUCT_TO_MACHINE":
+                if (mysqlcontroller.checkProductExistsInGivenTable((Product) message.getData(), "machine")){
+                    sendMessageToClient(client, new Message("product already exists", MessageFromServer.ERROR_ADDING_PRODUCT));
+                    break;
+                }
+                if (mysqlcontroller.addNewProductToMachine((Product) message.getData())){
+                    sendMessageToClient(client, new Message("successfully added product to machine", MessageFromServer.PRODUCT_ADDED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("failed to add product to machine", MessageFromServer.ERROR_ADDING_PRODUCT));
+                break;
+
+
 
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
