@@ -1,5 +1,6 @@
 package Application.server;
 
+import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
 import common.Reports.OrderReport;
 import common.connectivity.User;
@@ -9,11 +10,11 @@ import common.orders.Product;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.lang.invoke.SwitchPoint;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -962,4 +963,109 @@ public class MysqlController {
 			return false;
 		}
 	}
+
+
+	public void generateClientReport(String month, String year){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		query = "SELECT *, COUNT(o.customerid) as num_orders FROM " + this.dataBasename + ".users u JOIN " + this.dataBasename + ".orders o ON o.customerid = u.id WHERE MONTH(o.orderdate) = ? AND YEAR(o.orderdate) = ? GROUP BY u.id";
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, month);
+			stmt.setString(2, year);
+			PreparedStatement updatestmt;
+			String updateQuery = "INSERT INTO " +  this.dataBasename + ".customerreport(customerid, numoforders, month, year, customername, customerlastname) VALUES(?, ?, ?, ?, ?, ?)";
+
+			updatestmt = connection.prepareStatement(updateQuery);
+			res = stmt.executeQuery();
+			while (res.next()){
+				updatestmt.setString(1, res.getString("id"));
+				updatestmt.setInt(2, res.getInt("num_orders"));
+				updatestmt.setString(3, month);
+				updatestmt.setString(4, year);
+				updatestmt.setString(5,res.getString("firstname"));
+				updatestmt.setString(6, res.getString("lastname"));
+				updatestmt.executeUpdate();
+			}
+
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+		}
+	}
+
+
+	public ClientReport getClientReport(ArrayList<String> monthAndYear){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ClientReport report = new ClientReport();
+		HashMap<User, Integer> userOrderData = new HashMap<>();
+		User user;
+		query = "SELECT * FROM " + this.dataBasename + ".customerreport WHERE month = ? AND year = ?";
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, monthAndYear.get(0));
+			stmt.setString(2, monthAndYear.get(1));
+
+			res = stmt.executeQuery();
+			while (res.next()){
+				user = new User();
+				user.setId(res.getString("customerid"));
+				user.setFirstname(res.getString("customername"));
+				user.setLastname(res.getString("customerLastName"));
+				userOrderData.put(user, res.getInt("numoforders"));
+			}
+			report.setUserOrderAmount(userOrderData);
+			if (userOrderData.isEmpty())
+				return null;
+			return report;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+//	public ClientReport generateCustomerReport(String month, String year){
+//		PreparedStatement stmt;
+//		ResultSet res;
+//		String query;
+//		ClientReport report;
+//		HashMap<User, Integer> userOrderData = new HashMap<>();
+//		User user;
+//		query = "SELECT *, COUNT(o.customerid) as num_orders FROM users u JOIN orders o ON o.customerid = u.id WHERE MONTH(o.orderdate) = ? AND YEAR(o.orderdate) = ? GROUP BY u.id";
+//
+//		try{
+//			stmt = connection.prepareStatement(query);
+//			stmt.setString(1, month);
+//			stmt.setString(2, year);
+//
+//			res = stmt.executeQuery();
+//			while (res.next()){
+//				user = new User();
+//				user.setFirstname(res.getString("firstname"));
+//				user.setLastname(res.getString("lastname"));
+//				user.setId(res.getString("id"));
+//				user.setPhonenumber("phonenumber");
+//				user.setEmailaddress("emailaddress");
+//				userOrderData.put(user, res.getInt("num_orders"));
+//			}
+//
+//
+//
+//			return null;
+//		}catch (SQLException sqlException){
+//			sqlException.printStackTrace();
+//			return null;
+//		}
+//	}
+
+
+
+
+
+
+
+
 }

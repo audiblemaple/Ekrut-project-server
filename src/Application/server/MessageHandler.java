@@ -1,6 +1,7 @@
 package Application.server;
 
 import OCSF.ConnectionToClient;
+import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
 import common.Reports.OrderReport;
 import common.connectivity.Message;
@@ -202,6 +203,15 @@ public class MessageHandler {
                     break;
                 }
                 sendMessageToClient(client, new Message("failed to add product to machine", MessageFromServer.ERROR_ADDING_PRODUCT));
+                break;
+
+            case "REQUEST_CLIENT_REPORT":
+                ClientReport clientreport = mysqlcontroller.getClientReport((ArrayList<String>) message.getData());
+                if(clientreport == null){
+                    sendMessageToClient(client, new Message("error getting client report", MessageFromServer.ERROR_GETTING_CLIENT_REPORT));
+                    break;
+                }
+                sendMessageToClient(client, new Message(clientreport, MessageFromServer.SUCCESSFULLY_IMPORTED_CLIENT_REPORT));
                 break;
 
 

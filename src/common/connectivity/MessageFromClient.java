@@ -10,9 +10,9 @@ public enum MessageFromClient implements Serializable {
     REQUEST_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID,  // V
     REQUEST_GENERATE_MONTHLY_INVENTORY_REPORT,  // V
     REQUEST_MACHINE_MONTHLY_INVENTORY_REPORT,   // V
-    REQUEST_ADD_NEW_PRODUCT_TO_PRODUCT_TABLE,   // TODO
-    REQUEST_ADD_NEW_PRODUCT_TO_WAREHOUSE,       // TODO
-    REQUEST_ADD_NEW_PRODUCT_TO_MACHINE,         // TODO
+    REQUEST_ADD_NEW_PRODUCT_TO_PRODUCT_TABLE,   // V
+    REQUEST_ADD_NEW_PRODUCT_TO_WAREHOUSE,       // V
+    REQUEST_ADD_NEW_PRODUCT_TO_MACHINE,         // V
     REQUEST_UPDATE_WAREHOUSE_PRODUCTS,          // V
     REQUEST_MACHINE_INVENTORY_REPORT,           // V
     REQUEST_UPDATE_MACHINE_PRODUCTS,            // V
@@ -22,6 +22,7 @@ public enum MessageFromClient implements Serializable {
     REQUEST_DISCONNECT_CLIENT,                  // V
     REQUEST_LOCATION_PRODUCTS,                  // V
     REQUEST_MACHINE_PRODUCTS,                   // V
+    REQUEST_CLIENT_REPORT,                      // TODO
     REQUEST_ADD_NEW_ORDER,                      // V
     REQUEST_ALL_PRODUCTS,                       // V
     REQUEST_UPDATE_USER,                        // TODO
