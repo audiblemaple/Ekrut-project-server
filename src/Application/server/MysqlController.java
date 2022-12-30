@@ -669,14 +669,13 @@ public class MysqlController {
 		}
 	}
 
-
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String orderID = "ORD" + (getNumOfEntriesInTable("orders") + 1);
 
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
-				"(orderid, price, products, machineid, orderdate, customerid, supplymethod, paidwith)" +
-				"VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith)" +
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		try{
 			stmt = connection.prepareStatement(query);
@@ -685,9 +684,11 @@ public class MysqlController {
 			stmt.setString(3,  productListToString(order.getProducts()));
 			stmt.setString(4,  order.getMachineID());
 			stmt.setString(5,  order.getOrderDate());
-			stmt.setString(6,  order.getCustomerID());
-			stmt.setString(7,  order.getSupplyMethod());
-			stmt.setString(8,  order.getPaidWith());
+			stmt.setString(6,  order.getAddress());
+			stmt.setString(7,  order.getCustomerID());
+			stmt.setString(8,  order.getSupplyMethod());
+			stmt.setString(9,  order.getPaidWith());
+
 			stmt.executeUpdate();
 
 			customerAndOrderID.add(orderID);
@@ -752,7 +753,6 @@ public class MysqlController {
 		boolean hasResult = false;
 		String query = "SELECT * FROM " + this.dataBasename + ".orders WHERE orderid = ? AND customerid = ?";
 		Order order = new Order();
-		//ArrayList<Order> orderList = new ArrayList<Order>(); // left it in case i will need to return a list
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setString( 1,  customerAndOrderID.get(0));
@@ -777,7 +777,7 @@ public class MysqlController {
 				order.setCustomerID(res.getString("customerid"));
 				order.setSupplyMethod(res.getString("supplymethod"));
 				order.setPaidWith(res.getString("paidwith"));
-				//orderList.add(order); // left it in case i will need to return a list
+				order.setAddress(res.getString("address"));
 			}
 			if (hasResult)
 				return order;

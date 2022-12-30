@@ -17,11 +17,12 @@ public class Order implements Serializable {
     private String customerID;
     private String supplyMethod;
     private String paidWith;
+    private String address;
 
     public Order() {
     }
 
-    public Order(String orderID, float overallPrice, ArrayList<Product> products, String machineID, String orderDate, String estimatedDeliveryTime, String confirmationDate, String orderStatus, String customerID, String supplyMethod, String paidWith) {
+    public Order(String orderID, float overallPrice, ArrayList<Product> products, String machineID, String orderDate, String estimatedDeliveryTime, String confirmationDate, String orderStatus, String customerID, String supplyMethod, String paidWith, String address) {
         this.orderID = orderID;
         this.overallPrice = overallPrice;
         this.products = products;
@@ -33,6 +34,7 @@ public class Order implements Serializable {
         this.customerID = customerID;
         this.supplyMethod = supplyMethod;
         this.paidWith = paidWith;
+        this.address = address;
     }
 
     public String getOrderID() {
@@ -121,5 +123,31 @@ public class Order implements Serializable {
 
     public void setPaidWith(String paidWith) {
         this.paidWith = paidWith;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderID='" + orderID + '\'' +
+                ", overallPrice=" + overallPrice +
+                ", products=" + products +
+                ", machineID='" + machineID + '\'' +
+                ", orderDate='" + orderDate + '\'' +
+                ", estimatedDeliveryTime='" + estimatedDeliveryTime + '\'' +
+                ", confirmationDate='" + confirmationDate + '\'' +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", customerID='" + customerID + '\'' +
+                ", supplyMethod='" + supplyMethod + '\'' +
+                ", paidWith='" + paidWith + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }
