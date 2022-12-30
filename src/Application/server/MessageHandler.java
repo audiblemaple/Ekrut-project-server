@@ -5,6 +5,7 @@ import common.RefillOrder;
 import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
 import common.Reports.OrderReport;
+import common.connectivity.Customer;
 import common.connectivity.Message;
 import common.connectivity.MessageFromServer;
 import common.connectivity.User;
@@ -129,8 +130,13 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_ADD_NEW_ORDER":
-                if (mysqlcontroller.AddNewOrder((Order) message.getData()))
+                if (!mysqlcontroller.AddNewOrder((Order) message.getData())){
                     sendMessageToClient(client, new Message("Error adding your order", MessageFromServer.ERROR_ADDING_NEW_ORDER));
+                    break;
+                }
+                if (!mysqlcontroller.updateAmountsFromOrder((Order) message.getData())){
+                    sendMessageToClient(client, new Message("Error updating order amounts", MessageFromServer.ERROR_ADDING_NEW_ORDER));
+                }
                 sendMessageToClient(client, new Message("Order added successfully", MessageFromServer.ADD_NEW_ORDER_SUCCESSFUL));
                 break;
 
@@ -245,6 +251,26 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message("Error assigning employee to request!", MessageFromServer.ERROR_ASSIGNING_EMPLOYEE_TO_REFILL_REQUEST));
                 break;
+
+            case "REQUEST_CUSTOMER_DATA":
+                Customer customer = mysqlcontroller.getCustomerData((String) message.getData());
+                if (customer == null){
+                    sendMessageToClient(client, new Message("Error getting customer data", MessageFromServer.ERROR_GETTING_CUSTOMER_DATA));
+                    break;
+                }
+                sendMessageToClient(client, new Message(customer, MessageFromServer.CUSTOMER_DATA_IMPORTED_SUCCESSFULLY));
+                break;
+
+            case "REQUEST_CREDIT_CARD_CHECK":
+                if ( !mysqlcontroller.verifyCreditCard((ArrayList<String>) message.getData())){
+                    sendMessageToClient(client, new Message("Wrong credit card number", MessageFromServer.ERROR_VERIFYING_CREDIT_CARD));
+                    break;
+                }
+                sendMessageToClient(client, new Message("credit card verified successfully", MessageFromServer.CREDIT_CARD_VERIFIED_SUCCESSFULLY));
+
+
+
+
 
 
             default:

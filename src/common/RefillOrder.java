@@ -9,7 +9,7 @@ public class RefillOrder implements Serializable {
     private String MachineID;
     private String creationDate;
     private int amountAtRequest;
-    private int newAmount;
+    private int newAmount = 0;
     private String assignedEmployee;
 
     public RefillOrder() {

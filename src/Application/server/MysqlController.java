@@ -4,6 +4,7 @@ import common.RefillOrder;
 import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
 import common.Reports.OrderReport;
+import common.connectivity.Customer;
 import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
@@ -700,6 +701,35 @@ public class MysqlController {
 		}
 	}
 
+	public boolean updateAmountsFromOrder(Order order) {
+		PreparedStatement stmt;
+		String query;
+		int updateStatus = 0;
+
+		if (order.getMachineID() == null)
+			query = "UPDATE " + this.dataBasename + ".warehouse SET amount = amount - ? WHERE productid = ?;";
+		else
+			query = "UPDATE " + this.dataBasename + ".productsinmachines SET amount = amount - ? WHERE productid = ?;";
+
+		try{
+			for (Product product : order.getProducts()){
+				stmt = connection.prepareStatement(query);
+				stmt.setInt(1, product.getAmount());
+				stmt.setString(2, product.getProductId());
+				updateStatus =  stmt.executeUpdate();
+				if (updateStatus == 0)
+					return false;
+			}
+			if (order.getMachineID() != null)
+				checkAmount();
+			return true;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+
 
 	public Order getOrderByOrderIdAndCustomerID(ArrayList<String> customerAndOrderID){
 		PreparedStatement stmt;
@@ -1051,7 +1081,7 @@ public class MysqlController {
 				amount = res.getInt("amount");
 				alertAmount = res.getInt("criticalamount");
 				if (alertAmount >= amount)
-					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("amount"));
+					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("criticalamount"));
 			}
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
@@ -1062,6 +1092,8 @@ public class MysqlController {
 		LocalDate currentDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy.MM.dd");
 		String dateString = currentDate.format(formatter);
+
+
 		String  uuid = UUID.randomUUID().toString().substring(0, 8);
 
 		String query = "INSERT INTO " +  this.dataBasename + ".refilrequests(requestid, machineid, productid, date, amountatrequest) VALUES(?, ?, ?, ?, ?)";
@@ -1179,10 +1211,61 @@ public class MysqlController {
 			return false;
 		}
 	}
+
+	public Customer getCustomerData(String customerID) {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		Customer customer = new Customer();
+		query = "SELECT * FROM " + this.dataBasename + ".customer WHERE customerid = ?";
+		boolean resultFound = false;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, customerID);
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				resultFound = true;
+				customer.setCreditCardNumber(res.getString("creditcardnumber"));
+				customer.setSub(res.getBoolean("issub"));
+				customer.setFirstBuyAsSub(res.getBoolean("isfirsttimebuyassub"));
+			}
+			if (resultFound)
+				return customer;
+			return null;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean verifyCreditCard(ArrayList<String> creditCardAndID) {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+
+		query = "SELECT * FROM " + this.dataBasename + ".customer WHERE customerid = ? AND creditcardnumber = ?";
+		boolean resultFound = false;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, creditCardAndID.get(0));
+			stmt.setString(2, creditCardAndID.get(1));
+			res = stmt.executeQuery();
+
+			if (res.next())
+				resultFound = true;
+			return resultFound;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 }
 
 
-// get ALL products that need a refil order
+// get ALL PRODUCTS that need a refil order
 //	public ArrayList<Product> getRefillOrderProducts(){
 //		PreparedStatement stmt;
 //		ResultSet res;
