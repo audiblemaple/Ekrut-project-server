@@ -268,7 +268,13 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message("credit card verified successfully", MessageFromServer.CREDIT_CARD_VERIFIED_SUCCESSFULLY));
 
-
+            case "REQUEST_SET_FIRST_TIME_BUY_AS_SUB":
+                if ( !mysqlcontroller.updateFirstBuyAsSub((String) message.getData())){
+                    sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_FIRST_TIME_BUY_AS_SUB));
+                    break;
+                }
+                sendMessageToClient(client, new Message("status updated successfully", MessageFromServer.UPDATE_FIRST_TIME_AS_SUB_SUCCESSFUL));
+                break;
 
 
 

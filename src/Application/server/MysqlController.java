@@ -729,7 +729,22 @@ public class MysqlController {
 		}
 	}
 
+	public boolean updateFirstBuyAsSub(String customerID) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".customer SET isfirsttimebuyassub = true WHERE customerid = ?;";
+		int updateSuccessfull = 0;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, customerID);
+			updateSuccessfull =  stmt.executeUpdate();
 
+			return updateSuccessfull > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 
 	public Order getOrderByOrderIdAndCustomerID(ArrayList<String> customerAndOrderID){
 		PreparedStatement stmt;
@@ -1262,6 +1277,8 @@ public class MysqlController {
 			return false;
 		}
 	}
+
+
 }
 
 
