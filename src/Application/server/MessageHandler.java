@@ -1,6 +1,7 @@
 package Application.server;
 
 import OCSF.ConnectionToClient;
+import common.RefillOrder;
 import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
 import common.Reports.OrderReport;
@@ -214,6 +215,36 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(clientreport, MessageFromServer.SUCCESSFULLY_IMPORTED_CLIENT_REPORT));
                 break;
 
+            case "REQUEST_REFILL_ORDERS":
+                mysqlcontroller.checkAmount();
+                ArrayList<RefillOrder> refillOrderList = mysqlcontroller.getRefillOrders();
+                if (refillOrderList == null){
+                    sendMessageToClient(client, new Message("error getting refill orders", MessageFromServer.ERROR_IMPORTING_REFILL_ORDERS));
+                    break;
+                }
+                sendMessageToClient(client, new Message(refillOrderList, MessageFromServer.SUCCESSFULLY_IMPORTED_REFILL_ORDERS));
+                break;
+
+            case "REQUEST_UPDATE_MACHINE_PRODUCT_AMOUNT":
+                if ( !mysqlcontroller.updateMachineAmount((ArrayList<String>) message.getData())){
+                    sendMessageToClient(client, new Message("Error updating amount!", MessageFromServer.ERROR_UPDATING_MACHINE_AMOUNT));
+                    break;
+                }
+                if ( !mysqlcontroller.completeOrderRefil((ArrayList<String>) message.getData())){
+                    sendMessageToClient(client, new Message("Error removing refill order", MessageFromServer.ERROR_REMOVING_REFILL_ORDER));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Amount in machine updated successfully!", MessageFromServer.SUCCESSFULLY_UPDATED_AMOUNT_IN_MACHINE));
+                break;
+
+
+            case "REQUEST_ASSIGN_EMPLOYEE_TO_REFILL_ORDER":
+                if (mysqlcontroller.assignEmployeeToRefillOrder((RefillOrder) message.getData())){
+                    sendMessageToClient(client, new Message("employee assigned successfully!", MessageFromServer.SUCCESSFULLY_ASSIGNED_EMPLOYEE_TO_REFILL_REQUEST));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error assigning employee to request!", MessageFromServer.ERROR_ASSIGNING_EMPLOYEE_TO_REFILL_REQUEST));
+                break;
 
 
             default:

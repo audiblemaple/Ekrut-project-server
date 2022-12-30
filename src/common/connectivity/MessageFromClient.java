@@ -16,13 +16,16 @@ public enum MessageFromClient implements Serializable {
     REQUEST_UPDATE_WAREHOUSE_PRODUCTS,          // V
     REQUEST_MACHINE_INVENTORY_REPORT,           // V
     REQUEST_UPDATE_MACHINE_PRODUCTS,            // V
+    REQUEST_UPDATE_MACHINE_PRODUCT_AMOUNT,      // TODO
     REQUEST_ALL_MACHINE_LOCATIONS,              // V
     REQUEST_ALL_MACHINE_PRODUCTS,               // V
+    REQUEST_ASSIGN_EMPLOYEE_TO_REFILL_ORDER,    // TODO
     REQUEST_WAREHOUSE_PRODUCTS,                 // V
     REQUEST_DISCONNECT_CLIENT,                  // V
     REQUEST_LOCATION_PRODUCTS,                  // V
     REQUEST_MACHINE_PRODUCTS,                   // V
-    REQUEST_CLIENT_REPORT,                      // TODO
+    REQUEST_REFILL_ORDERS,                      // V
+    REQUEST_CLIENT_REPORT,                      // V
     REQUEST_ADD_NEW_ORDER,                      // V
     REQUEST_ALL_PRODUCTS,                       // V
     REQUEST_UPDATE_USER,                        // TODO
@@ -34,4 +37,5 @@ public enum MessageFromClient implements Serializable {
     REQUEST_ADD_USER,                           // V
     REQUEST_LOGOUT,                             // V
     REQUEST_LOGIN,                              // V
+    UNKNOWN
 }

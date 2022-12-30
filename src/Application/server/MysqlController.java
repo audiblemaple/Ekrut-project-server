@@ -1,5 +1,6 @@
 package Application.server;
 
+import common.RefillOrder;
 import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
 import common.Reports.OrderReport;
@@ -13,8 +14,14 @@ import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 
 
 /**
@@ -1027,45 +1034,189 @@ public class MysqlController {
 		}
 	}
 
-//	public ClientReport generateCustomerReport(String month, String year){
+
+	public void checkAmount(){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
+		int amount = 0;
+		int alertAmount = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				amount = res.getInt("amount");
+				alertAmount = res.getInt("criticalamount");
+				if (alertAmount >= amount)
+					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("amount"));
+			}
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+		}
+	}
+
+	private void addOrderToDatabase(String productID, String machineID, int amount){
+		LocalDate currentDate = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy.MM.dd");
+		String dateString = currentDate.format(formatter);
+		String  uuid = UUID.randomUUID().toString().substring(0, 8);
+
+		String query = "INSERT INTO " +  this.dataBasename + ".refilrequests(requestid, machineid, productid, date, amountatrequest) VALUES(?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, uuid);
+			stmt.setString(2, machineID);
+			stmt.setString(3, productID);
+			stmt.setString(4, dateString);
+			stmt.setInt(5, amount);
+
+			stmt.executeUpdate();
+		}
+		catch ( SQLIntegrityConstraintViolationException ignored){ // this handles a case where the order is already present
+
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+	}
+
+	public ArrayList<RefillOrder> getRefillOrders(){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<RefillOrder> refillOrderList = new ArrayList<>();
+		query = "SELECT * FROM " + this.dataBasename + ".refilrequests";
+		int amount = 0;
+		int alertAmount = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+			SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy.MM.dd");
+			SimpleDateFormat outputFormat = new SimpleDateFormat("dd.MM.yyyy");
+			while (res.next()){
+				RefillOrder order = new RefillOrder();
+				order.setOrderID(res.getString("requestid"));
+				order.setMachineID(res.getString("machineid"));
+				order.setProductID(res.getString("productid"));
+
+				Date date = inputFormat.parse(res.getString("date"));
+				String formattedDate = outputFormat.format(date);
+				order.setCreationDate(formattedDate);
+				order.setAmountAtRequest(res.getInt("amountatrequest"));
+				order.setAssignedEmployee(res.getString("assignedemployeeid"));
+				refillOrderList.add(order);
+			}
+
+			if (refillOrderList.isEmpty())
+				return null;
+			return refillOrderList;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+	public boolean updateMachineAmount(ArrayList<String> productData) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".productsinmachines SET amount = ? WHERE machineid = ? AND productid = ?;";
+		int updateSuccessfull = 0;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setInt(1, Integer.parseInt(productData.get(2)));
+			stmt.setString(2, productData.get(0));
+			stmt.setString(3, productData.get(1));
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+
+	public boolean completeOrderRefil(ArrayList<String> productData) {
+		PreparedStatement stmt;
+		String query;
+		query = "DELETE FROM " + this.dataBasename + ".refilrequests WHERE machineid = ? AND productid = ?;";
+		int updateSuccessfull = 0;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, productData.get(0));
+			stmt.setString(2, productData.get(1));
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean assignEmployeeToRefillOrder(RefillOrder order) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".refilrequests SET assignedemployeeid = ? WHERE requestid = ?;";
+		int updateSuccessfull = 0;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, order.getAssignedEmployee());
+			stmt.setString(2, order.getOrderID());
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+}
+
+
+// get ALL products that need a refil order
+//	public ArrayList<Product> getRefillOrderProducts(){
 //		PreparedStatement stmt;
 //		ResultSet res;
 //		String query;
-//		ClientReport report;
-//		HashMap<User, Integer> userOrderData = new HashMap<>();
-//		User user;
-//		query = "SELECT *, COUNT(o.customerid) as num_orders FROM users u JOIN orders o ON o.customerid = u.id WHERE MONTH(o.orderdate) = ? AND YEAR(o.orderdate) = ? GROUP BY u.id";
+//		ArrayList<Product> productList = new ArrayList<>();
+//		query = "SELECT * FROM " + this.dataBasename + ".products JOIN "
+//				+ this.dataBasename + ".productsinmachines ON products.productid = productsinmachines.productid JOIN "
+//				+ this.dataBasename + ".refilrequests ON productsinmachines.machineid = refilrequests.machineid AND products.productid = refilrequests.productid " +
+//				"WHERE productsinmachines.machineid = refilrequests.machineid AND products.productid = refilrequests.productid;";
+//		int amount = 0;
+//		int alertAmount = 0;
 //
 //		try{
 //			stmt = connection.prepareStatement(query);
-//			stmt.setString(1, month);
-//			stmt.setString(2, year);
-//
 //			res = stmt.executeQuery();
+//
 //			while (res.next()){
-//				user = new User();
-//				user.setFirstname(res.getString("firstname"));
-//				user.setLastname(res.getString("lastname"));
-//				user.setId(res.getString("id"));
-//				user.setPhonenumber("phonenumber");
-//				user.setEmailaddress("emailaddress");
-//				userOrderData.put(user, res.getInt("num_orders"));
+//				Product product = new Product();
+//				product.setProductId(res.getString("productid"));
+//				product.setName(res.getString("name"));
+//				product.setPrice(res.getFloat("price"));
+//				product.setDescription(res.getString("description"));
+//				product.setType(res.getString("type"));
+//				product.setMachineID(res.getString("machineid"));
+//				product.setAmount(res.getInt("amount"));
+//
+//				productList.add(product);
 //			}
 //
-//
-//
-//			return null;
+//			if (productList.isEmpty())
+//				return null;
+//			return productList;
 //		}catch (SQLException sqlException){
 //			sqlException.printStackTrace();
 //			return null;
 //		}
 //	}
-
-
-
-
-
-
-
-
-}
