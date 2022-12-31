@@ -671,15 +671,14 @@ public class MysqlController {
 
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
-		String orderID = "ORD" + (getNumOfEntriesInTable("orders") + 1);
-
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
 				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith)" +
 				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
+		int updateSuccessful = 0;
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1,  orderID);
+			stmt.setString(1,  order.getOrderID());
 			stmt.setFloat (2,  order.getOverallPrice());
 			stmt.setString(3,  productListToString(order.getProducts()));
 			stmt.setString(4,  order.getMachineID());
@@ -689,12 +688,9 @@ public class MysqlController {
 			stmt.setString(8,  order.getSupplyMethod());
 			stmt.setString(9,  order.getPaidWith());
 
-			stmt.executeUpdate();
+			updateSuccessful =  stmt.executeUpdate();
 
-			customerAndOrderID.add(orderID);
-			customerAndOrderID.add(order.getCustomerID());
-
-			return getOrderByOrderIdAndCustomerID(customerAndOrderID) != null;
+			return updateSuccessful > 0;
 		}
 		catch (SQLException e){
 			e.printStackTrace();
@@ -1279,6 +1275,27 @@ public class MysqlController {
 	}
 
 
+	public boolean checkIfCustomerIsSub(String customerID) {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+
+		query = "SELECT issub FROM " + this.dataBasename + ".customer WHERE customerid = ?";
+		boolean resultFound = false;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, customerID);
+			res = stmt.executeQuery();
+
+			if (res.next())
+				return res.getBoolean("issub");
+			return false;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 }
 
 

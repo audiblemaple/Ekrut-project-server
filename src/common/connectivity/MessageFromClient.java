@@ -14,6 +14,7 @@ public enum MessageFromClient implements Serializable {
     REQUEST_ADD_NEW_PRODUCT_TO_PRODUCT_TABLE,   // V
     REQUEST_ADD_NEW_PRODUCT_TO_WAREHOUSE,       // V
     REQUEST_CREDIT_CARD_CHECK,                  // V
+    REQUEST_CHECK_IF_SUB,                       // V
     REQUEST_ADD_NEW_PRODUCT_TO_MACHINE,         // V
     REQUEST_UPDATE_WAREHOUSE_PRODUCTS,          // V
     REQUEST_SET_FIRST_TIME_BUY_AS_SUB,          // TODO

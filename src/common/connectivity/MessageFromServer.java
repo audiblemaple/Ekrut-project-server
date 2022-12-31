@@ -18,6 +18,8 @@ public enum MessageFromServer implements Serializable {
     ERROR_ADDING_PRODUCT,                                   // V
     ERROR_IMPORTING_ALL_MACHINE_PRODUCTS,                   // V
     MACHINE_PRODUCT_UPDATED_SUCCESSFULLY,                   // V
+    CHECK_IF_CUSTOMER_IS_SUB_SUCCESSFUL,                    // V
+    ERROR_CHECKING_IF_CUSTOMER_IS_SUB,                      // V
     ERROR_UPDATING_FIRST_TIME_BUY_AS_SUB,                   // TODO
     UPDATE_FIRST_TIME_AS_SUB_SUCCESSFUL,                    // TODO
     ERROR_UPDATING_MACHINE_AMOUNT,                          // V

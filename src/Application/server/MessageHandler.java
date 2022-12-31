@@ -137,6 +137,7 @@ public class MessageHandler {
                 if (!mysqlcontroller.updateAmountsFromOrder((Order) message.getData())){
                     sendMessageToClient(client, new Message("Error updating order amounts", MessageFromServer.ERROR_ADDING_NEW_ORDER));
                 }
+
                 sendMessageToClient(client, new Message("Order added successfully", MessageFromServer.ADD_NEW_ORDER_SUCCESSFUL));
                 break;
 
@@ -276,6 +277,13 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("status updated successfully", MessageFromServer.UPDATE_FIRST_TIME_AS_SUB_SUCCESSFUL));
                 break;
 
+            case "REQUEST_CHECK_IF_SUB":
+                if (mysqlcontroller.checkIfCustomerIsSub((String) message.getData())){
+                    sendMessageToClient(client, new Message("customer is sub", MessageFromServer.CHECK_IF_CUSTOMER_IS_SUB_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message("customer is not sub", MessageFromServer.ERROR_CHECKING_IF_CUSTOMER_IS_SUB));
+                break;
 
 
 
