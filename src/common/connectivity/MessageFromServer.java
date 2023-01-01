@@ -17,6 +17,8 @@ public enum MessageFromServer implements Serializable {
     ERROR_IMPORTING_REFILL_ORDERS,                          // V
     ERROR_IMPORTING_CUSTOMERS_FROM_USER_TABLE,              // TODO
     IMPORTING_CUSTOMERS_FROM_USER_TABLE_SUCCESSFUL,         // TODO
+    ERROR_GETTING_DEALS,                                    // TODO
+    DEALS_IMPORTED_SUCCESSFULLY,                            // TODO
     ERROR_ADDING_PRODUCT,                                   // V
     ERROR_IMPORTING_ALL_MACHINE_PRODUCTS,                   // V
     MACHINE_PRODUCT_UPDATED_SUCCESSFULLY,                   // V

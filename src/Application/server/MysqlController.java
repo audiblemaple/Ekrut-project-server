@@ -1,5 +1,6 @@
 package Application.server;
 
+import common.Deals;
 import common.RefillOrder;
 import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
@@ -1348,6 +1349,41 @@ public class MysqlController {
 			sqlException.printStackTrace();
 			return false;
 		}
+	}
+
+
+	public ArrayList<Deals> getAllDiscounts() { // return discount
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<Deals> dealList = new ArrayList<>();
+
+		query = "SELECT * FROM " + this.dataBasename + ".deals";
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				Deals deal = new Deals();
+				deal.setDealID(res.getString("id"));
+				deal.setDealName(res.getString("name"));
+				deal.setDiscount(res.getFloat("discount"));
+				deal.setDescription(res.getString("description"));
+				deal.setType(res.getString("type"));
+				deal.setArea(res.getString("area"));
+				deal.setStatusString(res.getString("status"));
+				dealList.add(deal);
+			}
+
+			if (dealList.isEmpty())
+				return null;
+			return dealList;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+
 	}
 }
 

@@ -1,6 +1,7 @@
 package Application.server;
 
 import OCSF.ConnectionToClient;
+import common.Deals;
 import common.RefillOrder;
 import common.Reports.ClientReport;
 import common.Reports.InventoryReport;
@@ -302,6 +303,17 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message("Error updating user statuses", MessageFromServer.ERROR_UPDATING_USERS_STATUSES));
                 break;
+
+
+            case "REQUEST_DISCOUNT_LIST":
+                ArrayList<Deals> dealList = mysqlcontroller.getAllDiscounts();
+                if (dealList == null){
+                    sendMessageToClient(client, new Message("No deals to import", MessageFromServer.ERROR_GETTING_DEALS));
+                    break;
+                }
+                sendMessageToClient(client, new Message(dealList, MessageFromServer.DEALS_IMPORTED_SUCCESSFULLY));
+                break;
+
 
 
             default:
