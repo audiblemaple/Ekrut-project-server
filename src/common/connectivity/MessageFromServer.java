@@ -15,6 +15,8 @@ public enum MessageFromServer implements Serializable {
     WAREHOUSE_PRODUCTS_UPDATED_SUCCESSFULLY,                // V
     SUCCESSFULLY_IMPORTED_REFILL_ORDERS,                    // V
     ERROR_IMPORTING_REFILL_ORDERS,                          // V
+    ERROR_IMPORTING_CUSTOMERS_FROM_USER_TABLE,              // TODO
+    IMPORTING_CUSTOMERS_FROM_USER_TABLE_SUCCESSFUL,         // TODO
     ERROR_ADDING_PRODUCT,                                   // V
     ERROR_IMPORTING_ALL_MACHINE_PRODUCTS,                   // V
     MACHINE_PRODUCT_UPDATED_SUCCESSFULLY,                   // V
@@ -33,6 +35,8 @@ public enum MessageFromServer implements Serializable {
     CREDIT_CARD_VERIFIED_SUCCESSFULLY,                      // V
     ERROR_VERIFYING_CREDIT_CARD,                            // V
     IMPORT_MACHINE_LOCATIONS_SUCCESSFUL,    // V
+    ERROR_UPDATING_USERS_STATUSES,          // TODO
+    USERS_STATUSES_UPDATED_SUCCESSFULLY,    // TODO
     SUCCESSFULLY_IMPORTED_CLIENT_REPORT,    // V
     IMPORT_INVENTORY_REPORT_SUCCESSFUL,     // V
     IMPORT_MACHINE_PRODUCTS_SUCCESSFUL,     // V

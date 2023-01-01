@@ -13,6 +13,7 @@ import common.orders.Order;
 import common.orders.Product;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -285,6 +286,22 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("customer is not sub", MessageFromServer.ERROR_CHECKING_IF_CUSTOMER_IS_SUB));
                 break;
 
+            case "REQUEST_CUSTOMERS_FROM_USER_TABLE":
+                ArrayList<User> users = mysqlcontroller.getAllCustomerUsers();
+                if (users == null){
+                    sendMessageToClient(client, new Message("Error getting users", MessageFromServer.ERROR_IMPORTING_CUSTOMERS_FROM_USER_TABLE));
+                    break;
+                }
+                sendMessageToClient(client, new Message(users, MessageFromServer.IMPORTING_CUSTOMERS_FROM_USER_TABLE_SUCCESSFUL));
+                break;
+
+            case "REQUEST_UPDATE_USERS_STATUSES":
+                if (mysqlcontroller.updateUsersStatuses((ArrayList<User>) message.getData())){
+                    sendMessageToClient(client, new Message("User statuses updated successfully", MessageFromServer.USERS_STATUSES_UPDATED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error updating user statuses", MessageFromServer.ERROR_UPDATING_USERS_STATUSES));
+                break;
 
 
             default:

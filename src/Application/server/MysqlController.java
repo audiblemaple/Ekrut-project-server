@@ -1296,6 +1296,59 @@ public class MysqlController {
 			return false;
 		}
 	}
+
+	public ArrayList<User> getAllCustomerUsers() {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<User> users = new ArrayList<>();
+
+		query = "SELECT * FROM " + this.dataBasename + ".users WHERE department = 'customer' OR department = 'subscriber'";
+		boolean resultFound = false;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				User user = new User();
+				user.setFirstname(res.getString("firstname"));
+				user.setLastname(res.getString("lastname"));
+				user.setId(res.getString("id"));
+				user.setStatus(res.getString("userstatus"));
+				users.add(user);
+			}
+
+			if (users.isEmpty())
+				return null;
+			return users;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean updateUsersStatuses(ArrayList<User> data) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".users SET userstatus = ? WHERE id = ?;";
+		int updateSuccessfull = 0;
+		try{
+			for (User user : data){
+				stmt = connection.prepareStatement(query);
+				stmt.setString(1, user.getStatus());
+				stmt.setString(2, user.getId());
+				updateSuccessfull =  stmt.executeUpdate();
+
+				if (updateSuccessfull == 0)
+					return false;
+			}
+			return true;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 }
 
 
