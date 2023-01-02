@@ -1373,6 +1373,7 @@ public class MysqlController {
 				deal.setType(res.getString("type"));
 				deal.setArea(res.getString("area"));
 				deal.setStatusString(res.getString("status"));
+				deal.setActive(res.getString("isactive"));
 				dealList.add(deal);
 			}
 
@@ -1384,6 +1385,31 @@ public class MysqlController {
 			return null;
 		}
 
+	}
+
+	public boolean updateDeal(Deals dealToUpdate) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".deals SET name = ?, discount = ?, description = ?, type = ?, area = ?, status = ?, isactive = ? WHERE id = ?;";
+		int updateSuccessfull = 0;
+
+		try{
+		stmt = connection.prepareStatement(query);
+		stmt.setString(1, dealToUpdate.getDealName());
+		stmt.setFloat(2, dealToUpdate.getDiscount());
+		stmt.setString(3, dealToUpdate.getDescription());
+		stmt.setString(4, dealToUpdate.getType());
+		stmt.setString(5, dealToUpdate.getAreaS());
+		stmt.setString(6, dealToUpdate.getStatusString());
+		stmt.setString(7, dealToUpdate.getActive());
+		stmt.setString(8, dealToUpdate.getDealID());
+		updateSuccessfull =  stmt.executeUpdate();
+
+		return updateSuccessfull != 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
 	}
 }
 

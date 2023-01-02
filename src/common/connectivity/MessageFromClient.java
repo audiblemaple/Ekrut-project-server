@@ -9,6 +9,7 @@ public enum MessageFromClient implements Serializable {
     REQUEST_ALL_MACHINES_ORDERS_MONTHLY_REPORT, // V
     REQUEST_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID,  // V
     REQUEST_UPDATE_USERS_STATUSES,              // V
+    REQUEST_UPDATE_DEALS,                       // V
     REQUEST_CUSTOMER_DATA,                      // TODO
     REQUEST_DISCOUNT_LIST,                      // TODO
     REQUEST_GENERATE_MONTHLY_INVENTORY_REPORT,  // V

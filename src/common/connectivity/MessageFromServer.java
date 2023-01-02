@@ -15,10 +15,12 @@ public enum MessageFromServer implements Serializable {
     WAREHOUSE_PRODUCTS_UPDATED_SUCCESSFULLY,                // V
     SUCCESSFULLY_IMPORTED_REFILL_ORDERS,                    // V
     ERROR_IMPORTING_REFILL_ORDERS,                          // V
-    ERROR_IMPORTING_CUSTOMERS_FROM_USER_TABLE,              // TODO
-    IMPORTING_CUSTOMERS_FROM_USER_TABLE_SUCCESSFUL,         // TODO
-    ERROR_GETTING_DEALS,                                    // TODO
-    DEALS_IMPORTED_SUCCESSFULLY,                            // TODO
+    ERROR_IMPORTING_CUSTOMERS_FROM_USER_TABLE,              // V
+    IMPORTING_CUSTOMERS_FROM_USER_TABLE_SUCCESSFUL,         // V
+    ERROR_GETTING_DEALS,                                    // V
+    DEALS_IMPORTED_SUCCESSFULLY,                            // V
+    DEAL_UPDATED_SUCCESSFULLY,                             // TODO
+    ERROR_UPDATING_DEAL,                                   // TODO
     ERROR_ADDING_PRODUCT,                                   // V
     ERROR_IMPORTING_ALL_MACHINE_PRODUCTS,                   // V
     MACHINE_PRODUCT_UPDATED_SUCCESSFULLY,                   // V

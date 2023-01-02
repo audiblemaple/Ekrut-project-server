@@ -314,7 +314,13 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(dealList, MessageFromServer.DEALS_IMPORTED_SUCCESSFULLY));
                 break;
 
-
+            case "REQUEST_UPDATE_DEALS":
+                if (mysqlcontroller.updateDeal((Deals) message.getData())){
+                    sendMessageToClient(client, new Message("deal updated successfully.", MessageFromServer.DEAL_UPDATED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error updating deal.", MessageFromServer.ERROR_UPDATING_DEAL));
+                break;
 
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
