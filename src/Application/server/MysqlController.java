@@ -674,8 +674,8 @@ public class MysqlController {
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
-				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith)" +
-				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus)" +
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		int updateSuccessful = 0;
 		try{
@@ -689,6 +689,7 @@ public class MysqlController {
 			stmt.setString(7,  order.getCustomerID());
 			stmt.setString(8,  order.getSupplyMethod());
 			stmt.setString(9,  order.getPaidWith());
+			stmt.setString(10, order.getOrderStatus());
 
 			updateSuccessful =  stmt.executeUpdate();
 
@@ -1435,64 +1436,47 @@ public class MysqlController {
 
 
 	public boolean applyDeals() {
+		PreparedStatement stmt;
+		String query;
 		ArrayList<Deals> dealList = getAllDiscounts();
+		ArrayList<String> areas = getAllMachineLocations();
 		float maxUae = 0;
 		float maxNorth = 0;
 		float maxSouth = 0;
 		float maxAll = 0;
 
+		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ? " +
+				"WHERE machineid IN (SELECT machineid FROM " + this.dataBasename + ".machines " +
+				"WHERE machines.machinelocation = ?) AND productid IN (SELECT productid FROM " + this.dataBasename + ".products " +
+				"WHERE products.type = ? OR products.type = ?)";
+
+
 		for (Deals deal : dealList){
-			switch (deal.getAreaS()){
-				case "uae":
-					if (maxUae < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-						maxUae = deal.getDiscount();
-					break;
+			if ( deal.getDealID().equals("005") || !deal.getActive().equals("active"))
+				continue;
+			try{
+				stmt = connection.prepareStatement(query);
+				stmt.setFloat(1, deal.getDiscount());
+				stmt.setString(2, deal.getAreaS());
+				if (deal.getType().equals("ALL")){
+					stmt.setString(3, "SNACK");
+					stmt.setString(3, "DRINK");
+				}
+				else{
+					stmt.setString(3, deal.getType());
+					stmt.setString(4, deal.getType());
+				}
 
-				case "north":
-					if (maxNorth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-						maxNorth = deal.getDiscount();
-					break;
 
-				case "south":
-					if (maxSouth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-						maxSouth = deal.getDiscount();
-					break;
-
-				case "all":
-					if (maxAll < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-						maxAll = deal.getDiscount();
-					break;
-
+				stmt.executeUpdate();
+			}catch (SQLException sqlException){
+				sqlException.printStackTrace();
+				return false;
 			}
 		}
 
-
-		// THIS IS THE QUERY I NEED:
-		// todo: change this method to use this query...
-		// UPDATE productsinmachines
-		//SET discount = (SELECT discount FROM deals WHERE deals.id = productsinmachines.dealid)
-		//WHERE machineid IN (SELECT machineid FROM machines WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM products WHERE products.type = 'SNACK')
-
-
-
-		PreparedStatement stmt;
-		String query;
-
-		query = "UPDATE " + this.dataBasename + "productsinmachines SET discount = ? WHERE machineid IN (SELECT machineid FROM " + this.dataBasename + " machines " +
-																					"WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM " + this.dataBasename + " products " +
-																					"WHERE products.type = 'SNACK')";
-		try{
-			stmt = connection.prepareStatement(query);
-			stmt.setFloat(1, maxAll);
-			stmt.executeUpdate();
-		}catch (SQLException sqlException){
-			sqlException.printStackTrace();
-			return false;
-		}
 		return true;
 	}
-
-
 }
 
 
