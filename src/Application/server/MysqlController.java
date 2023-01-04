@@ -674,7 +674,7 @@ public class MysqlController {
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
-				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus, estimeteddeliverydate, confirmationdate)" +
+				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus, estimateddeliverydate, confirmationdate)" +
 				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		int updateSuccessful = 0;
