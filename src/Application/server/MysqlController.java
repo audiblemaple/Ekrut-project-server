@@ -1440,34 +1440,44 @@ public class MysqlController {
 		String query;
 		ArrayList<Deals> dealList = getAllDiscounts();
 		ArrayList<String> areas = getAllMachineLocations();
-		float maxUae = 0;
-		float maxNorth = 0;
-		float maxSouth = 0;
-		float maxAll = 0;
+		float discount = 0;
+
 
 		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ? " +
 				"WHERE machineid IN (SELECT machineid FROM " + this.dataBasename + ".machines " +
-				"WHERE machines.machinelocation = ?) AND productid IN (SELECT productid FROM " + this.dataBasename + ".products " +
+				"WHERE machines.machinelocation = ? OR machines.machinelocation = ? OR machines.machinelocation = ?) AND productid IN (SELECT productid FROM " + this.dataBasename + ".products " +
 				"WHERE products.type = ? OR products.type = ?)";
 
-
 		for (Deals deal : dealList){
-			if ( deal.getDealID().equals("005") || !deal.getActive().equals("active"))
+			if ( deal.getDealID().equals("005"))
 				continue;
+			if (!deal.getActive().equals("active"))
+				discount = 0;
+			else
+				discount = deal.getDiscount();
+
 			try{
 				stmt = connection.prepareStatement(query);
-				stmt.setFloat(1, deal.getDiscount());
-				stmt.setString(2, deal.getAreaS());
-				if (deal.getType().equals("ALL")){
-					stmt.setString(3, "SNACK");
-					stmt.setString(3, "DRINK");
+				stmt.setFloat(1, discount);
+
+				if (deal.getAreaS().equals("all")){
+					stmt.setString(2, "uae");
+					stmt.setString(3, "north");
+					stmt.setString(4, "south");
 				}
 				else{
-					stmt.setString(3, deal.getType());
-					stmt.setString(4, deal.getType());
+					stmt.setString(2, deal.getAreaS());
+					stmt.setString(3, deal.getAreaS());
+					stmt.setString(4, deal.getAreaS());
 				}
-
-
+				if (deal.getType().equals("ALL")){
+					stmt.setString(5, "SNACK");
+					stmt.setString(6, "DRINK");
+				}
+				else{
+					stmt.setString(5, deal.getType());
+					stmt.setString(6, deal.getType());
+				}
 				stmt.executeUpdate();
 			}catch (SQLException sqlException){
 				sqlException.printStackTrace();
