@@ -1412,6 +1412,28 @@ public class MysqlController {
 		}
 	}
 
+
+	public boolean updateOrderStatus(ArrayList<String> orderIdAndStatus) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".orders SET orderstatus = ? WHERE orderid = ?;";
+		int updateSuccessfull = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,orderIdAndStatus.get(1));
+			stmt.setString(2, orderIdAndStatus.get(0));
+
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull != 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+
 	public boolean applyDeals() {
 		ArrayList<Deals> dealList = getAllDiscounts();
 		float maxUae = 0;
@@ -1444,10 +1466,6 @@ public class MysqlController {
 			}
 		}
 
-		ArrayList<String> uaeMachineIDs = getMachineIds("uae");
-		ArrayList<String> northMachineIDs = getMachineIds("north");
-		ArrayList<String> southMachineIDs = getMachineIds("south");
-
 
 		// THIS IS THE QUERY I NEED:
 		// todo: change this method to use this query...
@@ -1455,48 +1473,14 @@ public class MysqlController {
 		//SET discount = (SELECT discount FROM deals WHERE deals.id = productsinmachines.dealid)
 		//WHERE machineid IN (SELECT machineid FROM machines WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM products WHERE products.type = 'SNACK')
 
+
+
 		PreparedStatement stmt;
 		String query;
-		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ? WHERE machineid = ?;";
 
-		for (String str :uaeMachineIDs){
-			try{
-				stmt = connection.prepareStatement(query);
-				stmt.setFloat(1, maxUae);
-				stmt.setString(2,str);
-				stmt.executeUpdate();
-			}catch (SQLException sqlException){
-				sqlException.printStackTrace();
-				return false;
-			}
-		}
-
-		for (String str :northMachineIDs){
-			try{
-				stmt = connection.prepareStatement(query);
-				stmt.setFloat(1, maxNorth);
-				stmt.setString(2,str);
-				stmt.executeUpdate();
-			}catch (SQLException sqlException){
-				sqlException.printStackTrace();
-				return false;
-			}
-		}
-
-		for (String str :southMachineIDs){
-			try{
-				stmt = connection.prepareStatement(query);
-				stmt.setFloat(1, maxSouth);
-				stmt.setString(2,str);
-				stmt.executeUpdate();
-			}catch (SQLException sqlException){
-				sqlException.printStackTrace();
-				return false;
-			}
-		}
-		if (maxAll == 0)
-			return true;
-		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ?";
+		query = "UPDATE " + this.dataBasename + "productsinmachines SET discount = ? WHERE machineid IN (SELECT machineid FROM " + this.dataBasename + " machines " +
+																					"WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM " + this.dataBasename + " products " +
+																					"WHERE products.type = 'SNACK')";
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setFloat(1, maxAll);
@@ -1507,6 +1491,8 @@ public class MysqlController {
 		}
 		return true;
 	}
+
+
 }
 
 
@@ -1547,4 +1533,101 @@ public class MysqlController {
 //			sqlException.printStackTrace();
 //			return null;
 //		}
+//	}
+
+// SCRAP DEAL UPDATE METHOD
+//	public boolean applyDeals() {
+//		ArrayList<Deals> dealList = getAllDiscounts();
+//		float maxUae = 0;
+//		float maxNorth = 0;
+//		float maxSouth = 0;
+//		float maxAll = 0;
+//
+//		for (Deals deal : dealList){
+//			switch (deal.getAreaS()){
+//				case "uae":
+//					if (maxUae < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+//						maxUae = deal.getDiscount();
+//					break;
+//
+//				case "north":
+//					if (maxNorth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+//						maxNorth = deal.getDiscount();
+//					break;
+//
+//				case "south":
+//					if (maxSouth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+//						maxSouth = deal.getDiscount();
+//					break;
+//
+//				case "all":
+//					if (maxAll < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+//						maxAll = deal.getDiscount();
+//					break;
+//
+//			}
+//		}
+//
+//		ArrayList<String> uaeMachineIDs = getMachineIds("uae");
+//		ArrayList<String> northMachineIDs = getMachineIds("north");
+//		ArrayList<String> southMachineIDs = getMachineIds("south");
+//
+//
+//		// THIS IS THE QUERY I NEED:
+//		// todo: change this method to use this query...
+//		// UPDATE productsinmachines
+//		//SET discount = (SELECT discount FROM deals WHERE deals.id = productsinmachines.dealid)
+//		//WHERE machineid IN (SELECT machineid FROM machines WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM products WHERE products.type = 'SNACK')
+//
+//		PreparedStatement stmt;
+//		String query;
+//		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ? WHERE machineid = ?;";
+//
+//		for (String str :uaeMachineIDs){
+//			try{
+//				stmt = connection.prepareStatement(query);
+//				stmt.setFloat(1, maxUae);
+//				stmt.setString(2,str);
+//				stmt.executeUpdate();
+//			}catch (SQLException sqlException){
+//				sqlException.printStackTrace();
+//				return false;
+//			}
+//		}
+//
+//		for (String str :northMachineIDs){
+//			try{
+//				stmt = connection.prepareStatement(query);
+//				stmt.setFloat(1, maxNorth);
+//				stmt.setString(2,str);
+//				stmt.executeUpdate();
+//			}catch (SQLException sqlException){
+//				sqlException.printStackTrace();
+//				return false;
+//			}
+//		}
+//
+//		for (String str :southMachineIDs){
+//			try{
+//				stmt = connection.prepareStatement(query);
+//				stmt.setFloat(1, maxSouth);
+//				stmt.setString(2,str);
+//				stmt.executeUpdate();
+//			}catch (SQLException sqlException){
+//				sqlException.printStackTrace();
+//				return false;
+//			}
+//		}
+//		if (maxAll == 0)
+//			return true;
+//		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ?";
+//		try{
+//			stmt = connection.prepareStatement(query);
+//			stmt.setFloat(1, maxAll);
+//			stmt.executeUpdate();
+//		}catch (SQLException sqlException){
+//			sqlException.printStackTrace();
+//			return false;
+//		}
+//		return true;
 //	}

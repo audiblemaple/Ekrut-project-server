@@ -327,6 +327,14 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("Error updating deal.", MessageFromServer.ERROR_UPDATING_DEAL));
                 break;
 
+            case "REQUEST_UPDATE_ORDER_STATUS":
+                if (mysqlcontroller.updateOrderStatus((ArrayList<String>) message.getData())){
+                    sendMessageToClient(client, new Message("Order updated successfully", MessageFromServer.ORDER_STATUS_UPDATED_SUCCESSFULLY));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
+                break;
+
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }
