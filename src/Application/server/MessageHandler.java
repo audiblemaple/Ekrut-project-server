@@ -145,8 +145,10 @@ public class MessageHandler {
 
             case "REQUEST_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID":
                 Order order = mysqlcontroller.getOrderByOrderIdAndCustomerID((ArrayList<String>) message.getData());
-                if (order == null)
+                if (order == null){
                     sendMessageToClient(client, new Message("Error importing your order", MessageFromServer.ERROR_IMPORTING_ORDER));
+                    break;
+                }
                 sendMessageToClient(client, new Message(order, MessageFromServer.IMPORT_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID_SUCCESSFUL));
                 break;
 

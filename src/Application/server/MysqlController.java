@@ -753,12 +753,11 @@ public class MysqlController {
 		Order order = new Order();
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString( 1,  customerAndOrderID.get(0));
-			stmt.setString (2,  customerAndOrderID.get(1));
+			stmt.setString( 1,  customerAndOrderID.get(1));
+			stmt.setString (2,  customerAndOrderID.get(0));
 			res = stmt.executeQuery();
 
 			while(res.next()){
-
 				hasResult = true;
 				order.setOrderID(res.getString("orderid"));
 				order.setOverallPrice(res.getFloat("price"));
@@ -1448,6 +1447,13 @@ public class MysqlController {
 		ArrayList<String> uaeMachineIDs = getMachineIds("uae");
 		ArrayList<String> northMachineIDs = getMachineIds("north");
 		ArrayList<String> southMachineIDs = getMachineIds("south");
+
+
+		// THIS IS THE QUERY I NEED:
+		// todo: change this method to use this query...
+		// UPDATE productsinmachines
+		//SET discount = (SELECT discount FROM deals WHERE deals.id = productsinmachines.dealid)
+		//WHERE machineid IN (SELECT machineid FROM machines WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM products WHERE products.type = 'SNACK')
 
 		PreparedStatement stmt;
 		String query;
