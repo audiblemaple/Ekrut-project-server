@@ -674,8 +674,8 @@ public class MysqlController {
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
-				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus)" +
-				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus, estimeteddeliverydate, confirmationdate)" +
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		int updateSuccessful = 0;
 		try{
@@ -690,6 +690,8 @@ public class MysqlController {
 			stmt.setString(8,  order.getSupplyMethod());
 			stmt.setString(9,  order.getPaidWith());
 			stmt.setString(10, order.getOrderStatus());
+			stmt.setString(11, order.getEstimatedDeliveryTime());
+			stmt.setString(12, order.getConfirmationDate());
 
 			updateSuccessful =  stmt.executeUpdate();
 
