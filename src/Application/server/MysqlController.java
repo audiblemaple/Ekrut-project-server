@@ -10,6 +10,7 @@ import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
 
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -1394,22 +1395,111 @@ public class MysqlController {
 		int updateSuccessfull = 0;
 
 		try{
-		stmt = connection.prepareStatement(query);
-		stmt.setString(1, dealToUpdate.getDealName());
-		stmt.setFloat(2, dealToUpdate.getDiscount());
-		stmt.setString(3, dealToUpdate.getDescription());
-		stmt.setString(4, dealToUpdate.getType());
-		stmt.setString(5, dealToUpdate.getAreaS());
-		stmt.setString(6, dealToUpdate.getStatusString());
-		stmt.setString(7, dealToUpdate.getActive());
-		stmt.setString(8, dealToUpdate.getDealID());
-		updateSuccessfull =  stmt.executeUpdate();
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, dealToUpdate.getDealName());
+			stmt.setFloat(2, dealToUpdate.getDiscount());
+			stmt.setString(3, dealToUpdate.getDescription());
+			stmt.setString(4, dealToUpdate.getType());
+			stmt.setString(5, dealToUpdate.getAreaS());
+			stmt.setString(6, dealToUpdate.getStatusString());
+			stmt.setString(7, dealToUpdate.getActive());
+			stmt.setString(8, dealToUpdate.getDealID());
+			updateSuccessfull =  stmt.executeUpdate();
 
 		return updateSuccessfull != 0;
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 			return false;
 		}
+	}
+
+	public boolean applyDeals() {
+		ArrayList<Deals> dealList = getAllDiscounts();
+		float maxUae = 0;
+		float maxNorth = 0;
+		float maxSouth = 0;
+		float maxAll = 0;
+
+		for (Deals deal : dealList){
+			switch (deal.getAreaS()){
+				case "uae":
+					if (maxUae < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+						maxUae = deal.getDiscount();
+					break;
+
+				case "north":
+					if (maxNorth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+						maxNorth = deal.getDiscount();
+					break;
+
+				case "south":
+					if (maxSouth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+						maxSouth = deal.getDiscount();
+					break;
+
+				case "all":
+					if (maxAll < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
+						maxAll = deal.getDiscount();
+					break;
+
+			}
+		}
+
+		ArrayList<String> uaeMachineIDs = getMachineIds("uae");
+		ArrayList<String> northMachineIDs = getMachineIds("north");
+		ArrayList<String> southMachineIDs = getMachineIds("south");
+
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ? WHERE machineid = ?;";
+
+		for (String str :uaeMachineIDs){
+			try{
+				stmt = connection.prepareStatement(query);
+				stmt.setFloat(1, maxUae);
+				stmt.setString(2,str);
+				stmt.executeUpdate();
+			}catch (SQLException sqlException){
+				sqlException.printStackTrace();
+				return false;
+			}
+		}
+
+		for (String str :northMachineIDs){
+			try{
+				stmt = connection.prepareStatement(query);
+				stmt.setFloat(1, maxNorth);
+				stmt.setString(2,str);
+				stmt.executeUpdate();
+			}catch (SQLException sqlException){
+				sqlException.printStackTrace();
+				return false;
+			}
+		}
+
+		for (String str :southMachineIDs){
+			try{
+				stmt = connection.prepareStatement(query);
+				stmt.setFloat(1, maxSouth);
+				stmt.setString(2,str);
+				stmt.executeUpdate();
+			}catch (SQLException sqlException){
+				sqlException.printStackTrace();
+				return false;
+			}
+		}
+		if (maxAll == 0)
+			return true;
+		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ?";
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setFloat(1, maxAll);
+			stmt.executeUpdate();
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }
 

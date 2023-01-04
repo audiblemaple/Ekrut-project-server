@@ -304,7 +304,6 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("Error updating user statuses", MessageFromServer.ERROR_UPDATING_USERS_STATUSES));
                 break;
 
-
             case "REQUEST_DISCOUNT_LIST":
                 ArrayList<Deals> dealList = mysqlcontroller.getAllDiscounts();
                 if (dealList == null){
@@ -315,7 +314,11 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_UPDATE_DEALS":
-                if (mysqlcontroller.updateDeal((Deals) message.getData())){
+                if (!mysqlcontroller.updateDeal((Deals) message.getData())){
+                    sendMessageToClient(client, new Message("Error updating deal.", MessageFromServer.ERROR_UPDATING_DEAL));
+                    break;
+                }
+                if (mysqlcontroller.applyDeals()) {
                     sendMessageToClient(client, new Message("deal updated successfully.", MessageFromServer.DEAL_UPDATED_SUCCESSFULLY));
                     break;
                 }
