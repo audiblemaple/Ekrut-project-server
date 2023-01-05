@@ -74,12 +74,12 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_ADD_USER":
-                String result = mysqlcontroller.dataExists((User) message.getData());
+                String result = mysqlcontroller.dataExists((Customer) message.getData());
                 if(!result.equals("")){
                     sendMessageToClient(client, new Message(result, MessageFromServer.ERROR_ADDING_USER_EXISTS));
                     break;
                 }
-                if(mysqlcontroller.addUser((User) message.getData())){
+                if(mysqlcontroller.addUser((Customer) message.getData()) && mysqlcontroller.addCustomer((Customer) message.getData())){
                     sendMessageToClient(client, new Message(null, MessageFromServer.USER_ADDED_SUCCESSFULLY));
                     break;
                 }
@@ -333,6 +333,23 @@ public class MessageHandler {
                     break;
                 }
                 sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
+                break;
+
+            case "REQUEST_ALL_CUSTOMER_DATA":
+                ArrayList<Customer> customerList = mysqlcontroller.getAllCustomerData();
+                if (customerList == null){
+                    sendMessageToClient(client, new Message("Error getting users", MessageFromServer.ERROR_IMPORTING_CUSTOMER_DATA));
+                    break;
+                }
+                sendMessageToClient(client, new Message(customerList, MessageFromServer.CUSTOMER_IMPORTED_SUCCESSFULLY));
+                break;
+
+            case "REQUEST_UPDATE_CUSTOMER_STATUS":
+                if ( mysqlcontroller.updateCustomerSubscriber((ArrayList<String>) message.getData())){
+                    sendMessageToClient(client, new Message("customer updated successfully", MessageFromServer.CUSTOMER_UPDATE_SUCCESSFUL));
+                    break;
+                }
+                sendMessageToClient(client, new Message("Error updating customer", MessageFromServer.ERROR_UPDATING_CUSTOMER));
                 break;
 
 

@@ -3,53 +3,63 @@ package common.connectivity;
 import java.io.Serializable;
 
 public class Customer extends User implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
-	
-		// CLASS FIELDS ***********************************************
-		private String creditCardNumber;
-		private boolean isSub;
-		private boolean	isFirstBuyAsSub;
-		//****************************************************************
 
-		
-		// CLASS Constructors ********************************************
-		public Customer() {
-			super();
-		}
-		public Customer(String username, String password, String firstname, String lastname, String id,
-                        String phonenumber, String emailaddress, String isLoggedIn, String department, String status, String creditCardNumber) {
-			super(username, password, firstname,lastname, id, phonenumber, emailaddress, isLoggedIn, department, status);
-			this.creditCardNumber = creditCardNumber;
-		}
-		//  **************************************************************
-		
-		
-		// CLASS GETTERS/SETTERS *****************************************
-		public String getCreditCardNumber() {
-			return creditCardNumber;
-		}
-		public void setCreditCardNumber(String creditCardNumber) {
-			this.creditCardNumber = creditCardNumber;
-		}
-		public boolean isSub() {
-			return isSub;
-		}
-		public void setSub(boolean isSub) {
-			this.isSub = isSub;
-		}
+	// CLASS FIELDS ***********************************************
+	private String creditCardNumber;
+	private boolean isSub;
+	private boolean	isFirstBuyAsSub;
 
-		public boolean isFirstBuyAsSub() {
-			return isFirstBuyAsSub;
-		}
+	private int subscriberNumber;
+	//****************************************************************
 
-		public void setFirstBuyAsSub(boolean firstBuyAsSub) {
-			isFirstBuyAsSub = firstBuyAsSub;
-		}
+
+	// CLASS Constructors ********************************************
+	public Customer() {
+		super();
+	}
+	public Customer(String username, String password, String firstname,String lastname, String id,
+					String phonenumber, String emailaddress, String isLoggedIn, String department, String status, String creditCardNumber) {
+		super(username, password, firstname,lastname, id, phonenumber, emailaddress, isLoggedIn, department, status);
+		this.creditCardNumber = creditCardNumber;
+	}
+	//  **************************************************************
+
+
+	// CLASS GETTERS/SETTERS *****************************************
+	public String getCreditCardNumber() {
+		return creditCardNumber;
+	}
+	public void setCreditCardNumber(String creditCardNumber) {
+		this.creditCardNumber = creditCardNumber;
+	}
+	public boolean isSub() {
+		return isSub;
+	}
+	public void setSub(boolean isSub) {
+		this.isSub = isSub;
+	}
+
+	public boolean isFirstBuyAsSub() {
+		return isFirstBuyAsSub;
+	}
+
+	public void setFirstBuyAsSub(boolean firstBuyAsSub) {
+		isFirstBuyAsSub = firstBuyAsSub;
+	}
+
+	public int getSubscriberNumber() {
+		return subscriberNumber;
+	}
+
+	public void setSubscriberNumber(int subscriberNumber) {
+		this.subscriberNumber = subscriberNumber;
+	}
 
 	//  **************************************************************
-		
-		// CLASS TO-STRING ***********************************************
+
+	// CLASS TO-STRING ***********************************************
 
 	@Override
 	public String toString() {
@@ -57,8 +67,8 @@ public class Customer extends User implements Serializable{
 				"creditCardNumber='" + creditCardNumber + '\'' +
 				", isSub=" + isSub +
 				", isFirstBuyAsSub=" + isFirstBuyAsSub +
+				", subscriberNumber=" + subscriberNumber +
 				'}';
 	}
-
 	//  **************************************************************
 }

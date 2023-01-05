@@ -23,8 +23,10 @@ public enum MessageFromServer implements Serializable {
     ERROR_UPDATING_DEAL,                                   // TODO
     ERROR_ADDING_PRODUCT,                                   // V
     ERROR_IMPORTING_ALL_MACHINE_PRODUCTS,                   // V
+    ERROR_IMPORTING_CUSTOMER_DATA,                              // TODO
+    CUSTOMER_IMPORTED_SUCCESSFULLY,                         // TODO
     ERROR_UPDATING_ORDER_STATUS,                            // TODO
-    ORDER_STATUS_UPDATED_SUCCESSFULLY,                       // TODO
+    ORDER_STATUS_UPDATED_SUCCESSFULLY,                      // TODO
     MACHINE_PRODUCT_UPDATED_SUCCESSFULLY,                   // V
     CHECK_IF_CUSTOMER_IS_SUB_SUCCESSFUL,                    // V
     ERROR_CHECKING_IF_CUSTOMER_IS_SUB,                      // V
@@ -33,7 +35,7 @@ public enum MessageFromServer implements Serializable {
     ERROR_UPDATING_MACHINE_AMOUNT,                          // V
     SUCCESSFULLY_UPDATED_AMOUNT_IN_MACHINE,                 // V
     ERROR_REMOVING_REFILL_ORDER,                            // V
-    IMPORT_WAREHOUSE_PRODUCTS_SUCCESSFUL,   // V
+    IMPORT_WAREHOUSE_PRODUCTS_SUCCESSFUL,                   // V
     SUCCESSFULLY_ASSIGNED_EMPLOYEE_TO_REFILL_REQUEST,       // V
     ERROR_ASSIGNING_EMPLOYEE_TO_REFILL_REQUEST,             // V
     ERROR_GETTING_CUSTOMER_DATA,                            // V
@@ -73,5 +75,5 @@ public enum MessageFromServer implements Serializable {
     LOGOUT_SUCCESSFUL,                      // V
     LOGIN_SUCCESSFUL,                       // V
     LOGOUT_ERROR,                           // V
-    UNKNOWN_TASK,                           // V
+    UNKNOWN_TASK, CUSTOMER_UPDATE_SUCCESSFUL, ERROR_UPDATING_CUSTOMER,                           // V
 }

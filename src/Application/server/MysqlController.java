@@ -10,7 +10,6 @@ import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
 
-import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,10 +20,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -363,7 +360,7 @@ public class MysqlController {
 	 * @return if exists return error message, else an empty string.
 	 * This method checks if id or username of the given user already exists ind the database.
 	 */
-	public String dataExists(User user){
+	public String dataExists(Customer user){
 		PreparedStatement stmt;
 		ResultSet res;
 		String query = "SELECT * FROM " + this.dataBasename + ".users WHERE username = ? OR id = ?";
@@ -396,8 +393,8 @@ public class MysqlController {
 	 * @return true on success, false on fail.
 	 * This method adds a new user to the database from parameter.
 	 */
-	public boolean addUser(User user){
-		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress, isloggedin, department) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	public boolean addUser(Customer user){
+		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		try{
 			stmt = connection.prepareStatement(query);
@@ -408,14 +405,28 @@ public class MysqlController {
 			stmt.setString(5,user.getId());
 			stmt.setString(6,user.getPhonenumber());
 			stmt.setString(7,user.getEmailaddress());
-			stmt.setBoolean(8,false);
-			stmt.setString(9,user.getDepartment());
 			stmt.executeUpdate();
 
-			if(checkUserExists(user.getId())){
-				return true;
-			}
+			return checkUserExists(user.getId());
+		}
+		catch (SQLException e){
+			e.printStackTrace();
 			return false;
+		}
+	}
+
+	public boolean addCustomer(Customer user) {
+		String query = "INSERT INTO " +  this.dataBasename + ".customer(customerid, creditcardnumber) VALUES(?, ?)";
+		PreparedStatement stmt;
+		int insertSuccessful = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,user.getId());
+			stmt.setString(2,user.getCreditCardNumber());
+			insertSuccessful =  stmt.executeUpdate();
+
+			return insertSuccessful > 0;
 		}
 		catch (SQLException e){
 			e.printStackTrace();
@@ -646,6 +657,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 Returns a list of all distinct machine locations stored in the database.
+	 @return an ArrayList of Strings representing the distinct machine locations. If no locations are found, returns null.
+	 @throws SQLException if a database error occurs while trying to retrieve the locations.
+	 */
 	public ArrayList<String> getAllMachineLocations() {
 		ArrayList<String> locations = new ArrayList<String>();
 		PreparedStatement stmt;
@@ -1489,6 +1506,100 @@ public class MysqlController {
 
 		return true;
 	}
+
+
+	public ArrayList<Customer> getAllCustomerData() {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<Customer> customerList = new ArrayList<>();
+
+		query = "SELECT * FROM " + this.dataBasename + ".users u JOIN " + this.dataBasename + ".customer c ON u.id = c.customerid;";
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				Customer customer = new Customer();
+				customer.setFirstname(res.getString("firstname"));
+				customer.setLastname(res.getString("lastname"));
+				customer.setId(res.getString("id"));
+				customer.setPhonenumber(res.getString("phonenumber"));
+				customer.setEmailaddress(res.getString("emailaddress"));
+				customer.setCreditCardNumber(res.getString("creditcardnumber"));
+				customer.setCreditCardNumber(res.getString("creditcardnumber"));
+				customer.setSub(res.getBoolean("issub"));
+				customer.setSubscriberNumber(res.getInt("subscribernumber"));
+				customerList.add(customer);
+			}
+
+			if (customerList.isEmpty())
+				return null;
+			return customerList;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+	public boolean updateCustomerSubscriber(ArrayList<String> idAndStatus) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".customer SET issub = ?, subscribernumber = ? WHERE customerid = ?;";
+		int updateSuccessfull = 0;
+		Random random = new Random();
+		int subNumber = random.nextInt(99999 - 10000 + 1) + 10000;
+
+		if (checkIfCustomerIsSub(idAndStatus.get(0)) && idAndStatus.get(1).equals("subscriber"))
+			return true;
+
+		if (!checkIfCustomerIsSub(idAndStatus.get(0)) && !idAndStatus.get(1).equals("subscriber"))
+			return true;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setBoolean(1, idAndStatus.get(1).equals("subscriber"));
+			if (idAndStatus.get(1).equals("subscriber") && !checkIfCustomerIsSub(idAndStatus.get(0)))
+				stmt.setInt(2, subNumber);
+			else
+				stmt.setInt(2, 0);
+			stmt.setString(3, idAndStatus.get(0));
+
+			if (updateDepartment(idAndStatus.get(0), idAndStatus.get(1)));
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull != 0;
+
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
+	private boolean updateDepartment(String id, String status){
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".users SET department = ? WHERE id = ?;";
+		int updateSuccessfull = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, status);
+			if (status.equals("subscriber"))
+				stmt.setString(2, id);
+			else
+				stmt.setString(2, "customer");
+
+			updateSuccessfull =  stmt.executeUpdate();
+			return updateSuccessfull != 0;
+
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
 }
 
 
