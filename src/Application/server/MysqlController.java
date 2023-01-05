@@ -734,7 +734,7 @@ public class MysqlController {
 	public boolean updateFirstBuyAsSub(String customerID) {
 		PreparedStatement stmt;
 		String query;
-		query = "UPDATE " + this.dataBasename + ".customer SET isfirsttimebuyassub = true WHERE customerid = ?;";
+		query = "UPDATE " + this.dataBasename + ".customer SET isfirsttimebuyassub = false WHERE customerid = ?;";
 		int updateSuccessfull = 0;
 		try{
 			stmt = connection.prepareStatement(query);
