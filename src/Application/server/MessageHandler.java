@@ -363,7 +363,6 @@ public class MessageHandler {
                 break;
 
 
-
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }

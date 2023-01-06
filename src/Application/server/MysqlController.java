@@ -1568,7 +1568,9 @@ public class MysqlController {
 				stmt.setInt(2, 0);
 			stmt.setString(3, idAndStatus.get(0));
 
-			if (updateDepartment(idAndStatus.get(0), idAndStatus.get(1)));
+			if (!updateDepartment(idAndStatus.get(0), idAndStatus.get(1)))
+				return false;
+
 			updateSuccessfull =  stmt.executeUpdate();
 
 			return updateSuccessfull != 0;
@@ -1584,21 +1586,52 @@ public class MysqlController {
 		String query;
 		query = "UPDATE " + this.dataBasename + ".users SET department = ? WHERE id = ?;";
 		int updateSuccessfull = 0;
-
+		String userDepartment = getDepartment(id);
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, status);
-			if (status.equals("subscriber"))
+			if (userDepartment.equals("customer") && status.equals("subscriber")){
+				stmt.setString(1, status);
 				stmt.setString(2, id);
-			else
-				stmt.setString(2, "customer"); // todo: fix here!!
-
+			}
+			else if (!userDepartment.equals("customer") && status.equals("subscriber")){
+				return true;
+			}
+			else if(!userDepartment.equals("customer") && !userDepartment.equals("subscriber") && status.equals("not a subscriber")){
+				return true;
+			}
+			else if (userDepartment.equals("subscriber") && status.equals("not a subscriber")){
+				stmt.setString(1, "customer");
+				stmt.setString(2, id);
+			}
 			updateSuccessfull =  stmt.executeUpdate();
 			return updateSuccessfull != 0;
 
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 			return false;
+		}
+	}
+
+	private String getDepartment(String id){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		String result = "";
+		query = "SELECT department FROM " + this.dataBasename + ".users WHERE id = ?";
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, id);
+			res = stmt.executeQuery();
+
+			if (res.next()){
+				result = res.getString("department");
+			}
+
+			return result;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
 		}
 	}
 
@@ -1651,12 +1684,6 @@ public class MysqlController {
 			sqlException.printStackTrace();
 			return null;
 		}
-
-
-
-
-
-
 	}
 }
 
