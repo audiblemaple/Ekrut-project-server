@@ -691,8 +691,8 @@ public class MysqlController {
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
-				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus, estimateddeliverydate, confirmationdate)" +
-				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus, estimateddeliverydate, confirmationdate, area)" +
+				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		int updateSuccessful = 0;
 		try{
@@ -709,6 +709,7 @@ public class MysqlController {
 			stmt.setString(10, order.getOrderStatus());
 			stmt.setString(11, order.getEstimatedDeliveryTime());
 			stmt.setString(12, order.getConfirmationDate());
+			stmt.setString(13, order.getArea());
 
 			updateSuccessful =  stmt.executeUpdate();
 
@@ -787,6 +788,7 @@ public class MysqlController {
 				order.setProducts(products);
 
 				order.setMachineID(res.getString("machineid"));
+				order.setArea(res.getString("area"));
 				order.setOrderDate(res.getString("orderdate"));
 				order.setEstimatedDeliveryTime(res.getString("estimateddeliverydate"));
 				order.setConfirmationDate(res.getString("confirmationdate"));
@@ -1589,7 +1591,7 @@ public class MysqlController {
 			if (status.equals("subscriber"))
 				stmt.setString(2, id);
 			else
-				stmt.setString(2, "customer");
+				stmt.setString(2, "customer"); // todo: fix here!!
 
 			updateSuccessfull =  stmt.executeUpdate();
 			return updateSuccessfull != 0;
@@ -1600,6 +1602,62 @@ public class MysqlController {
 		}
 	}
 
+
+	public ArrayList<Order> getOrderByArea(String area) {
+		ArrayList<Order> orderList = new ArrayList<>();
+
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+
+		if (area.equals("all"))
+			query = "SELECT * FROM " + this.dataBasename + ".orders";
+		else
+			query = "SELECT * FROM " + this.dataBasename + ".orders WHERE area = ?";
+
+
+		try{
+			stmt = connection.prepareStatement(query); // todo: fix here!!!
+			if (!area.equals("all"))
+				stmt.setString(1, area);
+
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				Order order = new Order();
+				order.setOrderID(res.getString("orderid"));
+				order.setOverallPrice(res.getFloat("price"));
+
+				// convert product details from tuple to array list of product objects
+				ArrayList<Product> products = productDetailsToList(res.getString("products"));
+				order.setProducts(products);
+				order.setMachineID(res.getString("machineid"));
+				order.setArea(res.getString("area"));
+				order.setOrderDate(res.getString("orderdate"));
+				order.setAddress(res.getString("address"));
+				order.setEstimatedDeliveryTime(res.getString("estimateddeliverydate"));
+				order.setConfirmationDate(res.getString("confirmationdate"));
+				order.setOrderStatus(res.getString("orderstatus"));
+				order.setCustomerID(res.getString("customerid"));
+				order.setSupplyMethod(res.getString("supplymethod"));
+				order.setPaidWith(res.getString("paidwith"));
+				orderList.add(order);
+			}
+
+			if (orderList.isEmpty())
+				return null;
+			return orderList;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+
+
+
+
+
+
+	}
 }
 
 

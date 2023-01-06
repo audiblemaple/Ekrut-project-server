@@ -353,6 +353,17 @@ public class MessageHandler {
                 break;
 
 
+            case "REQUEST_ORDERS_BY_AREA":
+                ArrayList<Order> orderList = mysqlcontroller.getOrderByArea((String)message.getData());
+                if (orderList == null){
+                    sendMessageToClient(client, new Message("Error importing orders", MessageFromServer.ERROR_IMPORTING_ORDERS_BY_AREA));
+                    break;
+                }
+                sendMessageToClient(client, new Message(orderList, MessageFromServer.ORDERS_IMPORTED_SUCCESSFULLY));
+                break;
+
+
+
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }

@@ -75,5 +75,9 @@ public enum MessageFromServer implements Serializable {
     LOGOUT_SUCCESSFUL,                      // V
     LOGIN_SUCCESSFUL,                       // V
     LOGOUT_ERROR,                           // V
-    UNKNOWN_TASK, CUSTOMER_UPDATE_SUCCESSFUL, ERROR_UPDATING_CUSTOMER,                           // V
+    UNKNOWN_TASK,
+    CUSTOMER_UPDATE_SUCCESSFUL,
+    ERROR_UPDATING_CUSTOMER,
+    ERROR_IMPORTING_ORDERS_BY_AREA,
+    ORDERS_IMPORTED_SUCCESSFULLY,                           // V
 }
