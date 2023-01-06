@@ -38,6 +38,7 @@ public class ServerController extends AbstractServer {
      *This method gets hooked when the server starts listening for connections.
      */
   protected void serverStarted() {
+      sqlController.turnOffSafeUpdate();
       System.out.println("Server listening for connections on port " + getPort());
   }
 

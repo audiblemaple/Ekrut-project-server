@@ -161,6 +161,7 @@ public class MysqlController {
 		mID.add("0");
 		ArrayList<Product> products = getMachineProducts(mID);
 		String reportDetails = "";
+		int updateSuccessful = 0;
 		float overallPrice = 0;
 
 		for (Product prod : products){
@@ -188,18 +189,30 @@ public class MysqlController {
 			stmt.setString(5,areaMachineMonthYear.get(2));
 			stmt.setString(6,areaMachineMonthYear.get(3));
 			stmt.setFloat(7,overallPrice);
+			updateSuccessful = stmt.executeUpdate();
+
+
+			query = "UPDATE " + this.dataBasename + ".productsinmachines SET numoftimesbelowcriticalamount = 0";
+			stmt = connection.prepareStatement(query);
 			stmt.executeUpdate();
 
-			// check report added successfully.
-			ArrayList<String> monthYearMachine = new ArrayList<String>();
-			monthYearMachine.add(areaMachineMonthYear.get(2));
-			monthYearMachine.add(areaMachineMonthYear.get(3));
-			monthYearMachine.add(areaMachineMonthYear.get(1));
-			return getMonthlyInventoryReport(monthYearMachine) != null;
+			return updateSuccessful != 0;
 		}
+
 		catch (SQLException e){
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	public void turnOffSafeUpdate(){
+		String query = "SET SQL_SAFE_UPDATES = 0;";
+		try{
+			Statement stmt = connection.prepareStatement(query);
+			stmt.executeUpdate(query);
+
+		}catch (SQLException exception){
+			exception.printStackTrace();
 		}
 	}
 
@@ -721,34 +734,6 @@ public class MysqlController {
 		}
 	}
 
-	public boolean updateAmountsFromOrder(Order order) {
-		PreparedStatement stmt;
-		String query;
-		int updateStatus = 0;
-
-		if (order.getMachineID() == null)
-			query = "UPDATE " + this.dataBasename + ".warehouse SET amount = amount - ? WHERE productid = ?;";
-		else
-			query = "UPDATE " + this.dataBasename + ".productsinmachines SET amount = amount - ? WHERE productid = ?;";
-
-		try{
-			for (Product product : order.getProducts()){
-				stmt = connection.prepareStatement(query);
-				stmt.setInt(1, product.getAmount());
-				stmt.setString(2, product.getProductId());
-				updateStatus =  stmt.executeUpdate();
-				if (updateStatus == 0)
-					return false;
-			}
-			if (order.getMachineID() != null)
-				checkAmount();
-			return true;
-		}catch (SQLException sqlException){
-			sqlException.printStackTrace();
-			return false;
-		}
-	}
-
 	public boolean updateFirstBuyAsSub(String customerID) {
 		PreparedStatement stmt;
 		String query;
@@ -1059,7 +1044,6 @@ public class MysqlController {
 				updatestmt.setString(6, res.getString("lastname"));
 				updatestmt.executeUpdate();
 			}
-
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 		}
@@ -1098,6 +1082,33 @@ public class MysqlController {
 		}
 	}
 
+	public boolean updateAmountsFromOrder(Order order) {
+		PreparedStatement stmt;
+		String query;
+		int updateStatus = 0;
+
+		if (order.getMachineID() == null)
+			query = "UPDATE " + this.dataBasename + ".warehouse SET amount = amount - ? WHERE productid = ?;";
+		else
+			query = "UPDATE " + this.dataBasename + ".productsinmachines SET amount = amount - ? WHERE productid = ?;";
+
+		try{
+			for (Product product : order.getProducts()){
+				stmt = connection.prepareStatement(query);
+				stmt.setInt(1, product.getAmount());
+				stmt.setString(2, product.getProductId());
+				updateStatus =  stmt.executeUpdate();
+				if (updateStatus == 0)
+					return false;
+			}
+			if (order.getMachineID() != null)
+				checkAmount();
+			return true;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 
 	public void checkAmount(){
 		PreparedStatement stmt;
@@ -1114,11 +1125,31 @@ public class MysqlController {
 			while (res.next()){
 				amount = res.getInt("amount");
 				alertAmount = res.getInt("criticalamount");
-				if (alertAmount >= amount)
+				if (alertAmount >= amount){
 					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("criticalamount"));
+					addLowerThanCriticalAmountTimes(res.getString("machineid"), res.getString("productid"));
+				}
 			}
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
+		}
+	}
+
+	private boolean addLowerThanCriticalAmountTimes(String machineId, String productId){
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".productsinmachines SET numoctimesbelowcriticalamount = numoctimesbelowcriticalamount + 1 WHERE machineid = ? AND productid = ?;";
+		int updateSuccessfull = 0;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, machineId);
+			stmt.setString(2, productId);
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
 		}
 	}
 
