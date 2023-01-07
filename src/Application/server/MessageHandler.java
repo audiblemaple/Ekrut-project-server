@@ -275,7 +275,7 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("credit card verified successfully", MessageFromServer.CREDIT_CARD_VERIFIED_SUCCESSFULLY));
 
             case "REQUEST_SET_FIRST_TIME_BUY_AS_SUB":
-                if ( !mysqlcontroller.updateFirstBuyAsSub((String) message.getData())){
+                if ( !mysqlcontroller.updateFirstBuyAsSub((ArrayList<String>) message.getData())){
                     sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_FIRST_TIME_BUY_AS_SUB));
                     break;
                 }
@@ -335,6 +335,21 @@ public class MessageHandler {
                 }
                 sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
                 break;
+
+            case "REQUEST_UPDATE_MULTIPLE_ORDER_STATUSES":
+                ArrayList<String> orderData = new ArrayList<>();
+                for (Order orderFromList : (ArrayList<Order>)message.getData()){
+                    orderData.add(orderFromList.getOrderID());
+                    orderData.add(orderFromList.getOrderStatus());
+                    if (mysqlcontroller.updateOrderStatus(orderData)){
+                        sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
+                        break;
+                    }
+                    orderData.clear();
+                }
+                sendMessageToClient(client, new Message("all orders statuses were updated.", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
+                break;
+
 
             case "REQUEST_ALL_CUSTOMER_DATA":
                 ArrayList<Customer> customerList = mysqlcontroller.getAllCustomerData();

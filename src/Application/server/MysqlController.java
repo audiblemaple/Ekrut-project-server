@@ -749,14 +749,15 @@ public class MysqlController {
 		}
 	}
 
-	public boolean updateFirstBuyAsSub(String customerID) {
+	public boolean updateFirstBuyAsSub(ArrayList<String> values) {
 		PreparedStatement stmt;
 		String query;
-		query = "UPDATE " + this.dataBasename + ".customer SET isfirsttimebuyassub = false WHERE customerid = ?;";
+		query = "UPDATE " + this.dataBasename + ".customer SET isfirsttimebuyassub = ? WHERE customerid = ?;";
 		int updateSuccessfull = 0;
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1, customerID);
+			stmt.setBoolean(1, values.get(0).equals("true"));
+			stmt.setString(2, values.get(1));
 			updateSuccessfull =  stmt.executeUpdate();
 
 			return updateSuccessfull > 0;
@@ -1623,6 +1624,7 @@ public class MysqlController {
 		int updateSuccessfull = 0;
 		Random random = new Random();
 		int subNumber = random.nextInt(99999 - 10000 + 1) + 10000;
+		ArrayList<String> firstBuy = new ArrayList<>();
 
 		if (checkIfCustomerIsSub(idAndStatus.get(0)) && idAndStatus.get(1).equals("subscriber"))
 			return true;
@@ -1633,10 +1635,19 @@ public class MysqlController {
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setBoolean(1, idAndStatus.get(1).equals("subscriber"));
-			if (idAndStatus.get(1).equals("subscriber") && !checkIfCustomerIsSub(idAndStatus.get(0)))
+			if (idAndStatus.get(1).equals("subscriber") && !checkIfCustomerIsSub(idAndStatus.get(0))){
 				stmt.setInt(2, subNumber);
-			else
+				firstBuy.add("true");
+				firstBuy.add(idAndStatus.get(0));
+				updateFirstBuyAsSub(firstBuy);
+			}
+			else{
 				stmt.setInt(2, 0);
+				stmt.setInt(2, subNumber);
+				firstBuy.add("false");
+				firstBuy.add(idAndStatus.get(0));
+				updateFirstBuyAsSub(firstBuy);
+			}
 			stmt.setString(3, idAndStatus.get(0));
 
 			if (!updateDepartment(idAndStatus.get(0), idAndStatus.get(1)))
@@ -1792,6 +1803,9 @@ public class MysqlController {
 			}
 		}
 	}
+
+
+
 }
 
 
