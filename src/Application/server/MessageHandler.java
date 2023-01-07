@@ -350,7 +350,6 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message("all orders statuses were updated.", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
                 break;
 
-
             case "REQUEST_ALL_CUSTOMER_DATA":
                 ArrayList<Customer> customerList = mysqlcontroller.getAllCustomerData();
                 if (customerList == null){
