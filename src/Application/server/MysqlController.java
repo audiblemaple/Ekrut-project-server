@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * This class communcates with the database.
  */
 public class MysqlController {
-	private static final long SLEEP_DURATION = TimeUnit.MINUTES.toNanos(1440); // Sleep duration in nanoseconds
+	private static final long SLEEP_DURATION = TimeUnit.MINUTES.toNanos(2); // Sleep duration in nanoseconds
 	private static MysqlController sqlInstance = null;
 	private String dataBasename;
 	private String dataBaseusername;
