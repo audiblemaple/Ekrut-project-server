@@ -40,7 +40,6 @@ public class MysqlController {
 	private Connection connection;
 	private long lastTime; // Timestamp of the last frame
 
-
 	/**
 	 * @return a single instance of this class.
 	 * This method allows to get an instance of this Singleton class.
@@ -49,6 +48,11 @@ public class MysqlController {
 		if (sqlInstance == null)
 			sqlInstance = new MysqlController();
 		return sqlInstance;
+	}
+
+	public void runGenerator(){
+		ReportGenerator task = new ReportGenerator();
+		new Thread(task).start();
 	}
 
 	public void setDataBaseName(String name) {
@@ -809,11 +813,11 @@ public class MysqlController {
 		PreparedStatement stmt;
 		ResultSet res;
 		String query = "SELECT m.machineid, m.machinelocation, COUNT(o.machineid) as 'number_of_orders', MONTH(o.orderdate) as 'month', YEAR(o.orderdate) as 'year' " +
-				"FROM " + this.dataBasename + ".machines m " +
-				"JOIN " + this.dataBasename + ".orders o " +
-				"ON m.machineid = o.machineid AND MONTH(o.orderdate) = ? AND YEAR(o.orderdate) = ?" +
-				"GROUP BY m.machineid, m.machinelocation, MONTH(o.orderdate), YEAR(o.orderdate) " +
-				"ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);";
+						"FROM " + this.dataBasename + ".machines m " +
+						"JOIN " + this.dataBasename + ".orders o " +
+						"ON m.machineid = o.machineid AND MONTH(o.orderdate) = ? AND YEAR(o.orderdate) = ?" +
+						"GROUP BY m.machineid, m.machinelocation, MONTH(o.orderdate), YEAR(o.orderdate) " +
+						"ORDER BY YEAR(o.orderdate), MONTH(o.orderdate);";
 		try {
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1, monthAndYear.get(0));
@@ -843,11 +847,13 @@ public class MysqlController {
 		String query = "INSERT INTO " +  this.dataBasename + ".orderreports(reportid, location, month, year, machineid, orderamount) VALUES(?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		ArrayList<OrderReport> orderReports = getOrderData(monthAndYear);
+		String  uuid;
+
 		try {
 			stmt = connection.prepareStatement(query);
 			for (OrderReport ord : orderReports){
-				String reportID = "REP" + (getNumOfEntriesInTable("orderreports") + 1);
-				stmt.setString(1, reportID);
+				uuid = UUID.randomUUID().toString().substring(0, 8);
+				stmt.setString(1, uuid);
 				stmt.setString(2, ord.getMachineLocation());
 				stmt.setString(3, ord.getMonth());
 				stmt.setString(4, ord.getYear());
@@ -857,7 +863,6 @@ public class MysqlController {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -1752,25 +1757,40 @@ public class MysqlController {
 		}
 	}
 
+	public void generateReports(){
+		LocalDate date = LocalDate.now();
+		int year = date.getYear();
+		int month = date.getMonthValue();
 
-	public void reportGenerator(){
-		lastTime = System.nanoTime();
-		new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				if (now - lastTime >= SLEEP_DURATION) {
-					System.out.println("generating reports...");
-					ArrayList<String> data = new ArrayList<>();
-					data.add("north");
-					data.add("NOR1");
-					data.add("01");
-					data.add("2023");
-					generateMonthlyInventoryReport(data);
+		String monthStr;
+		String yearStr;
+		if (month < 10)
+			monthStr = "0" + month;
+		else monthStr = month + "";
 
-					lastTime = now;
-				}
+		yearStr = year + "";
+
+		ArrayList<String> data = new ArrayList<>();
+
+		System.out.println("Generating reports...");
+
+		data.add(monthStr);
+		data.add(yearStr);
+		generateOrderReport(data);
+
+		generateClientReport(monthStr, yearStr);
+		data.clear();
+
+		for (String area : getAllMachineLocations()){
+			for (String machine : getMachineIds(area)){
+				data.add(area);
+				data.add(machine);
+				data.add(monthStr);
+				data.add(yearStr);
+				generateMonthlyInventoryReport(data);
+				data.clear();
 			}
-		}.start();
+		}
 	}
 }
 
