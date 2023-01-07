@@ -13,6 +13,7 @@ import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MessageHandler {
     /**
      * @param clientMessage message from the client.
      * @param client        client to respond to.
-     * This method handles the message from the client.
+     * This method handles clients requests, processes them and returns the needed data from database.
      */
     public static void handleMessage(Object clientMessage, ConnectionToClient client){
         // if got null return unknown task
@@ -41,6 +42,11 @@ public class MessageHandler {
         ArrayList<String> machines = null;
         switch(message.getTask().name()){ // TODO: add disconnect message to set client connection status to disconnected
             case "REQUEST_LOGIN":
+                ArrayList<String> abc = new ArrayList<>();
+                abc.add("01");
+                abc.add("2023");
+                abc.add("NOR1");
+                mysqlcontroller.getMonthlyInventoryReport(abc);
                 ArrayList<String> userLogInCredentials = (ArrayList<String>) message.getData();
                 if (mysqlcontroller.isLoggedIn(userLogInCredentials)){
                     sendMessageToClient(client, new Message(null, MessageFromServer.LOGIN_FAILED_ALREADY_LOGGED_IN));

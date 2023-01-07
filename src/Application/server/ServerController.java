@@ -39,6 +39,7 @@ public class ServerController extends AbstractServer {
      */
   protected void serverStarted() {
       sqlController.turnOffSafeUpdate();
+      sqlController.reportGenerator();
       System.out.println("Server listening for connections on port " + getPort());
   }
 

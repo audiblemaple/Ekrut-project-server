@@ -9,6 +9,7 @@ import common.connectivity.Customer;
 import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
+import javafx.animation.AnimationTimer;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -29,12 +31,15 @@ import java.util.*;
  * This class communcates with the database.
  */
 public class MysqlController {
+	private static final long SLEEP_DURATION = TimeUnit.MINUTES.toNanos(1440); // Sleep duration in nanoseconds
 	private static MysqlController sqlInstance = null;
 	private String dataBasename;
 	private String dataBaseusername;
 	private String dataBasepassword;
 	private String IP;
 	private Connection connection;
+	private long lastTime; // Timestamp of the last frame
+
 
 	/**
 	 * @return a single instance of this class.
@@ -64,6 +69,20 @@ public class MysqlController {
 		this.IP = IP;
 	}
 
+
+	/**
+	 * @return database name.
+	 */
+	protected String getName(){
+		try{
+			return connection.getCatalog();
+		}
+		catch (SQLException e){
+			return "null";
+		}
+	}
+
+
 	/**
 	 * @return returns connection message from database.
 	 * This method connects MysqlController to the database.
@@ -91,6 +110,8 @@ public class MysqlController {
 			return returnStatement;
 		}
 	}
+
+
 
 	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthYearMachine){
 		if (monthYearMachine == null)
@@ -142,20 +163,21 @@ public class MysqlController {
 	public ArrayList <Product> productDetailsToListExpanded(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
-		for (int i = 0; i < splitDetails.length; i+=5){
+		for (int i = 0; i < splitDetails.length; i+=6){
 			Product product = new Product();
 			product.setProductId(splitDetails[i]);
 			product.setDescription(splitDetails[i+1]);
 			product.setAmount(Integer.parseInt(splitDetails[i+2]));
 			product.setPrice(Float.parseFloat(splitDetails[i+3]));
 			product.setType(splitDetails[i+4]);
+			product.setNumOfTimesBelowCritical(Integer.parseInt(splitDetails[i+5]));
 			products.add(product);
 		}
 		return products;
 	}
 
 	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){ // TODO: uncomment this!!!
-		String reportID = "REP" + (getNumOfEntriesInTable("inventoryreports") + 1);
+		String  uuid = UUID.randomUUID().toString().substring(0, 8);
 		ArrayList<String> mID = new ArrayList<>();
 		mID.add(areaMachineMonthYear.get(1));
 		mID.add("0");
@@ -175,6 +197,8 @@ public class MysqlController {
 			reportDetails += " , ";
 			reportDetails += prod.getType();
 			reportDetails += " , ";
+			reportDetails += prod.getNumOfTimesBelowCritical();
+			reportDetails += " , ";
 			overallPrice += (prod.getPrice() - (prod.getPrice() * prod.getDiscount())) * prod.getAmount();
 		}
 
@@ -182,15 +206,14 @@ public class MysqlController {
 		PreparedStatement stmt;
 		try{
 			stmt = connection.prepareStatement(query);
-			stmt.setString(1,reportID);
-			stmt.setString(2,areaMachineMonthYear.get(0));
-			stmt.setString(3,areaMachineMonthYear.get(1));
-			stmt.setString(4,reportDetails);
-			stmt.setString(5,areaMachineMonthYear.get(2));
-			stmt.setString(6,areaMachineMonthYear.get(3));
-			stmt.setFloat(7,overallPrice);
+			stmt.setString(1, uuid);
+			stmt.setString(2, areaMachineMonthYear.get(0));
+			stmt.setString(3, areaMachineMonthYear.get(1));
+			stmt.setString(4, reportDetails);
+			stmt.setString(5, areaMachineMonthYear.get(2));
+			stmt.setString(6, areaMachineMonthYear.get(3));
+			stmt.setFloat( 7, overallPrice);
 			updateSuccessful = stmt.executeUpdate();
-
 
 			query = "UPDATE " + this.dataBasename + ".productsinmachines SET numoftimesbelowcriticalamount = 0";
 			stmt = connection.prepareStatement(query);
@@ -490,18 +513,6 @@ public class MysqlController {
 		}
 	}
 
-
-	/**
-	 * @return database name.
-	 */
-	protected String getName(){
-		try{
-			return connection.getCatalog();
-		}
-		catch (SQLException e){
-			return "null";
-		}
-	}
 
 	/**
 	 * @param credentials to check if exist in the user table.
@@ -1125,7 +1136,7 @@ public class MysqlController {
 			while (res.next()){
 				amount = res.getInt("amount");
 				alertAmount = res.getInt("criticalamount");
-				if (alertAmount >= amount){
+				if (alertAmount >= amount && !refillOrderExists(res.getString("machineid"), res.getString("productid"))){
 					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("criticalamount"));
 					addLowerThanCriticalAmountTimes(res.getString("machineid"), res.getString("productid"));
 				}
@@ -1134,6 +1145,30 @@ public class MysqlController {
 			sqlException.printStackTrace();
 		}
 	}
+
+
+	private boolean refillOrderExists(String machineID, String productID){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		query = "SELECT COUNT(*) FROM " + this.dataBasename + ".refilrequests WHERE machineid = ? AND productid = ?";
+		int exists = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, machineID);
+			stmt.setString(2, productID);
+			res = stmt.executeQuery();
+			if (res.next()){
+				exists = res.getInt("COUNT(*)");
+			}
+			return exists > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
+
 
 	private boolean addLowerThanCriticalAmountTimes(String machineId, String productId){
 		PreparedStatement stmt;
@@ -1715,6 +1750,22 @@ public class MysqlController {
 			sqlException.printStackTrace();
 			return null;
 		}
+	}
+
+
+	public void reportGenerator(){
+		lastTime = System.nanoTime();
+		new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				if (now - lastTime >= SLEEP_DURATION) {
+					// Perform task here
+					System.out.println("Task running...");
+
+					lastTime = now;
+				}
+			}
+		}.start();
 	}
 }
 

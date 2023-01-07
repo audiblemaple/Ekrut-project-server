@@ -16,6 +16,7 @@ public class Product implements Serializable {
     private String productId;
     private int criticalAmount;
     private String machineID;
+    private int numOfTimesBelowCritical;
     private byte[] file;
 
     public Product() {
@@ -123,22 +124,31 @@ public class Product implements Serializable {
         this.machineID = machineID;
     }
 
+    public int getNumOfTimesBelowCritical() {
+        return numOfTimesBelowCritical;
+    }
+
+    public void setNumOfTimesBelowCritical(int numOfTimesBelowCritical) {
+        this.numOfTimesBelowCritical = numOfTimesBelowCritical;
+    }
+
     @Override
     public String toString() {
         String f = "no file";
         if (file != null)
             f = "file is present!";
         return "Product{" +
-                "price= " + price +
-                ", discount= " + discount +
-                ", name= '" + name + '\'' +
-                ", amount= " + amount +
-                ", description= '" + description + '\'' +
-                ", type= '" + type + '\'' +
-                ", productId= '" + productId + '\'' +
-                ", criticalAmount= " + criticalAmount +
-                ", machine id= " + machineID +
-                ", file= " + f +
+                "price=" + price +
+                ", discount=" + discount +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                ", type='" + type + '\'' +
+                ", productId='" + productId + '\'' +
+                ", criticalAmount=" + criticalAmount +
+                ", machineID='" + machineID + '\'' +
+                ", numOfTimesBelowCritical=" + numOfTimesBelowCritical +
+                ", file=" + f +
                 '}';
     }
 }
