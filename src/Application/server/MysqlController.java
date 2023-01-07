@@ -1759,8 +1759,13 @@ public class MysqlController {
 			@Override
 			public void handle(long now) {
 				if (now - lastTime >= SLEEP_DURATION) {
-					// Perform task here
-					System.out.println("Task running...");
+					System.out.println("generating reports...");
+					ArrayList<String> data = new ArrayList<>();
+					data.add("north");
+					data.add("NOR1");
+					data.add("01");
+					data.add("2023");
+					generateMonthlyInventoryReport(data);
 
 					lastTime = now;
 				}

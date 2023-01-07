@@ -42,11 +42,6 @@ public class MessageHandler {
         ArrayList<String> machines = null;
         switch(message.getTask().name()){ // TODO: add disconnect message to set client connection status to disconnected
             case "REQUEST_LOGIN":
-                ArrayList<String> abc = new ArrayList<>();
-                abc.add("01");
-                abc.add("2023");
-                abc.add("NOR1");
-                mysqlcontroller.getMonthlyInventoryReport(abc);
                 ArrayList<String> userLogInCredentials = (ArrayList<String>) message.getData();
                 if (mysqlcontroller.isLoggedIn(userLogInCredentials)){
                     sendMessageToClient(client, new Message(null, MessageFromServer.LOGIN_FAILED_ALREADY_LOGGED_IN));
