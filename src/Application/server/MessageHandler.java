@@ -162,7 +162,7 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(orderArrayList, MessageFromServer.IMPORT_ORDER_BY_CUSTOMER_ID_SUCCESSFUL));
                 break;
 
-            case "REQUEST_GENERATE_MONTHLY_INVENTORY_REPORT": // TODO: should not be accessible by users
+            case "REQUEST_GENERATE_MONTHLY_INVENTORY_REPORT":
                 if (mysqlcontroller.generateMonthlyInventoryReport((ArrayList<String>) message.getData()))
                     sendMessageToClient(client, new Message("report generated successfully", MessageFromServer.SUCCESSFULLY_GENERATED_MONTHLY_INVENTORY_REPORT));
                 sendMessageToClient(client, new Message("report generated successfully", MessageFromServer.ERROR_GENERATING_MONTHLY_INVENTORY_REPORT));
