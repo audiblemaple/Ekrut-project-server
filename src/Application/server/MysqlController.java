@@ -340,7 +340,7 @@ public class MysqlController {
 				product.setDiscount(res.getFloat("discount"));
 				product.setName(res.getString("name"));
 				product.setAmount(res.getInt("amount"));
-				product.setProductName(res.getString("productid"));
+				product.setProductName(res.getString("productname"));
 				product.setDescription(res.getString("description"));
 				product.setType(res.getString("type"));
 				product.setProductId(res.getString("productid"));
