@@ -1526,6 +1526,28 @@ public class MysqlController {
 			return false;
 		}
 	}
+	
+	public boolean updateOrderStatusAndDates(ArrayList<String> orderIdStatusAndDates) {
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".orders SET orderstatus = ? , estimateddeliverydate = ?, confirmationdate = ? WHERE orderid = ?;";
+		int updateSuccessfull = 0;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1,orderIdStatusAndDates.get(1));
+			stmt.setString(2,orderIdStatusAndDates.get(2));
+			stmt.setString(3,orderIdStatusAndDates.get(3));
+			stmt.setString(4, orderIdStatusAndDates.get(0));
+
+			updateSuccessfull =  stmt.executeUpdate();
+
+			return updateSuccessfull != 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
+	}
 
 
 	public boolean applyDeals() {

@@ -341,7 +341,9 @@ public class MessageHandler {
                 for (Order orderFromList : (ArrayList<Order>)message.getData()){
                     orderData.add(orderFromList.getOrderID());
                     orderData.add(orderFromList.getOrderStatus());
-                    if (mysqlcontroller.updateOrderStatus(orderData)){
+                    orderData.add(orderFromList.getEstimatedDeliveryTime());
+                    orderData.add(orderFromList.getConfirmationDate());
+                    if (mysqlcontroller.updateOrderStatusAndDates(orderData)){
                         sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
                         break;
                     }
