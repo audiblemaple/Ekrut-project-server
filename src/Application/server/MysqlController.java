@@ -1796,7 +1796,7 @@ public class MysqlController {
 		ResultSet res;
 		String query;
 		ArrayList<Order> orderList = new ArrayList<>();
-		query = "SELECT * FROM " + this.dataBasename + ".orders WHERE id = ?";
+		query = "SELECT * FROM " + this.dataBasename + ".orders WHERE customerid = ?";
 
 		try{
 			stmt = connection.prepareStatement(query);
@@ -1810,7 +1810,7 @@ public class MysqlController {
 				// convert product details from tuple to array list of product objects
 				ArrayList<Product> products = productDetailsToList(res.getString("products"));
 				order.setProducts(products);
-
+				order.setOrderID(res.getString("orderid"));
 				order.setMachineID(res.getString("machineid"));
 				order.setArea(res.getString("area"));
 				order.setOrderDate(res.getString("orderdate"));
