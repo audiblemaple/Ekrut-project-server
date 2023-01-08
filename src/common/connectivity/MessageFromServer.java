@@ -79,5 +79,5 @@ public enum MessageFromServer implements Serializable {
     CUSTOMER_UPDATE_SUCCESSFUL,
     ERROR_UPDATING_CUSTOMER,
     ERROR_IMPORTING_ORDERS_BY_AREA,
-    ORDERS_IMPORTED_SUCCESSFULLY,                           // V
+    ORDERS_IMPORTED_SUCCESSFULLY, IMPORT_ORDER_BY_CUSTOMER_ID_SUCCESSFUL,                           // V
 }

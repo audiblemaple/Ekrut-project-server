@@ -193,7 +193,7 @@ public class MysqlController {
 		for (Product prod : products){
 			reportDetails += prod.getProductId();
 			reportDetails += " , ";
-			reportDetails += prod.getDescription();
+			reportDetails += prod.getProductName(); // Original prod.getDescription()
 			reportDetails += " , ";
 			reportDetails += prod.getAmount();
 			reportDetails += " , ";
@@ -287,6 +287,7 @@ public class MysqlController {
 				product.setPrice(res.getFloat("price"));
 				product.setDiscount(res.getFloat("discount"));
 				product.setName(res.getString("name"));
+				product.setProductName(res.getString("productname"));
 				product.setAmount(res.getInt("amount"));
 				product.setDescription(res.getString("description"));
 				product.setType(res.getString("type"));
@@ -947,7 +948,7 @@ public class MysqlController {
 	}
 
 	public boolean addNewProductToProductTable(Product product) {
-		String query = "INSERT INTO " +  this.dataBasename + ".products(productid, name, price, description, type) VALUES(?, ?, ?, ?, ?)";
+		String query = "INSERT INTO " +  this.dataBasename + ".products(productid, productname, price, description, type) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		try{
 			stmt = connection.prepareStatement(query);
