@@ -157,7 +157,7 @@ public class MysqlController {
 		ArrayList<Product> products = new ArrayList<Product>();
 		for (int i = 0; i < splitDetails.length; i+=2){
 			Product product = new Product();
-			product.setDescription(splitDetails[i]);
+			product.setProductName(splitDetails[i]);
 			product.setAmount(Integer.parseInt(splitDetails[i+1]));
 			products.add(product);
 		}
@@ -902,7 +902,7 @@ public class MysqlController {
 	private String productListToString(ArrayList<Product> products){
 		String details = "";
 		for (Product prod : products){
-			details += prod.getDescription() + " , " + prod.getAmount() + " , ";
+			details += prod.getProductName() + " , " + prod.getAmount() + " , ";
 		}
 		return details;
 	}
@@ -1763,6 +1763,7 @@ public class MysqlController {
 
 			while (res.next()){
 				Order order = new Order();
+
 				order.setOrderID(res.getString("orderid"));
 				order.setOverallPrice(res.getFloat("price"));
 
