@@ -1790,6 +1790,50 @@ public class MysqlController {
 		}
 	}
 
+	public ArrayList<Order> getOrdersByCustomerID(String customerID) {
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<Order> orderList = new ArrayList<>();
+		query = "SELECT * FROM " + this.dataBasename + ".orders WHERE id = ?";
+
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setString(1, customerID);
+			res = stmt.executeQuery();
+
+			while (res.next()){
+				Order order = new Order();
+				order.setOverallPrice(res.getFloat("price"));
+
+				// convert product details from tuple to array list of product objects
+				ArrayList<Product> products = productDetailsToList(res.getString("products"));
+				order.setProducts(products);
+
+				order.setMachineID(res.getString("machineid"));
+				order.setArea(res.getString("area"));
+				order.setOrderDate(res.getString("orderdate"));
+				order.setEstimatedDeliveryTime(res.getString("estimateddeliverydate"));
+				order.setConfirmationDate(res.getString("confirmationdate"));
+				order.setOrderStatus(res.getString("orderstatus"));
+				order.setCustomerID(res.getString("customerid"));
+				order.setSupplyMethod(res.getString("supplymethod"));
+				order.setPaidWith(res.getString("paidwith"));
+				order.setAddress(res.getString("address"));
+				orderList.add(order);
+			}
+
+			if (orderList.isEmpty())
+				return null;
+			return orderList;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+
+	}
+
+
 	public void generateReports(){
 		LocalDate date = LocalDate.now();
 		int year = date.getYear();
@@ -1825,9 +1869,6 @@ public class MysqlController {
 			}
 		}
 	}
-
-
-
 }
 
 

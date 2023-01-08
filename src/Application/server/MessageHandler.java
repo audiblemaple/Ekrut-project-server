@@ -153,6 +153,15 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(order, MessageFromServer.IMPORT_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID_SUCCESSFUL));
                 break;
 
+            case "REQUEST_ORDERS_BY_CUSTOMER_ID":
+                ArrayList<Order> orderArrayList = mysqlcontroller.getOrdersByCustomerID((String) message.getData());
+                if (orderArrayList == null){
+                    sendMessageToClient(client, new Message("Error importing your order", MessageFromServer.ERROR_IMPORTING_ORDER));
+                    break;
+                }
+                sendMessageToClient(client, new Message(orderArrayList, MessageFromServer.IMPORT_ORDER_BY_ORDER_ID_AND_CUSTOMER_ID_SUCCESSFUL));
+                break;
+
             case "REQUEST_GENERATE_MONTHLY_INVENTORY_REPORT": // TODO: should not be accessible by users
                 if (mysqlcontroller.generateMonthlyInventoryReport((ArrayList<String>) message.getData()))
                     sendMessageToClient(client, new Message("report generated successfully", MessageFromServer.SUCCESSFULLY_GENERATED_MONTHLY_INVENTORY_REPORT));
