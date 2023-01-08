@@ -1833,7 +1833,6 @@ public class MysqlController {
 
 	}
 
-
 	public void generateReports(){
 		LocalDate date = LocalDate.now();
 		int year = date.getYear();
