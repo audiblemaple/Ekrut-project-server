@@ -9,7 +9,6 @@ import common.connectivity.Customer;
 import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
-import javafx.animation.AnimationTimer;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -1835,6 +1834,21 @@ public class MysqlController {
 		}
 
 	}
+
+	public void disconnectClients(){
+		PreparedStatement stmt;
+		String query;
+		query = "UPDATE " + this.dataBasename + ".users SET isloggedin = 0;";
+		int updateSuccessfull = 0;
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.executeUpdate();
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+		}
+	}
+
+
 
 	public void generateReports(){
 		LocalDate date = LocalDate.now();

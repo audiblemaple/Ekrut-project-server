@@ -117,6 +117,7 @@ public class ServerUIController extends Application implements Initializable {
         observableUserConnections.clear();
         consolePrint("Server has stopped listening for connections.\n");
 
+        ServerUI.disconnect();
         this.defaultButton.setDisable(false);
         this.connectButton.setDisable(false);
         this.disconnectButton.setDisable(true);

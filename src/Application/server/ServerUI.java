@@ -66,6 +66,10 @@ public class ServerUI extends Application {
         }
     }
 
+    public static void disconnect() {
+        mysqlController.disconnectClients();
+    }
+
     // starting the whole application
 
     /**
