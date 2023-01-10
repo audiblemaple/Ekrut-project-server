@@ -352,7 +352,7 @@ public class MessageHandler {
                     orderData.add(orderFromList.getOrderStatus());
                     orderData.add(orderFromList.getEstimatedDeliveryTime());
                     orderData.add(orderFromList.getConfirmationDate());
-                    if (mysqlcontroller.updateOrderStatusAndDates(orderData)){
+                    if (!mysqlcontroller.updateOrderStatusAndDates(orderData)){
                         sendMessageToClient(client, new Message("Error updating status", MessageFromServer.ERROR_UPDATING_ORDER_STATUS));
                         break;
                     }
