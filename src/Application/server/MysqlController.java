@@ -13,6 +13,7 @@ import common.orders.Product;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -1849,99 +1850,86 @@ public class MysqlController {
 	}
 
 
-	public void importMechanism(){
+	public String importMechanism(){
+		Scanner sc = null;
+		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress, isloggedin, userstatus, department) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement stmt;
+		int updateSuccessful = 0;
+		String lastStrings[];
+		String temp = "";
+		int updateCount = 0;
+		int existedCount = 0;
+		try {
+			sc = new Scanner(new File("src/externalSystem/usersTable.csv"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			sc.close();
+			return "1";
+		}
+		//parsing a CSV file into the constructor of Scanner class
+		sc.useDelimiter(",");
+		sc.next();
+		sc.next();
+		sc.next();
+		sc.next();
+		sc.next();
+		sc.next();
+		sc.next();
+		sc.next();
+		sc.next();
+		lastStrings = sc.next().split("\r\n");
+		//setting comma as delimiter pattern
+		while (sc.hasNext()) {
+			try{
+				stmt = connection.prepareStatement(query);
+				stmt.setString(1,  lastStrings[1].substring(1, lastStrings[1].length() - 1));
+				temp = sc.next();
+				stmt.setString(2,  temp.substring(1, temp.length() - 1));
 
+				temp = sc.next();
+				stmt.setString(3,  temp.substring(1, temp.length() - 1));
+
+				temp = sc.next();
+				stmt.setString(4, temp.substring(1, temp.length() - 1));
+
+				temp = sc.next();
+				stmt.setString(5,  temp.substring(1, temp.length() - 1));
+
+				temp = sc.next();
+				stmt.setString(6,  temp.substring(1, temp.length() - 1));
+
+				temp = sc.next();
+				stmt.setString(7,  temp.substring(1, temp.length() - 1));
+
+				temp = sc.next();
+				stmt.setString(8,  temp);
+
+				temp = sc.next();
+				stmt.setString(9,  temp.substring(1, temp.length() - 1));
+
+				lastStrings = sc.next().split("\r\n");
+				stmt.setString(10, lastStrings[0].substring(1, lastStrings[0].length() - 1));
+
+				updateSuccessful = stmt.executeUpdate();
+				updateCount += 1;
+				if (updateSuccessful == 0){
+					sc.close();
+					return "2";
+				}
+			}
+			catch (SQLIntegrityConstraintViolationException ignored){
+				System.out.println("exists\n");
+				existedCount += 1;
+			}
+			catch (SQLException e){
+				e.printStackTrace();
+				sc.close();
+				return "3";
+			}
+		}
+		sc.close();
+		return updateCount + "," + existedCount; // todo: here is a success message
 	}
-
-
-
-
-
-
-
-
-
-
-
-//import java.io.FileReader;
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
-//import java.sql.Statement;
-//
-//import com.opencsv.CSVReader;
-//
-//		private static void readCsv() {
-//
-//			try (CSVReader reader = new CSVReader(new FileReader("upload.csv"), ',');
-//				 Connection connection = DBConnection.getConnection();) {
-//				String insertQuery = "Insert into txn_tbl (txn_id,txn_amount, card_number, terminal_id) values (null,?,?,?)";
-//				PreparedStatement pstmt = connection.prepareStatement(insertQuery);
-//				String[] rowData = null;
-//				int i = 0;
-//				while((rowData = reader.readNext()) != null) {
-//					for (String data : rowData) {
-//						pstmt.setString((i % 3) + 1, data);
-//
-//						if (++i % 3 == 0)
-//							pstmt.addBatch();// add batch
-//
-//						if (i % 30 == 0)// insert when the batch size is 10
-//							pstmt.executeBatch();
-//					}
-//				}
-//				System.out.println("Data Successfully Uploaded");
-//			}
-//			catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//
-//		}
-//
-//		private static void readCsvUsingLoad() {
-//			try (Connection connection = DBConnection.getConnection()) {
-//
-//				String loadQuery = "LOAD DATA LOCAL INFILE '" + "C:\\upload.csv" + "' INTO TABLE txn_tbl FIELDS TERMINATED BY ','" + " LINES TERMINATED BY '\n' (txn_amount, card_number, terminal_id) ";
-//				System.out.println(loadQuery);
-//				Statement stmt = connection.createStatement();
-//				stmt.execute(loadQuery);
-//			}
-//			catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -13,6 +13,7 @@ public enum MessageFromClient implements Serializable {
     REQUEST_CUSTOMER_DATA,                      // TODO
     REQUEST_DISCOUNT_LIST,                      // TODO
     REQUEST_UPDATE_ORDER_STATUS,                // TODO
+    REQUEST_IMPORT_USERS,
     REQUEST_UPDATE_CUSTOMER_STATUS,
     REQUEST_UPDATE_MULTIPLE_ORDER_STATUSES,     // V
     REQUEST_ORDERS_BY_CUSTOMER_ID,

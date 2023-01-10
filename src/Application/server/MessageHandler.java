@@ -388,6 +388,29 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(orderList, MessageFromServer.ORDERS_IMPORTED_SUCCESSFULLY));
                 break;
 
+            case "REQUEST_IMPORT_USERS":
+                String reply = "";
+                String insertResult = mysqlcontroller.importMechanism();
+                switch (insertResult){
+                    case "1":
+                        reply = "Error getting file";
+                        break;
+
+                    case "2":
+                        reply = "Error inserting users";
+                        break;
+
+                    case "3":
+                        reply = "sql Error";
+                        break;
+
+                    default:
+                        reply = "Import successful \nExisted users: " + insertResult.split(",")[1] + "\nNew users: " + insertResult.split(",")[0];
+                }
+                sendMessageToClient(client, new Message(reply, MessageFromServer.IMPORT_USERS_REPLY));
+                break;
+
+
 
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
