@@ -78,7 +78,6 @@
 
 
 /****************************tableview style*************************************************/
-
 .table-view{
     -fx-background-color: transparent;
     -fx-opacity: 80%;
@@ -116,6 +115,13 @@
     -fx-background-color: rgba(56, 77, 75, 0.27);
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
+}
+
+.table-row-cell:empty{
+    -fx-opacity: 0;
+}
+.table-row-cell:not(:empty){
+    -fx-opacity: 100;
 }
 
 .table-view .virtual-flow .scroll-bar:vertical,
