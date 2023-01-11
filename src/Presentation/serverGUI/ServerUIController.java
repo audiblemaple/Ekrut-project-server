@@ -171,7 +171,7 @@ public class ServerUIController extends Application implements Initializable {
             // constructing our scene
             Parent root = FXMLLoader.<Parent>load(getClass().getResource("/Presentation/serverGUI/ServerUI.fxml"));
             Scene scene = new Scene(root);
-            scene.getStylesheets().addAll(this.getClass().getResource("application.css").toExternalForm());
+            //scene.getStylesheets().addAll(this.getClass().getResource("application.css").toExternalForm());
 
             // event handler for when the mouse is pressed on the scene to later trigger the drag event
             root.setOnMousePressed(event -> {

@@ -9,11 +9,9 @@ import common.connectivity.Customer;
 import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
+import javafx.scene.image.Image;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -294,17 +292,26 @@ public class MysqlController {
 				product.setMachineID(res.getString("machineid"));
 				product.setProductId(res.getString("productid"));
 				product.setCriticalAmount(res.getInt("criticalamount"));
+
+
 				// create file and streams
-				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
-				file = new File(path.toUri());
+				// old
+//				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
+//				file = new File(path.toUri());
+
+				// new
+				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+				byte[] imagebytes = imagefile.readAllBytes();
+
+
 				FileInputStream fis = null;
 				try {
-					fis = new FileInputStream(file);
-					byte[] outputFile = new byte[(int)file.length()];
-					BufferedInputStream bis = new BufferedInputStream(fis);
-					bis.read(outputFile,0,outputFile.length);
+//					fis = new FileInputStream(file);
+//					byte[] outputFile = new byte[(int)file.length()];
+//					BufferedInputStream bis = new BufferedInputStream(fis);
+//					bis.read(outputFile,0,outputFile.length);
 					// add file to product object
-					product.setFile(outputFile);
+					product.setFile(imagebytes);// changed here from(old): outputFile to(new): imagebytes
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -317,6 +324,8 @@ public class MysqlController {
 		}catch (SQLException sqlException){
 			sqlException.printStackTrace();
 			return null;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -347,16 +356,25 @@ public class MysqlController {
 				product.setCriticalAmount(res.getInt("criticalamount"));
 
 				// create file and streams
-				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
-				File file = new File(path.toUri());
+//				Path path = Paths.get("/src/Application/images/" + res.getString("name") + ".png");
+//				File file = new File(path.toUri());
+
+				// new
+				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+				byte[] imagebytes = imagefile.readAllBytes();
+
+				//////////////////////////////////////////////////
+
 				FileInputStream fis = null;
 				try {
-					fis = new FileInputStream(file);
-					byte[] outputFile = new byte[(int)file.length()];
-					BufferedInputStream bis = new BufferedInputStream(fis);
-					bis.read(outputFile,0,outputFile.length);
+					// todo uncomment this
+//					fis = new FileInputStream(file);
+//					byte[] outputFile = new byte[(int)file.length()];
+//					BufferedInputStream bis = new BufferedInputStream(fis);
+//					bis.read(outputFile,0,outputFile.length);
+
 					// add file to product object
-					product.setFile(outputFile);
+					product.setFile(imagebytes); // changed here from(old): outputFile to(new): imagebytes
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -369,6 +387,9 @@ public class MysqlController {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
