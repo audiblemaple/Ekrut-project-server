@@ -1667,7 +1667,6 @@ public class MysqlController {
 			}
 			else{
 				stmt.setInt(2, 0);
-				stmt.setInt(2, subNumber);
 				firstBuy.add("false");
 				firstBuy.add(idAndStatus.get(0));
 				updateFirstBuyAsSub(firstBuy);
