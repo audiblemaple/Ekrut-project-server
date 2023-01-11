@@ -301,8 +301,15 @@ public class MysqlController {
 
 				// new
 				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
-				byte[] imagebytes = imagefile.readAllBytes();
-
+				//byte[] imagebytes = imagefile.readAllBytes();
+				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+				int nRead;
+				byte[] data = new byte[imagefile.available()];
+				while ((nRead = imagefile.read(data, 0, data.length)) != -1) {
+				    buffer.write(data, 0, nRead);
+				}
+				buffer.flush();
+				byte[] imagebytes = buffer.toByteArray();
 
 				FileInputStream fis = null;
 				try {
@@ -361,8 +368,15 @@ public class MysqlController {
 
 				// new
 				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
-				byte[] imagebytes = imagefile.readAllBytes();
-
+				//byte[] imagebytes = imagefile.readAllBytes();
+				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+				int nRead;
+				byte[] data = new byte[imagefile.available()];
+				while ((nRead = imagefile.read(data, 0, data.length)) != -1) {
+				    buffer.write(data, 0, nRead);
+				}
+				buffer.flush();
+				byte[] imagebytes = buffer.toByteArray();
 				//////////////////////////////////////////////////
 
 				FileInputStream fis = null;
