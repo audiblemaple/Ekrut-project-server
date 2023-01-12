@@ -200,7 +200,7 @@ public class MysqlController {
      * @param areaMachineMonthYear an ArrayList of Strings containing the area, machine ID, month, and year for the report
      * @return true if the report was successfully generated and stored in the database, false otherwise
      */
-	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){ // TODO: uncomment this!!!
+	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){
 		String  uuid = UUID.randomUUID().toString().substring(0, 8);
 		ArrayList<String> mID = new ArrayList<>();
 		mID.add(areaMachineMonthYear.get(1));
@@ -296,7 +296,7 @@ public class MysqlController {
 	 * @return Arraylist of products in a specific machine.
 	 * This method finds all products that belong to a specific machine id.
 	 */
-	public ArrayList<Product> getMachineProducts(ArrayList<String> mIdLocation){ // TODO: how i can improve this query to make the code more simple
+	public ArrayList<Product> getMachineProducts(ArrayList<String> mIdLocation){
 		PreparedStatement stmt;
 		ResultSet res;
 		String query;
@@ -422,7 +422,7 @@ public class MysqlController {
 
 				FileInputStream fis = null;
 				try {
-					// todo uncomment this
+
 //					fis = new FileInputStream(file);
 //					byte[] outputFile = new byte[(int)file.length()];
 //					BufferedInputStream bis = new BufferedInputStream(fis);
@@ -1971,7 +1971,7 @@ public class MysqlController {
 
 
 		try{
-			stmt = connection.prepareStatement(query); // todo: fix here!!!
+			stmt = connection.prepareStatement(query);
 			if (!area.equals("all"))
 				stmt.setString(1, area);
 
@@ -2143,7 +2143,7 @@ public class MysqlController {
 			}
 		}
 		sc.close();
-		return updateCount + "," + existedCount; // todo: here is a success message
+		return updateCount + "," + existedCount;
 	}
 
 
@@ -2265,7 +2265,6 @@ public class MysqlController {
 //
 //
 //		// THIS IS THE QUERY I NEED:
-//		// todo: change this method to use this query...
 //		// UPDATE productsinmachines
 //		//SET discount = (SELECT discount FROM deals WHERE deals.id = productsinmachines.dealid)
 //		//WHERE machineid IN (SELECT machineid FROM machines WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM products WHERE products.type = 'SNACK')

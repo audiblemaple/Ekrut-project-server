@@ -40,7 +40,7 @@ public class MessageHandler {
         System.out.println(message);
         ArrayList<Product> productList = null;
         ArrayList<String> machines = null;
-        switch(message.getTask().name()){ // TODO: add disconnect message to set client connection status to disconnected
+        switch(message.getTask().name()){
             case "REQUEST_LOGIN":
                 ArrayList<String> userLogInCredentials = (ArrayList<String>) message.getData();
                 if (mysqlcontroller.isLoggedIn(userLogInCredentials)){
