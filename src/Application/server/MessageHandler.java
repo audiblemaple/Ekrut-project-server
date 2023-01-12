@@ -410,6 +410,15 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(reply, MessageFromServer.IMPORT_USERS_REPLY));
                 break;
 
+            case "REQUEST_OPERATIONS_EMPLOYEE_DATA":
+                ArrayList<User> operations = mysqlcontroller.getOperationsEmployees();
+                if (operations == null){
+                    sendMessageToClient(client, new Message("Error importing operations Employees data", MessageFromServer.ERROR_IMPORTING_OPERATIONS_EMPLOYEES_DATA));
+                    break;
+                }
+                sendMessageToClient(client, new Message(operations, MessageFromServer.OPERATIONS_EMPLOYEES_DATA_IMPORTED_SUCCESSFULLY));
+                break;
+
 
 
             default:

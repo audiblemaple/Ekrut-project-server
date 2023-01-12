@@ -1194,6 +1194,36 @@ public class MysqlController {
 		}
 	}
 
+	public ArrayList<User> getOperationsEmployees(){
+		PreparedStatement stmt;
+		ResultSet res;
+		String query;
+		ArrayList<User> operations = new ArrayList<>();
+		query = "SELECT * FROM " + this.dataBasename + ".users WHERE department = 'operations'";
+		boolean resultFound = false;
+
+		try{
+			stmt = connection.prepareStatement(query);
+			res = stmt.executeQuery();
+			while (res.next()){
+				resultFound = true;
+				User user = new User();
+				user.setFirstname(res.getString("firstname"));
+				user.setLastname(res.getString("lastname"));
+				user.setId(res.getString("id"));
+				operations.add(user);
+			}
+
+			if (resultFound)
+				return operations;
+			return null;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return null;
+		}
+	}
+
+
 
 	public ClientReport getClientReport(ArrayList<String> monthAndYear){
 		PreparedStatement stmt;
