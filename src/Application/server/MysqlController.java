@@ -9,11 +9,8 @@ import common.connectivity.Customer;
 import common.connectivity.User;
 import common.orders.Order;
 import common.orders.Product;
-import javafx.scene.image.Image;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lior Jigalo
- * This class communcates with the database.
+ * communicates with the database.
  */
 public class MysqlController {
 	private static final long SLEEP_DURATION = TimeUnit.MINUTES.toNanos(2); // Sleep duration in nanoseconds
@@ -114,7 +111,11 @@ public class MysqlController {
 	}
 
 
-
+    /**
+     * Retrieves a specific monthly inventory report from the database based on the month, year, and machine ID provided in an ArrayList of Strings.
+     * @param monthYearMachine an ArrayList of Strings containing the month, year, and machine ID of the desired report
+     * @return an InventoryReport object containing the report's information, or null if no such report exists in the database
+     */
 	public InventoryReport getMonthlyInventoryReport(ArrayList<String> monthYearMachine){
 		if (monthYearMachine == null)
 			throw new NullPointerException();
@@ -150,6 +151,13 @@ public class MysqlController {
 		}
 	}
 
+
+    /**
+
+     * Converts a String of product details into an ArrayList of Product objects.
+     * @param details a String of product details
+     * @return an ArrayList of Product objects
+     */
 	public ArrayList <Product> productDetailsToList(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
@@ -162,6 +170,13 @@ public class MysqlController {
 		return products;
 	}
 
+
+    /**
+
+     * Converts a String of product details into an ArrayList of Product objects with more details.
+     * @param details a String of product details
+     * @return an ArrayList of Product objects
+     */
 	public ArrayList <Product> productDetailsToListExpanded(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
@@ -178,6 +193,13 @@ public class MysqlController {
 		return products;
 	}
 
+
+    /**
+
+     * Generates a monthly inventory report for a specific machine and area, and stores it in the database.
+     * @param areaMachineMonthYear an ArrayList of Strings containing the area, machine ID, month, and year for the report
+     * @return true if the report was successfully generated and stored in the database, false otherwise
+     */
 	public boolean generateMonthlyInventoryReport(ArrayList<String> areaMachineMonthYear){ // TODO: uncomment this!!!
 		String  uuid = UUID.randomUUID().toString().substring(0, 8);
 		ArrayList<String> mID = new ArrayList<>();
@@ -223,13 +245,20 @@ public class MysqlController {
 
 			return updateSuccessful != 0;
 		}
-
+		catch (SQLIntegrityConstraintViolationException ignored){
+			return true;
+		}
 		catch (SQLException e){
 			e.printStackTrace();
 			return false;
 		}
 	}
 
+
+
+    /**
+     * This method turns off SQL_SAFE_UPDATES by sending a query to the database to set it to 0
+     */
 	public void turnOffSafeUpdate(){
 		String query = "SET SQL_SAFE_UPDATES = 0;";
 		try{
@@ -241,6 +270,12 @@ public class MysqlController {
 		}
 	}
 
+
+    /**
+     * This method takes a table name as a parameter and returns the number of entries in the table
+     * @param tableName - the name of the table
+     * @return int - number of entries in the table
+     */
 	private int getNumOfEntriesInTable(String tableName){
 		String query = "SELECT COUNT(*) FROM " + this.dataBasename + "." + tableName;
 		try{
@@ -336,7 +371,13 @@ public class MysqlController {
 		}
 	}
 
-
+    /**
+     * This method returns a list of products from the warehouse.
+     * It retrieves the product information from the 'products' table and warehouse table and join them by productid and creates a Product object for each row retrieved.
+     * It sets the product's price, discount, name, amount, productname, description, type, productid and critical amount.
+     * It also retrieves the image of the product from the images directory and sets it to the product object.
+     * @return ArrayList<Product> A list of Product objects representing the products in the warehouse
+     */
 	public ArrayList<Product> getWarehouseProducts(){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -410,7 +451,7 @@ public class MysqlController {
 
 	/**
 	 * @param productId
-	 * @return
+	 * @return null
 	 */
 	private ResultSet getProductData(String productId){
 		if (productId == null)
@@ -492,6 +533,13 @@ public class MysqlController {
 		}
 	}
 
+    /**
+
+     This method adds a new customer to the customer table in the database.
+     @param user A {@link Customer} object representing the customer to be added to the database.
+     @return A boolean value indicating whether the addition was successful or not.
+     @throws SQLException if a database access error occurs or the SQL statement is not valid.
+     */
 	public boolean addCustomer(Customer user) {
 		String query = "INSERT INTO " +  this.dataBasename + ".customer(customerid, creditcardnumber) VALUES(?, ?)";
 		PreparedStatement stmt;
@@ -753,6 +801,11 @@ public class MysqlController {
 		}
 	}
 
+    /**
+     * Add a new order to the database.
+     * @param order An Order object that contains the order details.
+     * @return true if the order was added successfully, false otherwise
+     */
 	public boolean AddNewOrder(Order order) {
 		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
@@ -786,6 +839,13 @@ public class MysqlController {
 		}
 	}
 
+
+    /**
+     * Update the first time buy as sub field of a customer.
+     * @param values An ArrayList of two strings, the first element is a boolean representing
+     * the updated value of the isfirsttimebuyassub field, the second element is the customer id.
+     * @return true if the update was successful, false otherwise
+     */
 	public boolean updateFirstBuyAsSub(ArrayList<String> values) {
 		PreparedStatement stmt;
 		String query;
@@ -804,6 +864,12 @@ public class MysqlController {
 		}
 	}
 
+    /**
+     * Retrieve an order from the database based on its order id and customer id.
+     * @param customerAndOrderID An ArrayList of two strings, the first element is the customer id,
+     * the second element is the order id.
+     * @return An Order object that contains the order details, null if the order was not found.
+     */
 	public Order getOrderByOrderIdAndCustomerID(ArrayList<String> customerAndOrderID){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -846,7 +912,14 @@ public class MysqlController {
 		}
 	}
 
-	public ArrayList<OrderReport> getOrderData(ArrayList<String> monthAndYear){
+    /**
+     * retrieve the number of orders made on each machine in a given month and year.
+     * The data is retrieved using a JOIN query on the orders and machines table, and is grouped by machine location and machine id.
+     * @param monthAndYear list containing the month and year to be used in the query
+     * @return ArrayList of OrderReport object containing data for each machine, or null if no data is found
+     */
+
+    public ArrayList<OrderReport> getOrderData(ArrayList<String> monthAndYear){
 		ArrayList<OrderReport> machinereports = new ArrayList<>();
 		PreparedStatement stmt;
 		ResultSet res;
@@ -880,7 +953,13 @@ public class MysqlController {
 		}
 	}
 
-	// TODO: use this to later generate monthly reports.
+
+
+    /**
+     * method will generate and insert order reports into the orderreports table.
+     * The data is retrieved using getOrderData() method, and is inserted into the table as a new row.
+     * @param monthAndYear list containing the month and year to be used in the query
+     */
 	public void generateOrderReport(ArrayList<String> monthAndYear){
 		String query = "INSERT INTO " +  this.dataBasename + ".orderreports(reportid, location, month, year, machineid, orderamount) VALUES(?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
@@ -899,11 +978,20 @@ public class MysqlController {
 				stmt.setInt(6, ord.getNumberOfOrders());
 				stmt.executeUpdate();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		}
+		catch (SQLIntegrityConstraintViolationException ignored){
+		}
+		catch (SQLException e) {
+			//e.printStackTrace();
 		}
 	}
 
+
+    /**
+     * method will retrieve order reports for a given month and year from the orderreports table.
+     * @param monthAndYear list containing the month and year to be used in the query
+     * @return ArrayList of OrderReport object containing data for each report, or null if no data is found
+     */
 	public ArrayList<OrderReport> getOrderReport(ArrayList<String> monthAndYear){
 		ArrayList<OrderReport> orderReports = new ArrayList<>();
 		PreparedStatement stmt;
@@ -1098,8 +1186,11 @@ public class MysqlController {
 				updatestmt.setString(6, res.getString("lastname"));
 				updatestmt.executeUpdate();
 			}
-		}catch (SQLException sqlException){
-			sqlException.printStackTrace();
+		}
+		catch (SQLIntegrityConstraintViolationException ignored){
+		}
+		catch (SQLException sqlException){
+			//sqlException.printStackTrace();
 		}
 	}
 
@@ -1521,9 +1612,11 @@ public class MysqlController {
 	public boolean updateDeal(Deals dealToUpdate) {
 		PreparedStatement stmt;
 		String query;
-		query = "UPDATE " + this.dataBasename + ".deals SET name = ?, discount = ?, description = ?, type = ?, area = ?, status = ?, isactive = ? WHERE id = ?;";
+		query = "UPDATE " + this.dataBasename + ".deals SET name = ?, discount = ?, description = ?, type = ?, area = ?, status = ?, isactive = ?, startdate = ?, enddate = ? WHERE id = ?;";
 		int updateSuccessfull = 0;
-
+		if (dealToUpdate.getDealID().equals("005")){
+			return true;
+		}
 		try{
 			stmt = connection.prepareStatement(query);
 			stmt.setString(1, dealToUpdate.getDealName());
@@ -1533,7 +1626,35 @@ public class MysqlController {
 			stmt.setString(5, dealToUpdate.getAreaS());
 			stmt.setString(6, dealToUpdate.getStatusString());
 			stmt.setString(7, dealToUpdate.getActive());
-			stmt.setString(8, dealToUpdate.getDealID());
+
+			if (dealToUpdate.getActive().equals("active")){
+				Calendar cal = Calendar.getInstance();
+				int day = cal.get(Calendar.DATE);
+				int month = cal.get(Calendar.MONTH) + 1;
+				int year = cal.get(Calendar.YEAR);
+				int nextMonth = month + 1;
+				String daystr = "" + day;
+				String monthStr = "" + month;
+				String nextMonthStr = "" + nextMonth;
+				if (day < 10){
+					daystr = "0" + day;
+				}
+				if (month < 10){
+					monthStr = "0" + month;
+				}
+				if (nextMonth < 10){
+					nextMonthStr = "0" + nextMonthStr;
+				}
+
+				stmt.setString(8, daystr  +"." + monthStr  + "." + year);
+				stmt.setString(9, daystr + "." + nextMonthStr + "." + year);
+			}
+			else {
+				stmt.setString(8, "none");
+				stmt.setString(9, "none");
+			}
+
+			stmt.setString(10, dealToUpdate.getDealID());
 			updateSuccessfull =  stmt.executeUpdate();
 
 		return updateSuccessfull != 0;
@@ -1591,7 +1712,6 @@ public class MysqlController {
 		PreparedStatement stmt;
 		String query;
 		ArrayList<Deals> dealList = getAllDiscounts();
-		ArrayList<String> areas = getAllMachineLocations();
 		float discount = 0;
 
 
@@ -1635,9 +1755,40 @@ public class MysqlController {
 				sqlException.printStackTrace();
 				return false;
 			}
-		}
+			if (!applyWarehouseDeals(deal.getType(), discount)){
+				return false;
+			}
 
+		}
 		return true;
+	}
+
+
+	public boolean applyWarehouseDeals(String type, float discount){
+		PreparedStatement stmt;
+		String query;
+		ArrayList<Deals> dealList = getAllDiscounts();
+		int updateSuccessfull = 0;
+
+		query = "UPDATE " + this.dataBasename + ".warehouse SET discount = ? WHERE productid IN (SELECT productid FROM " + this.dataBasename + ".products WHERE type = ? OR type = ?);";
+		try{
+			stmt = connection.prepareStatement(query);
+			stmt.setFloat(1, discount);
+			if (type.equals("ALL")){
+				stmt.setString(2, "SNACK");
+				stmt.setString(3, "DRINK");
+			}
+			else {
+				stmt.setString(2, type);
+				stmt.setString(3, type);
+			}
+
+			updateSuccessfull =  stmt.executeUpdate();
+			return updateSuccessfull  > 0;
+		}catch (SQLException sqlException){
+			sqlException.printStackTrace();
+			return false;
+		}
 	}
 
 

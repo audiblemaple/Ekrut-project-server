@@ -18,6 +18,9 @@ public class Deals implements Serializable {
     private String StatusString;
     private String active; //active | not active  <-- its like this in the database.
 
+    private String startDate;
+    private String endDate;
+
     public Deals() {
     }
 
@@ -111,6 +114,22 @@ public class Deals implements Serializable {
 
     public void setActive(String active) {
         this.active = active;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     @Override

@@ -1,9 +1,12 @@
 package common;
 
+import javafx.scene.control.ChoiceBox;
+
 import java.io.Serializable;
 
 public class RefillOrder implements Serializable {
     private static final long serialVersionUID = 1L;
+    ChoiceBox<String> assignedEmployeeBox;
     private String orderID;
     private String ProductID;
     private String MachineID;
@@ -69,6 +72,14 @@ public class RefillOrder implements Serializable {
 
     public void setNewAmount(int newAmount) {
         this.newAmount = newAmount;
+    }
+
+    public ChoiceBox<String> getAssignedEmployeeBox() {
+        return assignedEmployeeBox;
+    }
+
+    public void setAssignedEmployeeBox(ChoiceBox<String> assignedEmployeeBox) {
+        this.assignedEmployeeBox = assignedEmployeeBox;
     }
 
     @Override
