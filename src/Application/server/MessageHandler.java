@@ -140,6 +140,7 @@ public class MessageHandler {
                 if (!mysqlcontroller.updateAmountsFromOrder((Order) message.getData())){
                     sendMessageToClient(client, new Message("Error updating order amounts", MessageFromServer.ERROR_ADDING_NEW_ORDER));
                 }
+                mysqlcontroller.checkAmount();
 
                 sendMessageToClient(client, new Message("Order added successfully", MessageFromServer.ADD_NEW_ORDER_SUCCESSFUL));
                 break;
@@ -237,7 +238,6 @@ public class MessageHandler {
                 break;
 
             case "REQUEST_REFILL_ORDERS":
-                mysqlcontroller.checkAmount();
                 ArrayList<RefillOrder> refillOrderList = mysqlcontroller.getRefillOrders();
                 if (refillOrderList == null){
                     sendMessageToClient(client, new Message("error getting refill orders", MessageFromServer.ERROR_IMPORTING_REFILL_ORDERS));

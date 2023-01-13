@@ -336,6 +336,7 @@ public class MysqlController {
 
 				// new
 				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+
 				//byte[] imagebytes = imagefile.readAllBytes();
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				int nRead;
@@ -1289,7 +1290,8 @@ public class MysqlController {
 		PreparedStatement stmt;
 		ResultSet res;
 		String query;
-		query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
+		// query = "SELECT * FROM " + this.dataBasename + ".productsinmachines";
+		query = "SELECT * FROM " + this.dataBasename + ".productsinmachines JOIN " + this.dataBasename + ".products ON productsinmachines.productid = products.productid;";
 		int amount = 0;
 		int alertAmount = 0;
 
@@ -1301,7 +1303,7 @@ public class MysqlController {
 				amount = res.getInt("amount");
 				alertAmount = res.getInt("criticalamount");
 				if (alertAmount >= amount && !refillOrderExists(res.getString("machineid"), res.getString("productid"))){
-					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("criticalamount"));
+					addOrderToDatabase(res.getString("productid"), res.getString("machineid"), res.getInt("criticalamount"), res.getString("productname"));
 					addLowerThanCriticalAmountTimes(res.getString("machineid"), res.getString("productid"));
 				}
 			}
@@ -1337,7 +1339,7 @@ public class MysqlController {
 	private boolean addLowerThanCriticalAmountTimes(String machineId, String productId){
 		PreparedStatement stmt;
 		String query;
-		query = "UPDATE " + this.dataBasename + ".productsinmachines SET numoctimesbelowcriticalamount = numoctimesbelowcriticalamount + 1 WHERE machineid = ? AND productid = ?;";
+		query = "UPDATE " + this.dataBasename + ".productsinmachines SET numoftimesbelowcriticalamount = numoftimesbelowcriticalamount + 1 WHERE machineid = ? AND productid = ?;";
 		int updateSuccessfull = 0;
 		try{
 			stmt = connection.prepareStatement(query);
@@ -1352,7 +1354,7 @@ public class MysqlController {
 		}
 	}
 
-	private void addOrderToDatabase(String productID, String machineID, int amount){
+	private void addOrderToDatabase(String productID, String machineID, int amount, String productName){
 		LocalDate currentDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy.MM.dd");
 		String dateString = currentDate.format(formatter);
@@ -1360,7 +1362,7 @@ public class MysqlController {
 
 		String  uuid = UUID.randomUUID().toString().substring(0, 8);
 
-		String query = "INSERT INTO " +  this.dataBasename + ".refilrequests(requestid, machineid, productid, date, amountatrequest) VALUES(?, ?, ?, ?, ?)";
+		String query = "INSERT INTO " +  this.dataBasename + ".refilrequests(requestid, machineid, productid, date, amountatrequest, productname) VALUES(?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		try{
 			stmt = connection.prepareStatement(query);
@@ -1369,6 +1371,7 @@ public class MysqlController {
 			stmt.setString(3, productID);
 			stmt.setString(4, dateString);
 			stmt.setInt(5, amount);
+			stmt.setString(6, productName);
 
 			stmt.executeUpdate();
 		}
@@ -1385,8 +1388,6 @@ public class MysqlController {
 		String query;
 		ArrayList<RefillOrder> refillOrderList = new ArrayList<>();
 		query = "SELECT * FROM " + this.dataBasename + ".refilrequests";
-		int amount = 0;
-		int alertAmount = 0;
 
 		try{
 			stmt = connection.prepareStatement(query);
@@ -1398,6 +1399,7 @@ public class MysqlController {
 				order.setOrderID(res.getString("requestid"));
 				order.setMachineID(res.getString("machineid"));
 				order.setProductID(res.getString("productid"));
+				order.setProductName(res.getString("productname"));
 
 				Date date = inputFormat.parse(res.getString("date"));
 				String formattedDate = outputFormat.format(date);
@@ -2074,13 +2076,17 @@ public class MysqlController {
 		String temp = "";
 		int updateCount = 0;
 		int existedCount = 0;
-		try {
-			sc = new Scanner(new File("src/externalSystem/usersTable.csv"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			sc.close();
-			return "1";
-		}
+//		try {
+
+			InputStream inputStream = this.getClass().getResourceAsStream("/Application/externalSystem/usersTable.csv");
+			sc = new Scanner(inputStream);
+			//sc = new Scanner(new File("/Application/externalSystem/usersTable.csv"));
+
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			sc.close();
+//			return "1";
+//		}
 		//parsing a CSV file into the constructor of Scanner class
 		sc.useDelimiter(",");
 		sc.next();

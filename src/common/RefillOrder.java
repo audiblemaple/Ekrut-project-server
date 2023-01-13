@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public class RefillOrder implements Serializable {
     private static final long serialVersionUID = 1L;
-    ChoiceBox<String> assignedEmployeeBox;
     private String orderID;
     private String ProductID;
     private String MachineID;
@@ -14,6 +13,7 @@ public class RefillOrder implements Serializable {
     private int amountAtRequest;
     private int newAmount = 0;
     private String assignedEmployee;
+    private String productName;
 
     public RefillOrder() {
     }
@@ -74,12 +74,12 @@ public class RefillOrder implements Serializable {
         this.newAmount = newAmount;
     }
 
-    public ChoiceBox<String> getAssignedEmployeeBox() {
-        return assignedEmployeeBox;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setAssignedEmployeeBox(ChoiceBox<String> assignedEmployeeBox) {
-        this.assignedEmployeeBox = assignedEmployeeBox;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     @Override
