@@ -334,8 +334,16 @@ public class MysqlController {
 //				Path path = Paths.get("src/Application/images/" + res.getString("name") + ".png");
 //				file = new File(path.toUri());
 
+
 				// new
-				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+				//InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+
+
+				// even newer
+				Blob blob = res.getBlob("image");
+				InputStream imagefile = blob.getBinaryStream();
+
+
 
 				//byte[] imagebytes = imagefile.readAllBytes();
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -409,7 +417,13 @@ public class MysqlController {
 //				File file = new File(path.toUri());
 
 				// new
-				InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+				//InputStream imagefile = this.getClass().getResourceAsStream("/Application/images/" + res.getString("name") + ".png");
+
+
+				// even newer
+				Blob blob = res.getBlob("image");
+				InputStream imagefile = blob.getBinaryStream();
+
 				//byte[] imagebytes = imagefile.readAllBytes();
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				int nRead;
