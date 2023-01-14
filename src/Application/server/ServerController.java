@@ -4,7 +4,12 @@ package Application.server;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
+import common.UserConnection;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -13,18 +18,25 @@ import java.io.IOException;
  * This class controlls the server, and allows us to send and recieve messages from the client.
  */
 public class ServerController extends AbstractServer {
-  //Class fields *************************************************
-  public ServerUIController serverUI;
-  private MysqlController sqlController;
+    //Class fields *************************************************
+    public ServerUIController serverUI;
+    private MysqlController sqlController;
+    private TableView<UserConnection> connectionList;
+    private TableColumn<UserConnection, String> ipColumn;
+    private TableColumn<UserConnection, String> hostNameColumn;
+    private TableColumn<UserConnection, String> connectionStatusColumn;
+
+
+
 
     /**
-     * @param port
-     * @param primaryStage
-     * This is the constructor for the server controller.
-     * It initializes the MysqlController and serverUIController.
-     */
-  //Constructors ****************************************************
-  public ServerController(int port, Stage primaryStage) {
+    * @param port
+    * @param primaryStage
+    * This is the constructor for the server controller.
+    * It initializes the MysqlController and serverUIController.
+    */
+    //Constructors ****************************************************
+    public ServerController(int port, Stage primaryStage) {
       super(port);
       sqlController = MysqlController.getSQLInstance();
       serverUI = new ServerUIController();
@@ -33,28 +45,29 @@ public class ServerController extends AbstractServer {
       }catch (Exception exception){
           exception.printStackTrace();
       }
-  }
+    }
+
 
     /**
      *This method gets hooked when the server starts listening for connections.
      */
-  protected void serverStarted() {
+    protected void serverStarted() {
       sqlController.turnOffSafeUpdate();
       sqlController.runGenerator();
       System.out.println("Server listening for connections on port " + getPort());
-  }
+    }
 
     /**
      *This message gets hooked when the server is stopped.
-     */
-  protected void serverStopped() {
+    */
+    protected void serverStopped() {
       try{
           close();
           System.out.println("Server has stopped listening for connections.");
       }catch (IOException exception){
           exception.printStackTrace();
       }
-  }
+    }
 
 
   public ServerUIController getServerUI(){
@@ -96,10 +109,10 @@ public class ServerController extends AbstractServer {
             if(message.equals("disconnect")){
                 this.serverUI.removeClientConnection(client);
                 sendMessageToClient(client, "disconnected");
+                return;
             }
         }
         MessageHandler.handleMessage(msg, client);
-
     }
 
     /**

@@ -6,6 +6,7 @@ import common.UserConnection;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,6 +28,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lior Jigalo
@@ -42,8 +46,6 @@ public class ServerUIController extends Application implements Initializable {
     private TextArea console;
     @FXML
     private Pane pane;
-    @FXML
-    private TableView<UserConnection> connectionList;
     @FXML // fx:id="dbNameField"
     private TextField dbNameField; // Value injected by FXMLLoader
     @FXML // fx:id="ipField"
@@ -56,6 +58,8 @@ public class ServerUIController extends Application implements Initializable {
     private Button quitButton; // Value injected by FXMLLoader
     @FXML // fx:id="defaultButton"
     private Button defaultButton; // Value injected by FXMLLoader
+    @FXML
+    private TableView<UserConnection> connectionList;
     @FXML
     private TableColumn<UserConnection, String> ipColumn;
     @FXML
@@ -175,6 +179,19 @@ public class ServerUIController extends Application implements Initializable {
         this.connectionList.setItems(observableUserConnections);
         this.disconnectButton.setDisable(true);
         this.connectionList.setPlaceholder(new Label(""));
+
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        scheduledExecutorService.scheduleAtFixedRate(() ->{
+           Platform.runLater(() -> connectionList.refresh());
+        }, 0, 500, TimeUnit.MILLISECONDS);
+
+
+        observableUserConnections.addListener(new ListChangeListener<UserConnection>() {
+            @Override
+            public void onChanged(Change<? extends UserConnection> c) {
+                connectionList.refresh();
+            }
+        });
     }
 
     /**
@@ -236,6 +253,7 @@ public class ServerUIController extends Application implements Initializable {
         observableUserConnections.add(userConnectionData);
     }
 
+
     /**
      * @param client
      * * This method removes a client connection from the list.
@@ -248,14 +266,9 @@ public class ServerUIController extends Application implements Initializable {
             ip = conn.getClientIP();
             if (client.getInetAddress().getHostAddress().equals(ip)){
                 conn.setConnectionStatus("disconnected");
-                observableUserConnections.remove(conn);
-                observableUserConnections.add(conn);
+                System.out.println("");
             }
         }
-    }
-
-    public TextArea getConsole(){
-        return this.console;
     }
 
 
