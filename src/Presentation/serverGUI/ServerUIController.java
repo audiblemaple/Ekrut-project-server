@@ -96,6 +96,9 @@ public class ServerUIController extends Application implements Initializable {
         }
         String consoleOut = ServerUI.startServer(this.ipField.getText(), this.dbNameField.getText(), this.usernameField.getText(), this.passwordField.getText());
         consolePrint(consoleOut + "\n");
+        if (consoleOut.contains("VendorError")){
+            return;
+        }
         this.defaultButton.setDisable(true);
         this.connectButton.setDisable(true);
         this.disconnectButton.setDisable(false);
