@@ -14,47 +14,47 @@
 
 <Pane fx:id="pane" maxHeight="700.0" maxWidth="679.0" minHeight="700.0" minWidth="500.0" prefHeight="700.0" prefWidth="679.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentation.serverGUI.ServerUIController">
    <children>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="59.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="88.0" fitWidth="186.0" layoutX="11.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@logo.png" />
          </image>
       </ImageView>
-      <Label layoutX="28.0" layoutY="160.0" text="DB IP">
+      <Label layoutX="28.0" layoutY="136.0" text="DB IP">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="360.0" layoutY="160.0" text="DB Username">
+      <Label layoutX="358.0" layoutY="136.0" text="DB Username">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="360.0" layoutY="214.0" text="DB Password">
+      <Label layoutX="360.0" layoutY="204.0" text="DB Password">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="28.0" layoutY="216.0" text="DB Name">
+      <Label layoutX="28.0" layoutY="206.0" text="DB Name">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="ipField" layoutX="113.0" layoutY="158.0" promptText="Enter IP...">
+      <TextField fx:id="ipField" layoutX="113.0" layoutY="134.0" promptText="Enter IP...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="usernameField" layoutX="476.0" layoutY="158.0" promptText="Enter Username...">
+      <TextField fx:id="usernameField" layoutX="476.0" layoutY="134.0" promptText="Enter Username...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="passwordField" layoutX="476.0" layoutY="212.0" promptText="Enter Password...">
+      <TextField fx:id="passwordField" layoutX="476.0" layoutY="202.0" promptText="Enter Password...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="dbNameField" layoutX="113.0" layoutY="212.0" promptText="Enter DB Name...">
+      <TextField fx:id="dbNameField" layoutX="113.0" layoutY="202.0" promptText="Enter DB Name...">
          <font>
             <Font size="15.0" />
          </font>
@@ -67,7 +67,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="516.0" layoutY="270.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="138.0" text="Disconnect">
+      <Button fx:id="disconnectButton" alignment="CENTER" depthTest="DISABLE" layoutX="524.0" layoutY="270.0" mnemonicParsing="false" onAction="#disconnectServer" prefHeight="45.0" prefWidth="138.0" text="Disconnect">
          <font>
             <Font size="21.0" />
          </font>
@@ -83,16 +83,16 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="connectionList" focusTraversable="false" layoutX="34.0" layoutY="387.0" prefHeight="296.0" prefWidth="285.0">
+      <TableView fx:id="connectionList" focusTraversable="false" layoutX="11.0" layoutY="388.0" prefHeight="302.0" prefWidth="285.0">
         <columns>
           <TableColumn fx:id="ipColumn" editable="false" prefWidth="89.0" resizable="false" text="IP" />
           <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="95.0" resizable="false" text="Host" />
             <TableColumn fx:id="connectionStatusColumn" editable="false" minWidth="0.0" prefWidth="96.0" resizable="false" text="Status" />
         </columns>
       </TableView>
-      <Label layoutX="28.0" layoutY="100.0" prefHeight="39.0" prefWidth="250.0" text="Server Configuartion">
+      <Label layoutX="206.0" layoutY="55.0" prefHeight="45.0" prefWidth="292.0" text="Server Configuration">
          <font>
-            <Font name="Arial" size="27.0" />
+            <Font name="Arial" size="30.0" />
          </font>
       </Label>
       <Button fx:id="quitButton" layoutX="620.0" layoutY="14.0" mnemonicParsing="false" onAction="#quitApp" prefHeight="39.0" prefWidth="42.0" style="-fx-background-color: #000;" text="X" textAlignment="CENTER" textFill="WHITE">
@@ -100,13 +100,13 @@
             <Font name="Tahoma Bold" size="15.0" />
          </font>
       </Button>
-      <TextArea fx:id="console" editable="false" layoutX="347.0" layoutY="387.0" prefHeight="296.0" prefWidth="315.0" />
-      <Label layoutX="347.0" layoutY="347.0" text="Server console">
+      <TextArea fx:id="console" editable="false" layoutX="309.0" layoutY="388.0" prefHeight="302.0" prefWidth="360.0" wrapText="true" />
+      <Label layoutX="309.0" layoutY="349.0" text="Server console">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Label layoutX="34.0" layoutY="347.0" text="Connected clients">
+      <Label layoutX="13.0" layoutY="349.0" text="Connected clients">
          <font>
             <Font size="28.0" />
          </font>

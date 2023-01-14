@@ -4,6 +4,7 @@ package Application.server;
 import OCSF.AbstractServer;
 import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -77,7 +78,11 @@ public class ServerController extends AbstractServer {
      */
     // this method
     private void disconnectClient(ConnectionToClient client){
-        this.serverUI.removeClientConnection(client);
+
+        new Thread(() -> {
+            Platform.runLater(() -> this.serverUI.removeClientConnection(client));
+        }).start();
+//        this.serverUI.removeClientConnection(client);
     }
 
     /**
@@ -94,6 +99,7 @@ public class ServerController extends AbstractServer {
             }
         }
         MessageHandler.handleMessage(msg, client);
+
     }
 
     /**

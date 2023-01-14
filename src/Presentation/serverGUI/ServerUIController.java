@@ -21,7 +21,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import misc.Console;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -59,8 +62,20 @@ public class ServerUIController extends Application implements Initializable {
     private TableColumn<UserConnection, String> hostNameColumn;
     @FXML
     private TableColumn<UserConnection, String> connectionStatusColumn;
+
+    private PrintStream consoleOutput;
     private double xoffset;
     private double yoffset;
+
+
+    /**
+     * This method initializes system output to the console box.
+     */
+    void initConsole(){
+        this.consoleOutput = new PrintStream((OutputStream) new Console(this.console));
+        System.setOut(consoleOutput);
+        System.setErr(consoleOutput);
+    }
 
     /**
      * @param msg String a message to display in the servers console.
@@ -153,6 +168,7 @@ public class ServerUIController extends Application implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialize tableView to display connections
+        initConsole();
         this.ipColumn.setCellValueFactory(new PropertyValueFactory<>("ClientIP"));
         this.hostNameColumn.setCellValueFactory(new PropertyValueFactory<>("HostName"));
         this.connectionStatusColumn.setCellValueFactory(new PropertyValueFactory<>("ConnectionStatus"));
@@ -232,9 +248,14 @@ public class ServerUIController extends Application implements Initializable {
             ip = conn.getClientIP();
             if (client.getInetAddress().getHostAddress().equals(ip)){
                 conn.setConnectionStatus("disconnected");
-                connectionList.setItems(observableUserConnections);
+                observableUserConnections.remove(conn);
+                observableUserConnections.add(conn);
             }
         }
+    }
+
+    public TextArea getConsole(){
+        return this.console;
     }
 
 

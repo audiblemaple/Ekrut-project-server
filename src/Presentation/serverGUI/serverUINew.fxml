@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane fx:id="pane" maxHeight="700.0" maxWidth="679.0" minHeight="700.0" minWidth="500.0" prefHeight="679.0" prefWidth="679.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Presentation.serverGUI.ServerUIController">
+   <children>
+      <Button fx:id="quitButton" layoutX="629.0" layoutY="10.0" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" onAction="#quitApp" prefHeight="40.0" prefWidth="40.0" text="X" />
+      <Button fx:id="connectButton" layoutX="58.0" layoutY="282.0" mnemonicParsing="false" onAction="#connectServer" text="Connect" />
+      <Button fx:id="defaultButton" layoutX="297.0" layoutY="282.0" mnemonicParsing="false" onAction="#insertDefaultValues" text="Default" />
+      <Button fx:id="disconnectButton" layoutX="513.0" layoutY="282.0" mnemonicParsing="false" onAction="#disconnectServer" text="Disconnect" />
+      <TextField fx:id="ipField" layoutX="103.0" layoutY="137.0" text="Enter IP..." />
+      <TextField fx:id="dbNameField" layoutX="103.0" layoutY="203.0" text="Enter Schema name..." />
+      <TextField fx:id="passwordField" layoutX="420.0" layoutY="202.0" text="Enter DB password..." />
+      <TextField fx:id="usernameField" layoutX="420.0" layoutY="137.0" text="Enter DB Username..." />
+      <Text layoutX="196.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server configuration">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+      <Text layoutX="375.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server Console" />
+      <Text layoutX="11.0" layoutY="377.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connections list" />
+      <TextArea layoutX="375.0" layoutY="388.0" prefHeight="302.0" prefWidth="294.0" />
+      <TableView fx:id="connectionList" layoutX="11.0" layoutY="390.0" prefHeight="302.0" prefWidth="330.0">
+        <columns>
+          <TableColumn fx:id="ipColumn" prefWidth="110.0" text="IP" />
+          <TableColumn fx:id="hostNameColumn" prefWidth="110.0" text="Host" />
+            <TableColumn fx:id="connectionStatusColumn" prefWidth="110.0" text="Status" />
+        </columns>
+      </TableView>
+      <ImageView fitHeight="65.0" fitWidth="149.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@logo.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>

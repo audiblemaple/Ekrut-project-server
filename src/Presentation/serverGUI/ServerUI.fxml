@@ -83,7 +83,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="connectionList" focusTraversable="false" layoutX="29.0" layoutY="387.0" prefHeight="296.0" prefWidth="285.0">
+      <TableView fx:id="connectionList" focusTraversable="false" layoutX="11.0" layoutY="388.0" prefHeight="302.0" prefWidth="285.0">
         <columns>
           <TableColumn fx:id="ipColumn" editable="false" prefWidth="89.0" resizable="false" text="IP" />
           <TableColumn fx:id="hostNameColumn" editable="false" prefWidth="95.0" resizable="false" text="Host" />
@@ -100,13 +100,13 @@
             <Font name="Tahoma Bold" size="15.0" />
          </font>
       </Button>
-      <TextArea fx:id="console" editable="false" layoutX="347.0" layoutY="387.0" prefHeight="296.0" prefWidth="315.0" />
-      <Label layoutX="347.0" layoutY="347.0" text="Server console">
+      <TextArea fx:id="console" editable="false" layoutX="309.0" layoutY="388.0" prefHeight="302.0" prefWidth="360.0" wrapText="true" />
+      <Label layoutX="309.0" layoutY="349.0" text="Server console">
          <font>
             <Font size="28.0" />
          </font>
       </Label>
-      <Label layoutX="29.0" layoutY="347.0" text="Connected clients">
+      <Label layoutX="13.0" layoutY="349.0" text="Connected clients">
          <font>
             <Font size="28.0" />
          </font>
