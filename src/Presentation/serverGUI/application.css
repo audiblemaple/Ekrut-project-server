@@ -117,12 +117,12 @@
     -fx-padding: 0.0em;
 }
 
-.table-row-cell:empty{
-    -fx-opacity: 0;
-}
-.table-row-cell:not(:empty){
-    -fx-opacity: 100;
-}
+/*.table-row-cell:empty{*/
+/*    -fx-opacity: 0;*/
+/*}*/
+/*.table-row-cell:not(:empty){*/
+/*    -fx-opacity: 100;*/
+/*}*/
 
 .table-view .virtual-flow .scroll-bar:vertical,
 .table-view .virtual-flow .scroll-bar:vertical .track,

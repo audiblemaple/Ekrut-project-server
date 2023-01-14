@@ -140,7 +140,6 @@ public class MessageHandler {
                 if (!mysqlcontroller.updateAmountsFromOrder((Order) message.getData())){
                     sendMessageToClient(client, new Message("Error updating order amounts", MessageFromServer.ERROR_ADDING_NEW_ORDER));
                 }
-                mysqlcontroller.checkAmount();
 
                 sendMessageToClient(client, new Message("Order added successfully", MessageFromServer.ADD_NEW_ORDER_SUCCESSFUL));
                 break;

@@ -822,7 +822,6 @@ public class MysqlController {
      * @return true if the order was added successfully, false otherwise
      */
 	public boolean AddNewOrder(Order order) {
-		ArrayList<String> customerAndOrderID = new ArrayList<String>();
 		String query = "INSERT INTO " +  this.dataBasename + ".orders" +
 				"(orderid, price, products, machineid, orderdate, address, customerid, supplymethod, paidwith, orderstatus, estimateddeliverydate, confirmationdate, area)" +
 				"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -2180,6 +2179,7 @@ public class MysqlController {
 		else monthStr = month + "";
 
 		yearStr = year + "";
+
 
 		ArrayList<String> data = new ArrayList<>();
 

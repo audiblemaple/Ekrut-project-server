@@ -55,6 +55,11 @@ public class ServerController extends AbstractServer {
       }
   }
 
+
+  public ServerUIController getServerUI(){
+      return this.serverUI;
+  }
+
     /**
      * @param client the connection connected to the client.
      * This method gets hooked when a client is connected.
@@ -81,7 +86,6 @@ public class ServerController extends AbstractServer {
      * This message handles the message from the client.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        // TODO: add printing requests to console
         if (msg instanceof String){
             String message = (String)msg;
             if(message.equals("disconnect")){
@@ -90,7 +94,6 @@ public class ServerController extends AbstractServer {
             }
         }
         MessageHandler.handleMessage(msg, client);
-
     }
 
     /**

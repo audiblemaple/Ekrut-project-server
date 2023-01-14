@@ -1,5 +1,6 @@
 package Application.server;
 
+import Presentation.serverGUI.ServerUIController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.IOException;
 public class ServerUI extends Application {
     private static ServerController serverController;
     private static MysqlController mysqlController;
+    private static ServerUIController serverUIController;
 
     /**
      * @param args
@@ -49,6 +51,7 @@ public class ServerUI extends Application {
                 exception.printStackTrace();
             }
         }
+        serverUIController = serverController.getServerUI();
         return dataBaseResponse + serverResponse;
     }
 

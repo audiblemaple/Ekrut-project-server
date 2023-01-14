@@ -227,13 +227,32 @@ public class ServerUIController extends Application implements Initializable {
     public void removeClientConnection(ConnectionToClient client){
         UserConnection userConnectionData;
         String ip = "";
-        UserConnection connection = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"disconnected");
+        //UserConnection connection = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"disconnected");
         for(UserConnection conn : observableUserConnections){
             ip = conn.getClientIP();
             if (client.getInetAddress().getHostAddress().equals(ip)){
-                observableUserConnections.remove(conn);
-                observableUserConnections.add(connection);
+                conn.setConnectionStatus("disconnected");
+                connectionList.setItems(observableUserConnections);
             }
         }
     }
+
+
+
+//    /**
+//     * @param client
+//     * * This method removes a client connection from the list.
+//     */
+//    public void removeClientConnection(ConnectionToClient client){
+//        UserConnection userConnectionData;
+//        String ip = "";
+//        UserConnection connection = new UserConnection(client.getInetAddress().getHostAddress(), client.getInetAddress().getHostName() ,"disconnected");
+//        for(UserConnection conn : observableUserConnections){
+//            ip = conn.getClientIP();
+//            if (client.getInetAddress().getHostAddress().equals(ip)){
+//                observableUserConnections.remove(conn);
+//                observableUserConnections.add(connection);
+//            }
+//        }
+//    }
 }
