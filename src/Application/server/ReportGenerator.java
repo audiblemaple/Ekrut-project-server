@@ -3,6 +3,16 @@ package Application.server;
 import java.util.Calendar;
 import javafx.concurrent.Task;
 
+
+/**
+ * ReportGenerator class is responsible for generating reports on the first day of every month.
+ * It extends the Task class and overrides the call method.
+ * The class uses the MysqlController class to call the generateReports method, which generates all the necessary reports.
+ * It uses a while loop to continually check if the current date is the first day of the month.
+ * If it is the first day of the month, the reports are generated and the thread sleeps until the first day of the next month.
+ * If it is not the first day of the month, the thread sleeps for 24 hours before checking again.
+ * @author lior jigalo
+ */
 public class ReportGenerator extends Task<Void> {
     MysqlController mysqlController = MysqlController.getSQLInstance();
     @Override

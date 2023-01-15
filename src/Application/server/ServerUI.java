@@ -15,13 +15,6 @@ public class ServerUI extends Application {
     private static MysqlController mysqlController;
     private static ServerUIController serverUIController;
 
-    /**
-     * @param args
-     * This is the main method.
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     // starting the server
     /**

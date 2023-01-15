@@ -1037,6 +1037,12 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Converts a list of products to a string of product names, amounts, and critical amounts.
+	 * @param products - the list of products to convert
+	 * @return a string representation of the list of products
+	 */
+
 	private String productListToString(ArrayList<Product> products){
 		String details = "";
 		for (Product prod : products){
@@ -1045,7 +1051,11 @@ public class MysqlController {
 		return details;
 	}
 
-
+	/**
+	 * Updates the given product in the warehouse table.
+	 * @param product - the product to update
+	 * @return true if the update was successful, false otherwise
+	 */
 	public boolean updateWarehouseProduct(Product product){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1065,6 +1075,11 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Updates the given product in the products in machines table.
+	 * @param product - the product to update
+	 * @return true if the update was successful, false otherwise
+	 */
 	public boolean updateMachineProduct(Product product) {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1085,6 +1100,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * Adds a new product to the products table.
+	 * @param product - the product to add
+	 * @return true if the product was added successfully, false otherwise
+	 */
 	public boolean addNewProductToProductTable(Product product) {
 		String query = "INSERT INTO " +  this.dataBasename + ".products(productid, productname, price, description, type) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
@@ -1105,6 +1126,11 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Adds a new product to the warehouse table.
+	 * @param product - the product to add
+	 * @return true if the product was added successfully, false otherwise
+	 */
 	public boolean addNewProductToWarehouse(Product product) {
 		String query = "INSERT INTO " +  this.dataBasename + ".warehouse(productid, discount, amount, criticalamount) VALUES(?, ?, ?, ?)";
 		PreparedStatement stmt;
@@ -1124,6 +1150,13 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * Checks if a given product exists in a given table.
+	 * @param product - the product to check for
+	 * @param whereToCheck - the table to check in
+	 * @return true if the product exists in the table, false otherwise
+	 */
 	public boolean checkProductExistsInGivenTable(Product product, String whereToCheck){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1156,6 +1189,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * Adds a new product to the productsinmachines table.
+	 * @param product - the product to add
+	 * @return true if the product was added successfully, false otherwise
+	 */
 	public boolean addNewProductToMachine(Product product) {
 		String query = "INSERT INTO " +  this.dataBasename + ".productsinmachines(productid, machineid, discount, amount, criticalamount) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
@@ -1177,6 +1216,11 @@ public class MysqlController {
 	}
 
 
+	/**
+	 * Generates a report of customer activity for a given month and year and stores it in the customerreport table.
+	 * @param month - the month to generate the report for
+	 * @param year - the year to generate the report for
+	 */
 	public void generateClientReport(String month, String year){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1208,6 +1252,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Retrieves a list of all employees in the operations department.
+	 * @return a list of all operations employees or null if no employees are found
+	 */
 	public ArrayList<User> getOperationsEmployees(){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1238,7 +1286,11 @@ public class MysqlController {
 	}
 
 
-
+	/**
+	 * Retrieves a client report for a given month and year.
+	 * @param monthAndYear - a list containing the month and year to retrieve the report for
+	 * @return the client report or null if no report is found
+	 */
 	public ClientReport getClientReport(ArrayList<String> monthAndYear){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1271,6 +1323,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * Updates the product amounts in the warehouse or productsinmachines table, depending on where the product is stored.
+	 * @param order - the order whose products' amounts need to be updated
+	 * @return true if the update was successful, false otherwise
+	 */
 	public boolean updateAmountsFromOrder(Order order) {
 		PreparedStatement stmt;
 		String query;
@@ -1299,6 +1357,9 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Check the amount of products in the machine, if products are lower than the critical amount, it will add order to refill
+	 */
 	public void checkAmount(){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1325,7 +1386,12 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Check if exists order to refill for a specific product in a specific machine
+	 * @param machineID - machine id
+	 * @param productID - product id
+	 * @return true if exists, false otherwise
+	 */
 	private boolean refillOrderExists(String machineID, String productID){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1348,7 +1414,11 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Add lower than critical amount times for a specific product in a specific machine
+	 * @param machineId - machine id
+	 * @param productId - product id
+	 */
 	private boolean addLowerThanCriticalAmountTimes(String machineId, String productId){
 		PreparedStatement stmt;
 		String query;
@@ -1367,6 +1437,14 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * adds a refill order to the database
+	 * @param productID - the product id of the product that needs to be refilled
+	 * @param machineID - the id of the machine that the product belongs to
+	 * @param amount - the amount of the product that needs to be refilled
+	 * @param productName - the name of the product that needs to be refilled
+	 */
 	private void addOrderToDatabase(String productID, String machineID, int amount, String productName){
 		LocalDate currentDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy.MM.dd");
@@ -1395,6 +1473,10 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * retrieves all the refill orders from the database
+	 * @return - an ArrayList of RefillOrder objects
+	 */
 	public ArrayList<RefillOrder> getRefillOrders(){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1434,7 +1516,11 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * updateMachineAmount - updates the amount of a product in a machine
+	 * @param productData - an ArrayList that contains the machine id, product id, and new amount of the product
+	 * @return - true if update was successful, false otherwise
+	 */
 	public boolean updateMachineAmount(ArrayList<String> productData) {
 		PreparedStatement stmt;
 		String query;
@@ -1454,7 +1540,11 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Deletes a refill order from the 'refilrequests' table in the database.
+	 * @param productData An ArrayList containing the machineID and productID of the order that needs to be deleted
+	 * @return true if the order was successfully deleted, false otherwise
+	 */
 	public boolean completeOrderRefil(ArrayList<String> productData) {
 		PreparedStatement stmt;
 		String query;
@@ -1473,6 +1563,11 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Assigns an employee to a refill order.
+	 * @param order The RefillOrder object representing the order that needs to be updated with an assigned employee
+	 * @return true if the employee was successfully assigned to the order, false otherwise
+	 */
 	public boolean assignEmployeeToRefillOrder(RefillOrder order) {
 		PreparedStatement stmt;
 		String query;
@@ -1491,6 +1586,11 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Retrieves customer data from the 'customer' table in the database.
+	 * @param customerID The ID of the customer whose data needs to be retrieved
+	 * @return A Customer object representing the customer data or null if the customer was not found
+	 */
 	public Customer getCustomerData(String customerID) {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1519,6 +1619,11 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Verify if credit card number and customer ID match in the 'customer' table in the database.
+	 * @param creditCardAndID An ArrayList containing the customer ID and credit card number that needs to be verified
+	 * @return true if the credit card number and customer ID match, false otherwise
+	 */
 	public boolean verifyCreditCard(ArrayList<String> creditCardAndID) {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1542,7 +1647,11 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Check if a customer is a subscriber in the 'customer' table in the database.
+	 * @param customerID The ID of the customer whose subscriber status needs to be checked
+	 * @return true if the customer is a subscriber, false otherwise
+	 */
 	public boolean checkIfCustomerIsSub(String customerID) {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1565,6 +1674,11 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * This method retrieves all customer and subscriber users from the database.
+	 * @return An ArrayList of User objects if the query is successful, null otherwise
+	 */
 	public ArrayList<User> getAllCustomerUsers() {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1596,6 +1710,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * This method updates the statuses of the users provided in the data parameter
+	 * @param data An ArrayList of User objects to be updated
+	 * @return true if the update is successful, false otherwise
+	 */
 	public boolean updateUsersStatuses(ArrayList<User> data) {
 		PreparedStatement stmt;
 		String query;
@@ -1618,7 +1738,10 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * This method retrieves all deals and discounts from the database.
+	 * @return An ArrayList of Deals objects if the query is successful, null otherwise
+	 */
 	public ArrayList<Deals> getAllDiscounts() { // return discount
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1654,6 +1777,11 @@ public class MysqlController {
 
 	}
 
+	/**
+	 * This method updates a deal in the database
+	 * @param dealToUpdate A Deals object representing the deal to be updated
+	 * @return true if the update is successful, false otherwise
+	 */
 	public boolean updateDeal(Deals dealToUpdate) {
 		PreparedStatement stmt;
 		String query;
@@ -1709,7 +1837,11 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Updates the order status for a specific order
+	 * @param orderIdAndStatus An ArrayList containing the order id and the new status
+	 * @return true if the update was successful, false otherwise
+	 */
 	public boolean updateOrderStatus(ArrayList<String> orderIdAndStatus) {
 		PreparedStatement stmt;
 		String query;
@@ -1729,7 +1861,13 @@ public class MysqlController {
 			return false;
 		}
 	}
-	
+
+
+	/**
+	 * Updates the order status and the estimated delivery date, confirmation date for a specific order
+	 * @param orderIdStatusAndDates An ArrayList containing the order id, the new status, the estimated delivery date, and the confirmation date
+	 * @return true if the update was successful, false otherwise
+	 */
 	public boolean updateOrderStatusAndDates(ArrayList<String> orderIdStatusAndDates) {
 		PreparedStatement stmt;
 		String query;
@@ -1752,7 +1890,10 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Applies all active deals to the products in machines table by updating the discount column
+	 * @return true if all discounts were applied successfully, false otherwise
+	 */
 	public boolean applyDeals() {
 		PreparedStatement stmt;
 		String query;
@@ -1808,7 +1949,12 @@ public class MysqlController {
 		return true;
 	}
 
-
+	/**
+	 * @param type
+	 * @param discount
+	 * m@return boolean
+	 * This method is used to apply warehouse deals on products by type with the given discount
+	 */
 	public boolean applyWarehouseDeals(String type, float discount){
 		PreparedStatement stmt;
 		String query;
@@ -1837,6 +1983,10 @@ public class MysqlController {
 	}
 
 
+	/**
+	 * @return ArrayList<Customer>
+	 * This method is used to get all customer data from the database
+	 */
 	public ArrayList<Customer> getAllCustomerData() {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1872,6 +2022,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * @param idAndStatus
+	 * @return boolean
+	 * This method is used to update customer subscriber status and subscriber number for the given customer id
+	 */
 	public boolean updateCustomerSubscriber(ArrayList<String> idAndStatus) {
 		PreparedStatement stmt;
 		String query;
@@ -1917,7 +2073,14 @@ public class MysqlController {
 		}
 	}
 
-	private boolean updateDepartment(String id, String status){
+
+	/**
+	 * Update department of user with given id and status.
+	 * @param id the id of user
+	 * @param status the status of user
+	 * @return true if update successfull, false otherwise
+	 */
+ 	private boolean updateDepartment(String id, String status){
 		PreparedStatement stmt;
 		String query;
 		query = "UPDATE " + this.dataBasename + ".users SET department = ? WHERE id = ?;";
@@ -1948,6 +2111,11 @@ public class MysqlController {
 		}
 	}
 
+	/**
+	 * Get department of user with given id.
+	 * @param id the id of user
+	 * @return department of user if exists, null otherwise
+	 */
 	private String getDepartment(String id){
 		PreparedStatement stmt;
 		ResultSet res;
@@ -1972,6 +2140,11 @@ public class MysqlController {
 	}
 
 
+	/**
+	 * Get all orders by area.
+	 * @param area the area to filter orders by
+	 * @return list of orders if exists, null otherwise
+	 */
 	public ArrayList<Order> getOrderByArea(String area) {
 		ArrayList<Order> orderList = new ArrayList<>();
 
@@ -2023,6 +2196,12 @@ public class MysqlController {
 		}
 	}
 
+
+	/**
+	 * Retrieves all the orders made by a specific customer by their ID.
+	 * @param customerID the ID of the customer whose orders are to be retrieved
+	 * @return an ArrayList of Order objects representing the orders made by the customer, or null if no orders were found or there was an error
+	 */
 	public ArrayList<Order> getOrdersByCustomerID(String customerID) {
 		PreparedStatement stmt;
 		ResultSet res;
@@ -2066,6 +2245,9 @@ public class MysqlController {
 
 	}
 
+	/**
+	 * Disconnects all currently logged-in clients by setting their 'isLoggedIn' status to 0 in the database.
+	 */
 	public void disconnectClients(){
 		PreparedStatement stmt;
 		String query;
@@ -2079,7 +2261,10 @@ public class MysqlController {
 		}
 	}
 
-
+	/**
+	 * Imports data from an external CSV file into the database. Specifically, it imports data for the 'users' table.
+	 * @return a string indicating the status of the import process. A value of "0" means the import was successful, a value of "1" means there was an error reading the file.
+	 */
 	public String importMechanism(){
 		Scanner sc = null;
 		String query = "INSERT INTO " +  this.dataBasename + ".users(username, password, firstname, lastname, id, phonenumber, emailaddress, isloggedin, userstatus, department) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -2166,7 +2351,13 @@ public class MysqlController {
 	}
 
 
-
+	/**
+	 * This method generates various reports for the current month and year.
+	 * It generates an order report, a client report, and a monthly inventory report for each machine in each area.
+	 * The order report is generated by passing the current month and year as arguments to the 'generateOrderReport' method.
+	 * The client report is generated by passing the current month and year as arguments to the 'generateClientReport' method.
+	 * The monthly inventory report is generated by looping through all the machine areas, getting the machine IDs for each area, and then passing the area, machine ID, current month, and year as arguments to the 'generateMonthlyInventoryReport' method.
+	 */
 	public void generateReports(){
 		LocalDate date = LocalDate.now();
 		int year = date.getYear();
@@ -2204,139 +2395,3 @@ public class MysqlController {
 		}
 	}
 }
-
-
-// get ALL PRODUCTS that need a refil order
-//	public ArrayList<Product> getRefillOrderProducts(){
-//		PreparedStatement stmt;
-//		ResultSet res;
-//		String query;
-//		ArrayList<Product> productList = new ArrayList<>();
-//		query = "SELECT * FROM " + this.dataBasename + ".products JOIN "
-//				+ this.dataBasename + ".productsinmachines ON products.productid = productsinmachines.productid JOIN "
-//				+ this.dataBasename + ".refilrequests ON productsinmachines.machineid = refilrequests.machineid AND products.productid = refilrequests.productid " +
-//				"WHERE productsinmachines.machineid = refilrequests.machineid AND products.productid = refilrequests.productid;";
-//		int amount = 0;
-//		int alertAmount = 0;
-//
-//		try{
-//			stmt = connection.prepareStatement(query);
-//			res = stmt.executeQuery();
-//
-//			while (res.next()){
-//				Product product = new Product();
-//				product.setProductId(res.getString("productid"));
-//				product.setName(res.getString("name"));
-//				product.setPrice(res.getFloat("price"));
-//				product.setDescription(res.getString("description"));
-//				product.setType(res.getString("type"));
-//				product.setMachineID(res.getString("machineid"));
-//				product.setAmount(res.getInt("amount"));
-//
-//				productList.add(product);
-//			}
-//
-//			if (productList.isEmpty())
-//				return null;
-//			return productList;
-//		}catch (SQLException sqlException){
-//			sqlException.printStackTrace();
-//			return null;
-//		}
-//	}
-
-// SCRAP DEAL UPDATE METHOD
-//	public boolean applyDeals() {
-//		ArrayList<Deals> dealList = getAllDiscounts();
-//		float maxUae = 0;
-//		float maxNorth = 0;
-//		float maxSouth = 0;
-//		float maxAll = 0;
-//
-//		for (Deals deal : dealList){
-//			switch (deal.getAreaS()){
-//				case "uae":
-//					if (maxUae < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-//						maxUae = deal.getDiscount();
-//					break;
-//
-//				case "north":
-//					if (maxNorth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-//						maxNorth = deal.getDiscount();
-//					break;
-//
-//				case "south":
-//					if (maxSouth < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-//						maxSouth = deal.getDiscount();
-//					break;
-//
-//				case "all":
-//					if (maxAll < deal.getDiscount() && deal.getActive().equals("active") && !deal.getDealID().equals("005"))
-//						maxAll = deal.getDiscount();
-//					break;
-//
-//			}
-//		}
-//
-//		ArrayList<String> uaeMachineIDs = getMachineIds("uae");
-//		ArrayList<String> northMachineIDs = getMachineIds("north");
-//		ArrayList<String> southMachineIDs = getMachineIds("south");
-//
-//
-//		// THIS IS THE QUERY I NEED:
-//		// UPDATE productsinmachines
-//		//SET discount = (SELECT discount FROM deals WHERE deals.id = productsinmachines.dealid)
-//		//WHERE machineid IN (SELECT machineid FROM machines WHERE machines.machinelocation = 'south') AND productid IN (SELECT productid FROM products WHERE products.type = 'SNACK')
-//
-//		PreparedStatement stmt;
-//		String query;
-//		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ? WHERE machineid = ?;";
-//
-//		for (String str :uaeMachineIDs){
-//			try{
-//				stmt = connection.prepareStatement(query);
-//				stmt.setFloat(1, maxUae);
-//				stmt.setString(2,str);
-//				stmt.executeUpdate();
-//			}catch (SQLException sqlException){
-//				sqlException.printStackTrace();
-//				return false;
-//			}
-//		}
-//
-//		for (String str :northMachineIDs){
-//			try{
-//				stmt = connection.prepareStatement(query);
-//				stmt.setFloat(1, maxNorth);
-//				stmt.setString(2,str);
-//				stmt.executeUpdate();
-//			}catch (SQLException sqlException){
-//				sqlException.printStackTrace();
-//				return false;
-//			}
-//		}
-//
-//		for (String str :southMachineIDs){
-//			try{
-//				stmt = connection.prepareStatement(query);
-//				stmt.setFloat(1, maxSouth);
-//				stmt.setString(2,str);
-//				stmt.executeUpdate();
-//			}catch (SQLException sqlException){
-//				sqlException.printStackTrace();
-//				return false;
-//			}
-//		}
-//		if (maxAll == 0)
-//			return true;
-//		query = "UPDATE " + this.dataBasename + ".productsinmachines SET discount = ?";
-//		try{
-//			stmt = connection.prepareStatement(query);
-//			stmt.setFloat(1, maxAll);
-//			stmt.executeUpdate();
-//		}catch (SQLException sqlException){
-//			sqlException.printStackTrace();
-//			return false;
-//		}
-//		return true;
-//	}

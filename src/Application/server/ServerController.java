@@ -6,14 +6,12 @@ import OCSF.ConnectionToClient;
 import Presentation.serverGUI.ServerUIController;
 import common.UserConnection;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * @author Lior Jigalo
@@ -29,8 +27,6 @@ public class ServerController extends AbstractServer {
     private TableColumn<UserConnection, String> connectionStatusColumn;
     private java.util.concurrent.Executors Executors;
     private final Executor executor = Executors.newFixedThreadPool(3);
-
-
 
 
     /**
@@ -58,7 +54,6 @@ public class ServerController extends AbstractServer {
     protected void serverStarted() {
       sqlController.turnOffSafeUpdate();
       sqlController.runGenerator();
-      System.out.println("Server listening for connections on port " + getPort());
     }
 
     /**

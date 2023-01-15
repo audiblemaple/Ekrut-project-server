@@ -418,8 +418,6 @@ public class MessageHandler {
                 sendMessageToClient(client, new Message(operations, MessageFromServer.OPERATIONS_EMPLOYEES_DATA_IMPORTED_SUCCESSFULLY));
                 break;
 
-
-
             default:
                 sendMessageToClient(client, new Message(null, MessageFromServer.UNKNOWN_TASK));
         }
