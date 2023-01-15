@@ -143,22 +143,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        String f = "no file";
-        if (file != null)
-            f = "file is present!";
-        return "Product{" +
-                "price=" + price +
-                ", discount=" + discount +
-                ", product name='" + productName + '\'' +
-                ", name='" + name + '\'' +
-                ", amount=" + amount +
-                ", description='" + description + '\'' +
-                ", type='" + type + '\'' +
-                ", productId='" + productId + '\'' +
-                ", criticalAmount=" + criticalAmount +
-                ", machineID='" + machineID + '\'' +
-                ", numOfTimesBelowCritical=" + numOfTimesBelowCritical +
-                ", file=" + f +
-                '}';
+        return "\n\t\tname: " + name +
+                " amount: " + amount + "\n\t\t";
     }
 }

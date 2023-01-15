@@ -98,14 +98,14 @@ public class RefillOrder implements Serializable {
 
     @Override
     public String toString() {
-        return "RefillOrder{" +
-                "orderID='" + orderID + '\'' +
-                ", ProductID='" + ProductID + '\'' +
-                ", MachineID='" + MachineID + '\'' +
-                ", creationDate='" + creationDate + '\'' +
-                ", amountAtRequest=" + amountAtRequest +
-                ", newAmount=" + newAmount +
-                ", assignedEmployee='" + assignedEmployee + '\'' +
-                '}';
+        return "\n\tRefillOrder:" + "\n" +
+                "\t\torderID='" + orderID + '\n' +
+                "\t\tProductID='" + ProductID + '\n' +
+                "\t\tMachineID='" + MachineID + '\n' +
+                "\t\tcreationDate='" + creationDate + '\n' +
+                "\t\tamountAtRequest=" + amountAtRequest + "\n"+
+                "\t\tnewAmount=" + newAmount + "\n" +
+                "\t\tassignedEmployee='" + assignedEmployee + '\n'
+                ;
     }
 }
