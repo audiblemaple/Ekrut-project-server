@@ -102,7 +102,8 @@ public class Message implements Serializable {
     public String toString() {
 
         if (task == null){
-            return "Message:\n\tData: " + data + "\n\tAnswer: " + answer;
+            // return "Message:\n\tData: " + data + "\n\tAnswer: " + answer;
+            return "\tAnswer: " + answer;
         }
         return "Message:\n\tData: " + data + "\n\ttask: " + task;
 

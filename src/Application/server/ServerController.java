@@ -12,6 +12,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author Lior Jigalo
@@ -25,6 +27,8 @@ public class ServerController extends AbstractServer {
     private TableColumn<UserConnection, String> ipColumn;
     private TableColumn<UserConnection, String> hostNameColumn;
     private TableColumn<UserConnection, String> connectionStatusColumn;
+    private java.util.concurrent.Executors Executors;
+    private final Executor executor = Executors.newFixedThreadPool(3);
 
 
 
@@ -104,15 +108,17 @@ public class ServerController extends AbstractServer {
      * This message handles the message from the client.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
-        if (msg instanceof String){
-            String message = (String)msg;
-            if(message.equals("disconnect")){
-                this.serverUI.removeClientConnection(client);
-                sendMessageToClient(client, "disconnected");
-                return;
+        executor.execute(() -> {
+            if (msg instanceof String){
+                String message = (String)msg;
+                if(message.equals("disconnect")){
+                    this.serverUI.removeClientConnection(client);
+                    sendMessageToClient(client, "disconnected");
+                    return;
+                }
             }
-        }
-        MessageHandler.handleMessage(msg, client);
+            MessageHandler.handleMessage(msg, client);
+        });
     }
 
     /**
@@ -129,6 +135,20 @@ public class ServerController extends AbstractServer {
         }
     }
 }
+
+
+// backup:
+//public void handleMessageFromClient(Object msg, ConnectionToClient client) {
+//    if (msg instanceof String){
+//        String message = (String)msg;
+//        if(message.equals("disconnect")){
+//            this.serverUI.removeClientConnection(client);
+//            sendMessageToClient(client, "disconnected");
+//            return;
+//        }
+//    }
+//    MessageHandler.handleMessage(msg, client);
+//}
 
 
 

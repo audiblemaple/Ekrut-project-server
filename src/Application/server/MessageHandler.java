@@ -431,6 +431,7 @@ public class MessageHandler {
      * This method sends a message to the client passed as a parameter.
      */
     private static void sendMessageToClient(ConnectionToClient client, Message message){
+        System.out.println(message);
         try {
             client.sendToClient(message);
         } catch (IOException e) {
