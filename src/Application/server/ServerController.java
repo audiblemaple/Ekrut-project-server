@@ -26,7 +26,7 @@ public class ServerController extends AbstractServer {
     private TableColumn<UserConnection, String> hostNameColumn;
     private TableColumn<UserConnection, String> connectionStatusColumn;
     private java.util.concurrent.Executors Executors;
-    private final Executor executor = Executors.newFixedThreadPool(3);
+    private final Executor executor = Executors.newFixedThreadPool(2);
 
 
     /**
@@ -90,24 +90,23 @@ public class ServerController extends AbstractServer {
      */
     // this method
     private void disconnectClient(ConnectionToClient client){
-
-        new Thread(() -> {
-            Platform.runLater(() -> this.serverUI.removeClientConnection(client));
-        }).start();
-//        this.serverUI.removeClientConnection(client);
+        this.serverUI.removeClientConnection(client);
     }
 
     /**
-     * @param msg    the message sent.
-     * @param client the connection connected to the client that sent the message.
-     * This message handles the message from the client.
+     * This method handles a message received from a client.
+     * The message is passed to an executor for execution.
+     * If the message is a String and is "disconnect", the client is removed from the server UI and a "disconnected" message is sent to the client.
+     * Otherwise, the message is passed to the handleMessage method of the MessageHandler class for further handling.
+     * @param msg The message received from the client. Can be of any type.
+     * @param client The connection to the client that sent the message.
      */
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         executor.execute(() -> {
             if (msg instanceof String){
                 String message = (String)msg;
                 if(message.equals("disconnect")){
-                    this.serverUI.removeClientConnection(client);
+                    Platform.runLater(() -> this.serverUI.removeClientConnection(client));
                     sendMessageToClient(client, "disconnected");
                     return;
                 }
