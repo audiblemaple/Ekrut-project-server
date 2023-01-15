@@ -2337,7 +2337,6 @@ public class MysqlController {
 				}
 			}
 			catch (SQLIntegrityConstraintViolationException ignored){
-				System.out.println("exists\n");
 				existedCount += 1;
 			}
 			catch (SQLException e){

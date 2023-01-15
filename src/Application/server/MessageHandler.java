@@ -404,7 +404,7 @@ public class MessageHandler {
                         break;
 
                     default:
-                        reply = "Import successful \nExisted users: " + insertResult.split(",")[1] + "\nNew users: " + insertResult.split(",")[0];
+                        reply = "Import successful: \nExisted users: " + insertResult.split(",")[1] + "\nNew users: " + insertResult.split(",")[0];
                 }
                 sendMessageToClient(client, new Message(reply, MessageFromServer.IMPORT_USERS_REPLY));
                 break;
