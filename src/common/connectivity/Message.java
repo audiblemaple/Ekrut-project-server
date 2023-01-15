@@ -100,7 +100,14 @@ public class Message implements Serializable {
      */
     @Override
     public String toString() {
-        return "Message [data=" + data + ", task=" + task + ", answer=" + answer + "]";
+
+        if (task == null){
+            return "Message:\n\tData: " + data + "\n\tAnswer: " + answer;
+        }
+        return "Message:\n\tData: " + data + "\n\ttask: " + task;
+
+
+        //return "Message [data=" + data + ", task=" + task + ", answer=" + answer + "]";
     }
 
 }
