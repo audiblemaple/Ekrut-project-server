@@ -4,6 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * The OrderReport class is a data structure used to store information about the orders made from a specific vending machine.
+ * It contains information such as the machine ID, location, number of orders made, and the month and year of the orders.
+ * This class implements the Serializable interface, which allows it to be written to a file or sent over a network.
+ * @author Ravid
+ */
 public class OrderReport implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -13,9 +19,15 @@ public class OrderReport implements Serializable {
     String month;
     String year;
 
+    /**
+     * Default constructor for the OrderReport class.
+     */ 
     public OrderReport() {
     }
 
+    /*
+     * Getters and setters for the class variables
+    */
     public String getMachineid() {
         return machineid;
     }

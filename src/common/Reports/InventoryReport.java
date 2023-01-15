@@ -4,6 +4,11 @@ import common.orders.Product;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * The InventoryReport class contains details about an inventory report.
+ * This includes information such as the report ID, area, machine ID, products, month, year, and total value.
+ * @author Ben
+ */
 public class InventoryReport implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -15,9 +20,22 @@ public class InventoryReport implements Serializable {
     String year;
     float totalValue;
 
+    /**
+     * The default constructor for the InventoryReport class.
+     */
     public InventoryReport() {
     }
 
+    /**
+     * A constructor for the InventoryReport class that takes in all the fields as arguments.
+     * @param reportID the unique ID of the inventory report
+     * @param area the area the report belongs to
+     * @param machineID the machine ID the report belongs to
+     * @param products the products the report contains
+     * @param month the month the report was generated
+     * @param year the year the report was generated
+     * @param totalValue the total value of the products in the report
+     */
     public InventoryReport(String reportID, String area, String machineID, ArrayList<Product> products, String month, String year, float totalValue) {
         this.reportID = reportID;
         this.area = area;
@@ -28,6 +46,9 @@ public class InventoryReport implements Serializable {
         this.totalValue = totalValue;
     }
 
+    /*
+     * Getters and setters for the class variables
+    */
     public String getReportID() {
         return reportID;
     }

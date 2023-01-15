@@ -3,6 +3,11 @@ package common.orders;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * The Order class is used to store information about an order. It implements the Serializable interface
+ * to make it possible to save the object's state.
+ * @author Lior & Ron & Nitsan
+ */
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -20,9 +25,29 @@ public class Order implements Serializable {
     private String paidWith;
     private String address;
 
+    /**
+     * The default constructor for the Order class. 
+     * It sets all the variables to null.
+     */
     public Order() {
     }
 
+    /**
+     * A constructor for the Order class that takes in the order's ID, overall price, products, machine ID, order date, estimated delivery time, confirmation date, order status, customer ID, supply method, paid with, and address as arguments.
+     * 
+     * @param orderID The unique identifier for the order.
+     * @param overallPrice The overall price of the order.
+     * @param products The products included in the order.
+     * @param machineID The machine ID that the order was placed at.
+     * @param orderDate The date the order was placed.
+     * @param estimatedDeliveryTime The estimated delivery time for the order.
+     * @param confirmationDate The date the order was confirmed.
+     * @param orderStatus The current status of the order.
+     * @param customerID The ID of the customer that placed the order.
+     * @param supplyMethod The method used to supply the order (e.g. delivery or pickup).
+     * @param paidWith The method used to pay for the order (e.g. credit card or cash).
+     * @param address The delivery address for the order.
+     */
     public Order(String orderID, float overallPrice, ArrayList<Product> products, String machineID, String orderDate, String estimatedDeliveryTime, String confirmationDate, String orderStatus, String customerID, String supplyMethod, String paidWith, String address) {
         this.orderID = orderID;
         this.overallPrice = overallPrice;
