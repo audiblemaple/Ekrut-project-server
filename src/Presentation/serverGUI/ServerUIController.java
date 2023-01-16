@@ -185,13 +185,10 @@ public class ServerUIController extends Application implements Initializable {
            Platform.runLater(() -> connectionList.refresh());
         }, 0, 500, TimeUnit.MILLISECONDS);
 
-
-        observableUserConnections.addListener(new ListChangeListener<UserConnection>() {
-            @Override
-            public void onChanged(Change<? extends UserConnection> c) {
-                connectionList.refresh();
-            }
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            // catch all exceptions
         });
+
     }
 
     /**
