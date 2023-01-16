@@ -154,9 +154,15 @@ public class User implements Serializable{
 	// CLASS TO-STRING ***********************************************
 	@Override
 	public String toString(){
-		return String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s\n"
-				,username, password, firstname, lastname, id, phonenumber,
-				emailaddress, isLoggedIn, department);
+		String retStr = "";
+		if (firstname != null)
+			retStr += firstname + " ";
+		if (lastname != null)
+			retStr += lastname + " ";
+		if (department != null)
+			retStr += "-" + department;
+
+		return "\n\t\t\t" + retStr;
 	}
 	//  **************************************************************
 }

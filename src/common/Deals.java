@@ -192,15 +192,9 @@ public class Deals implements Serializable {
 
     @Override
     public String toString() {
-        return "Deals{" +
-                "dealID='" + dealID + '\'' +
-                ", DealName='" + DealName + '\'' +
-                ", Discount=" + Discount +
-                ", Description='" + Description + '\'' +
-                ", Type='" + Type + '\'' +
-                ", Area='" + Area + '\'' +
-                ", StatusString='" + StatusString + '\'' +
-                ", activation status= " + active +
-                '}';
+        return "\n\t\tDeal: " +
+                "\n\t\t\tdealID='" + dealID +
+                "\n\t\t\tDealName='" + DealName +
+                "\n\t\t\tArea='" + Area;
     }
 }

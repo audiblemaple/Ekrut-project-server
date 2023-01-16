@@ -1107,7 +1107,7 @@ public class MysqlController {
 	 * @return true if the product was added successfully, false otherwise
 	 */
 	public boolean addNewProductToProductTable(Product product) {
-		String query = "INSERT INTO " +  this.dataBasename + ".products(productid, productname, price, description, type) VALUES(?, ?, ?, ?, ?)";
+		String query = "INSERT INTO " +  this.dataBasename + ".products(productid, productname, price, description, type, productname) VALUES(?, ?, ?, ?, ?, ?)";
 		PreparedStatement stmt;
 		try{
 			stmt = connection.prepareStatement(query);
@@ -1116,6 +1116,7 @@ public class MysqlController {
 			stmt.setFloat(3,product.getPrice());
 			stmt.setString(4,product.getDescription());
 			stmt.setString(5,product.getType());
+			stmt.setString(5,product.getProductName());
 
 			stmt.executeUpdate();
 			return checkProductExistsInGivenTable(product, "");

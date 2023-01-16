@@ -17,29 +17,30 @@ public class Customer extends User implements Serializable{
 	private String creditCardNumber;
 	private boolean isSub;
 	private boolean	isFirstBuyAsSub;
-
 	private int subscriberNumber;
 	//****************************************************************
 
 
-    /**
-     * A constructor for the Customer class that takes in the customer's username, password, first name, last name, id, phone number, email address, logged in status, department, status, and credit card number as arguments.
-     * 
-     * @param username The username of the customer.
-     * @param password The password of the customer.
-     * @param firstname The first name of the customer.
-     * @param lastname The last name of the customer.
-     * @param id The id of the customer.
-     * @param phonenumber The phone number of the customer.
-     * @param emailaddress The email address of the customer.
-     * @param isLoggedIn The logged in status of the customer.
-     * @param department The department of the customer.
-     * @param status The status of the customer.
-     * @param creditCardNumber The credit card number of the customer.
-     */
+
 	public Customer() {
 		super();
 	}
+
+
+	/**
+	 * A constructor for the Customer class that takes in the customer's username, password, first name, last name, id, phone number, email address, logged in status, department, status, and credit card number as arguments.
+	 * @param username The username of the customer.
+	 * @param password The password of the customer.
+	 * @param firstname The first name of the customer.
+	 * @param lastname The last name of the customer.
+	 * @param id The id of the customer.
+	 * @param phonenumber The phone number of the customer.
+	 * @param emailaddress The email address of the customer.
+	 * @param isLoggedIn The logged in status of the customer.
+	 * @param department The department of the customer.
+	 * @param status The status of the customer.
+	 * @param creditCardNumber The credit card number of the customer.
+	 */
 	public Customer(String username, String password, String firstname,String lastname, String id,
 				String phonenumber, String emailaddress, String isLoggedIn, String department, String status, String creditCardNumber) {
 		super(username, password, firstname,lastname, id, phonenumber, emailaddress, isLoggedIn, department, status);
@@ -84,12 +85,7 @@ public class Customer extends User implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Customer{" +
-				"creditCardNumber='" + creditCardNumber + '\'' +
-				", isSub=" + isSub +
-				", isFirstBuyAsSub=" + isFirstBuyAsSub +
-				", subscriberNumber=" + subscriberNumber +
-				'}';
+		return "\n\t\t\tCustomer: " + subscriberNumber;
 	}
 	//  **************************************************************
 }

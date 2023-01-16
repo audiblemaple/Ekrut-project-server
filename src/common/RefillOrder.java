@@ -102,10 +102,6 @@ public class RefillOrder implements Serializable {
                 "\t\torderID='" + orderID + '\n' +
                 "\t\tProductID='" + ProductID + '\n' +
                 "\t\tMachineID='" + MachineID + '\n' +
-                "\t\tcreationDate='" + creationDate + '\n' +
-                "\t\tamountAtRequest=" + amountAtRequest + "\n"+
-                "\t\tnewAmount=" + newAmount + "\n" +
-                "\t\tassignedEmployee='" + assignedEmployee + '\n'
-                ;
+                "\t\tassignedEmployee='" + assignedEmployee + '\n';
     }
 }

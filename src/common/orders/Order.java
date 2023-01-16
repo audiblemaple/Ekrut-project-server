@@ -161,20 +161,11 @@ public class Order implements Serializable {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "orderID='" + orderID + '\'' +
-                ", overallPrice=" + overallPrice +
-                ", products=" + products +
-                ", machineID='" + machineID + '\'' +
-                ", orderDate='" + orderDate + '\'' +
-                ", estimatedDeliveryTime='" + estimatedDeliveryTime + '\'' +
-                ", confirmationDate='" + confirmationDate + '\'' +
-                ", orderStatus='" + orderStatus + '\'' +
-                ", customerID='" + customerID + '\'' +
-                ", supplyMethod='" + supplyMethod + '\'' +
-                ", paidWith='" + paidWith + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return "\n\t\tOrder: " +
+                "\n\t\t\torderID='" + orderID + '\'' +
+                "\n\t\t\toverallPrice=" + overallPrice +
+                "\n\t\t\tmachineID='" + machineID + '\'' +
+                "\n\t\t\tcustomerID='" + customerID + '\'';
     }
 
     public String getArea() {
