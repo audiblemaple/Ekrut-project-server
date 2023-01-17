@@ -385,7 +385,7 @@ public class MysqlController {
      * It retrieves the product information from the 'products' table and warehouse table and join them by productid and creates a Product object for each row retrieved.
      * It sets the product's price, discount, name, amount, productname, description, type, productid and critical amount.
      * It also retrieves the image of the product from the images directory and sets it to the product object.
-     * @return ArrayList<Product> A list of Product objects representing the products in the warehouse
+     * @return ArrayList of Products A list of Product objects representing the products in the warehouse
      */
 	public ArrayList<Product> getWarehouseProducts(){
 		PreparedStatement stmt;
@@ -549,11 +549,9 @@ public class MysqlController {
 	}
 
     /**
-
      This method adds a new customer to the customer table in the database.
      @param user A {@link Customer} object representing the customer to be added to the database.
      @return A boolean value indicating whether the addition was successful or not.
-     @throws SQLException if a database access error occurs or the SQL statement is not valid.
      */
 	public boolean addCustomer(Customer user) {
 		String query = "INSERT INTO " +  this.dataBasename + ".customer(customerid, creditcardnumber) VALUES(?, ?)";
@@ -753,6 +751,7 @@ public class MysqlController {
 	/**
 	 * @return Arraylist of all machine ids.
 	 * This method gets all machine ids from machines table.
+	 * @param location area of machines to get ids from
 	 */
 	public ArrayList<String> getMachineIds(String location){
 		ArrayList<String> machines = new ArrayList<String>();
@@ -789,7 +788,6 @@ public class MysqlController {
 	/**
 	 Returns a list of all distinct machine locations stored in the database.
 	 @return an ArrayList of Strings representing the distinct machine locations. If no locations are found, returns null.
-	 @throws SQLException if a database error occurs while trying to retrieve the locations.
 	 */
 	public ArrayList<String> getAllMachineLocations() {
 		ArrayList<String> locations = new ArrayList<String>();
@@ -1951,9 +1949,9 @@ public class MysqlController {
 	}
 
 	/**
-	 * @param type
-	 * @param discount
-	 * m@return boolean
+	 * @param type type of product to apply deal for
+	 * @param discount discount value to apply
+	 * @return boolean
 	 * This method is used to apply warehouse deals on products by type with the given discount
 	 */
 	public boolean applyWarehouseDeals(String type, float discount){
@@ -1985,7 +1983,7 @@ public class MysqlController {
 
 
 	/**
-	 * @return ArrayList<Customer>
+	 * @return ArrayList of Customers
 	 * This method is used to get all customer data from the database
 	 */
 	public ArrayList<Customer> getAllCustomerData() {
@@ -2025,7 +2023,7 @@ public class MysqlController {
 
 
 	/**
-	 * @param idAndStatus
+	 * @param idAndStatus arraylist that contains id and status to get the customer and update its fields
 	 * @return boolean
 	 * This method is used to update customer subscriber status and subscriber number for the given customer id
 	 */

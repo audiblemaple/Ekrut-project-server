@@ -25,6 +25,7 @@ public class UserConnection {
     /**
      * A set of getter and setter methods for each variable of the UserConnection class, 
      * allowing for the retrieval and modification of the information stored in each connection.
+     * @return clients ip address
      */
     public String getClientIP() {
         return clientIP;

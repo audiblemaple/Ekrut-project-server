@@ -18,10 +18,10 @@ public class ServerUI extends Application {
 
     // starting the server
     /**
-     * @param IP
-     * @param name
-     * @param username
-     * @param password
+     * @param IP database ip address
+     * @param name schema name in database
+     * @param username database username
+     * @param password database password
      * @return responses from database connection initialization
      */
     public static String startServer(String IP, String name, String username, String password){

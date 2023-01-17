@@ -10,7 +10,7 @@ import java.util.HashMap;
  * The ClientReport class is responsible for holding information about the client report.
  * It includes a hashmap that has a user as the key and the number of orders made by that user as the value.
  * The class also has a default constructor and getters and setters for the userOrderAmount field.
- * @author Ben & Ravid
+ * @author Ravid goldin and Ben ben baruch
  */
 public class ClientReport implements Serializable{
     private static final long serialVersionUID = 1L;

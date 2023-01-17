@@ -1,0 +1,8 @@
+Application.server
+OCSF
+Presentation.serverGUI
+common
+common.Reports
+common.connectivity
+common.orders
+misc

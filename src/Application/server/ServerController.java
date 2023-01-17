@@ -30,8 +30,8 @@ public class ServerController extends AbstractServer {
 
 
     /**
-    * @param port
-    * @param primaryStage
+    * @param port port number to listen for connections
+    * @param primaryStage primary stage to load on program startup
     * This is the constructor for the server controller.
     * It initializes the MysqlController and serverUIController.
     */

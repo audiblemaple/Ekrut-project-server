@@ -7,7 +7,7 @@ import java.io.Serializable;
  * interface to make it possible to save the object's state. 
  * It holds additional information about the customer such as credit card number, 
  * subscription status, first time buy as subscription status, and subscriber number.
- *  @author Ron & Nitsan
+ *  @author Ron shahar and Nitsan maman
  */
 public class Customer extends User implements Serializable{
 	

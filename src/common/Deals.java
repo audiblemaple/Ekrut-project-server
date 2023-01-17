@@ -9,7 +9,7 @@ import java.io.Serializable;
  * The Deals class represents a deal offered by the company. It holds information about the deal such as the 
  * deal ID, name, discount, description, type, area, status, start date, and end date.
  * It also implements Serializable interface to make it possible to save the object's state.
- * @author Ravid & Ben
+ * @author Ravid goldin and Ben ben baruch
  */
 public class Deals implements Serializable {
     private static final long serialVersionUID = 1L;

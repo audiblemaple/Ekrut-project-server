@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * The Order class is used to store information about an order. It implements the Serializable interface
  * to make it possible to save the object's state.
- * @author Lior & Ron & Nitsan
+ * @author Lior jigalo, Ron shachar and Nitsan maman
  */
 public class Order implements Serializable {
     private static final long serialVersionUID = 1L;

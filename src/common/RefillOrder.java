@@ -9,7 +9,7 @@ import java.io.Serializable;
  * and implements the Serializable interface to make it possible to save the object's state. It holds information 
  * about the order such as the order ID, product ID, machine ID, creation date, amount at request, new amount, 
  * assigned employee and product name.
- * @author Ravid & Ben
+ * @author Ravid goldin and Ben ben baruch
  */
 public class RefillOrder implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -31,6 +31,7 @@ public class RefillOrder implements Serializable {
     /**
      * A set of getter and setter methods for each variable of the RefillOrder class, 
      * allowing for the retrieval and modification of the information stored in each refill order.
+     * @return order id
      */
     public String getOrderID() {
         return orderID;

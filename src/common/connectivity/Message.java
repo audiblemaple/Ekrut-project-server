@@ -2,7 +2,7 @@ package common.connectivity;
 
 import java.io.Serializable;
 
-/** Represents a Message used for communication client <-> server.
+/** Represents a Message used for communication between client and server.
  * @author Lior
  */
 public class Message implements Serializable {
