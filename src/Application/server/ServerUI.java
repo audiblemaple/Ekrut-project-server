@@ -51,7 +51,7 @@ public class ServerUI extends Application {
     // shutting down the server
 
     /**
-     *This method closes connection to the database
+     *This method closes connection to the database.
      */
     public static void shutdownServer() {
         try{
