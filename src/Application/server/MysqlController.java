@@ -180,17 +180,22 @@ public class MysqlController {
 	public ArrayList <Product> productDetailsToListExpanded(String details){
 		String[] splitDetails = details.split(" , ");
 		ArrayList<Product> products = new ArrayList<Product>();
-		for (int i = 0; i < splitDetails.length; i+=6){
-			Product product = new Product();
-			product.setProductId(splitDetails[i]);
-			product.setDescription(splitDetails[i+1]);
-			product.setAmount(Integer.parseInt(splitDetails[i+2]));
-			product.setPrice(Float.parseFloat(splitDetails[i+3]));
-			product.setType(splitDetails[i+4]);
-			product.setNumOfTimesBelowCritical(Integer.parseInt(splitDetails[i+5]));
-			products.add(product);
+		try{
+			for (int i = 0; i < splitDetails.length; i+=6){
+				Product product = new Product();
+				product.setProductId(splitDetails[i]);
+				product.setDescription(splitDetails[i+1]);
+				product.setAmount(Integer.parseInt(splitDetails[i+2]));
+				product.setPrice(Float.parseFloat(splitDetails[i+3]));
+				product.setType(splitDetails[i+4]);
+				product.setNumOfTimesBelowCritical(Integer.parseInt(splitDetails[i+5]));
+				products.add(product);
+			}
+			return products;
 		}
-		return products;
+		catch (IndexOutOfBoundsException e){
+			return null;
+		}
 	}
 
 
