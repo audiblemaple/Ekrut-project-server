@@ -1,5 +1,6 @@
 package Application.server;
 
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import common.Deals;
 import common.RefillOrder;
 import common.Reports.ClientReport;
@@ -200,7 +201,6 @@ public class MysqlController {
 
 
     /**
-
      * Generates a monthly inventory report for a specific machine and area, and stores it in the database.
      * @param areaMachineMonthYear an ArrayList of Strings containing the area, machine ID, month, and year for the report
      * @return true if the report was successfully generated and stored in the database, false otherwise
@@ -253,12 +253,14 @@ public class MysqlController {
 		catch (SQLIntegrityConstraintViolationException ignored){
 			return true;
 		}
+		catch (MysqlDataTruncation ignored){
+			return false;
+		}
 		catch (SQLException e){
 			e.printStackTrace();
 			return false;
 		}
 	}
-
 
 
     /**
@@ -1004,7 +1006,7 @@ public class MysqlController {
 	}
 
 
-    /**
+	/**
      * method will retrieve order reports for a given month and year from the orderreports table.
      * @param monthAndYear list containing the month and year to be used in the query
      * @return ArrayList of OrderReport object containing data for each report, or null if no data is found
@@ -2373,7 +2375,6 @@ public class MysqlController {
 		else monthStr = month + "";
 
 		yearStr = year + "";
-
 
 		ArrayList<String> data = new ArrayList<>();
 

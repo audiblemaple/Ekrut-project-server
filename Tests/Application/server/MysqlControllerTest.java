@@ -1,11 +1,13 @@
 package Application.server;
 
+import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 import common.Reports.InventoryReport;
 import common.connectivity.User;
 import common.orders.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MysqlControllerTest {
     MysqlController mysqlController;
-
+    String tooLongString;
+    String northArea = "north";
+    String machineID = "NOR1";
+    String month = "01";
+    String year = "2023";
+    String nullParam = null;
 
     // set up method
     @BeforeEach
@@ -25,19 +32,75 @@ class MysqlControllerTest {
         mysqlController.setDataBaseName("ekrutdatabase");
         mysqlController.connectDataBase();
 
+        northArea = "north";
+        machineID = "NOR1";
+        month = "01";
+        year = "2023";
+
+        tooLongString = "this string is too long to be updated in the database";
     }
+
+
+    // tested functionality: generating a report that is not in the database
+    // input: ArrayList that contains northArea, machineID, month, year
+    // expected result: true, report added successfully
+    @Test
+    void testGenerateValidMonthlyInventoryReport(){
+        // add new report
+        ArrayList<String> data = new ArrayList<>();
+        data.add(northArea);
+        data.add(machineID);
+        data.add(month);
+        data.add(year);
+        assertTrue(mysqlController.generateMonthlyInventoryReport(data));
+
+        // check report is added
+        data.clear();
+        data.add(month);
+        data.add(year);
+        data.add(machineID);
+        assertNotNull(mysqlController.getMonthlyInventoryReport(data));
+    }
+
+
+    // tested functionality: trying to generate a report that is already in the database
+    // input: ArrayList that contains northArea, machineID, month, year (same as above)
+    // expected result: true, report already exists, and we don't need to do anything
+    @Test
+    void testGenerateValidMonthlyInventoryReportWhenReportAlreadyExistsCatchesSQLIntegrityConstraintViolationException(){
+        ArrayList<String> data = new ArrayList<>();
+        data.add(northArea);
+        data.add(machineID);
+        data.add(month);
+        data.add(year);
+        assertTrue(mysqlController.generateMonthlyInventoryReport(data));
+    }
+
+    // tested functionality: trying to write a value that is too long for the database column
+    // input: ArrayList that contains tooLongString, machineID, month, year
+    // expected result: false, cannot write data that is too long for its cell
+    @Test
+    void testGenerateValidMonthlyInventoryReportCatchesMysqlDataTruncation(){
+        ArrayList<String> data = new ArrayList<>();
+        data.add(tooLongString);
+        data.add(machineID);
+        data.add(month);
+        data.add(year);
+        assertFalse(mysqlController.generateMonthlyInventoryReport(data));
+    }
+
+
 
     // tested functionality: querying an existing report from the database
     // input: valid input, a list of strings, month, year, machine id
     // expected result: valid output, an InventoryReport object with all the details of the inventory report
     @Test
-    void testGetMonthlyInventoryReportValidInputValidOutput() {
+    void testGetMonthlyInventoryReportWithExistingReport() {
         // setting up report data
         ArrayList<String> monthYearMachine = new ArrayList<>();
         monthYearMachine.add("07");
         monthYearMachine.add("2022");
         monthYearMachine.add("UAE1");
-
 
         InventoryReport expectedReport = new InventoryReport();
         expectedReport.setReportID("2787339a");
@@ -69,7 +132,6 @@ class MysqlControllerTest {
         assertEquals(expectedReport.getProducts().get(0).getAmount(), actualReport.getProducts().get(0).getAmount());
         assertEquals(expectedReport.getProducts().get(0).getPrice(), actualReport.getProducts().get(0).getPrice());
     }
-
 
 
     // tested functionality: querying an existing report that has an invalid or corrupted products list
