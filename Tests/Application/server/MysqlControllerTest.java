@@ -20,7 +20,6 @@ class MysqlControllerTest {
     String machineID = "NOR1";
     String month = "01";
     String year = "2023";
-    String nullParam = null;
 
     // set up method
     @BeforeEach
@@ -65,7 +64,7 @@ class MysqlControllerTest {
 
     // tested functionality: trying to generate a report that is already in the database
     // input: ArrayList that contains northArea, machineID, month, year (same as above)
-    // expected result: true, report already exists, and we don't need to do anything
+    // expected result: true and catch SQLIntegrityConstraintViolationException, report already exists, and we don't need to do anything
     @Test
     void testGenerateValidMonthlyInventoryReportWhenReportAlreadyExistsCatchesSQLIntegrityConstraintViolationException(){
         ArrayList<String> data = new ArrayList<>();
@@ -76,9 +75,9 @@ class MysqlControllerTest {
         assertTrue(mysqlController.generateMonthlyInventoryReport(data));
     }
 
-    // tested functionality: trying to write a value that is too long for the database column
+    // tested functionality: trying to write a value that is too long for the database cell
     // input: ArrayList that contains tooLongString, machineID, month, year
-    // expected result: false, cannot write data that is too long for its cell
+    // expected result: false and catch MysqlDataTruncation, cannot write data that is too long for its cell in the database
     @Test
     void testGenerateValidMonthlyInventoryReportCatchesMysqlDataTruncation(){
         ArrayList<String> data = new ArrayList<>();
@@ -90,10 +89,9 @@ class MysqlControllerTest {
     }
 
 
-
     // tested functionality: querying an existing report from the database
-    // input: valid input, a list of strings, month, year, machine id
-    // expected result: valid output, an InventoryReport object with all the details of the inventory report
+    // input: data of an existing report, a list of strings, month, year, machine id
+    // expected result: an InventoryReport object with all the details of the inventory report
     @Test
     void testGetMonthlyInventoryReportWithExistingReport() {
         // setting up report data
@@ -124,9 +122,12 @@ class MysqlControllerTest {
 
         InventoryReport actualReport = mysqlController.getMonthlyInventoryReport(monthYearMachine);
 
+        // assert report data:
         assertEquals(expectedReport.getReportID(), actualReport.getReportID());
         assertEquals(expectedReport.getArea(), actualReport.getArea());
         assertEquals(expectedReport.getMachineID(), actualReport.getMachineID());
+
+        // assert product data in the report:
         assertEquals(expectedReport.getProducts().get(0).getProductId(), actualReport.getProducts().get(0).getProductId());
         assertEquals(expectedReport.getProducts().get(0).getName(), actualReport.getProducts().get(0).getName());
         assertEquals(expectedReport.getProducts().get(0).getAmount(), actualReport.getProducts().get(0).getAmount());
@@ -134,11 +135,11 @@ class MysqlControllerTest {
     }
 
 
-    // tested functionality: querying an existing report that has an invalid or corrupted products list
+    // tested functionality: querying an existing report that has nothing in its products list
     // input: valid input, a list of strings, month, year, machine id
-    // expected result: returns null
+    // expected result: null
     @Test
-    void testGetMonthlyInventoryReportValidInputNullProductsReturnNull() {
+    void testGetMonthlyInventoryReportExistingReportWithNullProductsReturnNull() {
         // setting up the object
         ArrayList<String> monthYearMachine = new ArrayList<>();
         monthYearMachine.add("01");
@@ -215,12 +216,11 @@ class MysqlControllerTest {
     }
 
 
-    // tested functionality: query a user that doesn't exists
-    // input: invalid credentials
-    // expected result: returns null
+    // tested functionality: query a user that doesn't exist
+    // input: incorrect credentials (user doesn't exist)
+    // expected result: null
     @Test
-    public void testLogUserInInvalidCredentialsReturnsNull() {
-
+    public void testLogUserInIncorrectCredentialsReturnsNull() {
         ArrayList<String> credentials = new ArrayList<>();
         credentials.add("nonExistentUser");
         credentials.add("password");
