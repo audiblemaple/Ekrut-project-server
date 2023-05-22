@@ -15,9 +15,9 @@ Install the required dependencies, including the OCSF framework.<br>
 <br>
 Build the project:<br>
 <br>
-### Usage<br>
-Start the server:<br>
-The server will start running and will listen for client connections on the specified port.<br>
+### Usage <br>
+Start the server <br>
+The server will start running and will listen for client connections on the specified port. <br>
 <br>
 you will also need SQL database to run this.
 
