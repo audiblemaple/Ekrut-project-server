@@ -21,4 +21,4 @@ The server will start running and will listen for client connections on the spec
 <br>
 you will also need SQL database to run this.
 
-### will update this with a more details later
+### will update this with more details later
