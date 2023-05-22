@@ -20,3 +20,5 @@ Start the server:<br>
 The server will start running and will listen for client connections on the specified port.<br>
 <br>
 you will also need SQL database to run this.
+
+### will update this with a more details later
