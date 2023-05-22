@@ -34,11 +34,3 @@ Make sure to restart the server for the changes to take effect.<br>
 <br>
 Contributing<br>
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.<br>
-<br>
-License<br>
-This project is licensed under the MIT License.<br>
-<br>
-Acknowledgements<br>
-The OCSF framework: [Link to Portfolio Website]([https://gaganpreetkaurkalsi.netlify.app](https://www.d.umn.edu/~tcolburn/cs4531/sourcecode/code/ocsf/doc/overview-summary.html) “OCSF framework”)<br>
-Contact<br>
-If you have any questions or need further assistance, please feel free to contact us at email@example.com.<br>
