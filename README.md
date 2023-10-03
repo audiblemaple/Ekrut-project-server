@@ -14,6 +14,7 @@ git clone https://github.com/your-username/vending-machine-server.git
 Install the required dependencies, including the OCSF framework.<br>
 <br>
 Build the project:<br>
+### will update this with more details later
 <br>
 Start the server <br>
 The server will start running and will listen for client connections on the specified port. <br>
